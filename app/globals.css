@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .prose-review h2 {
+    @apply text-2xl font-bold text-gray-900 mt-8 mb-4;
+  }
+  .prose-review h3 {
+    @apply text-xl font-semibold text-gray-800 mt-6 mb-3;
+  }
+  .prose-review p {
+    @apply text-gray-700 leading-relaxed mb-4;
+  }
+  .prose-review ul {
+    @apply list-disc list-inside space-y-2 mb-4 text-gray-700;
+  }
+  .prose-review li {
+    @apply leading-relaxed;
+  }
+  .prose-review strong {
+    @apply font-semibold text-gray-900;
+  }
+}
