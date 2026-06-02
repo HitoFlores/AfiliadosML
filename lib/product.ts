@@ -183,13 +183,13 @@ function normalize(raw: RawProduct): NormalizedProduct {
       articuloHtml: e.articulo_html,
     },
     autoria: {
-      nombre: raw.autoria?.nombre ?? "Redacción AfiliadosML",
+      nombre: raw.autoria?.nombre ?? "Hito Flores",
       tagline:
         raw.autoria?.tagline ??
-        "Síntesis de análisis en video de creadores independientes y opiniones de compradores verificados",
+        "Análisis independiente de productos en Mercado Libre México",
       metodologia:
         raw.autoria?.metodologia ??
-        `Este análisis sintetiza ${raw.videos_yt.length} reseñas en video de creadores independientes y ${raw.reviews_ml.total.toLocaleString("es-MX")} opiniones de compradores verificados de Mercado Libre. Contenido asistido por IA a partir de fuentes reales.`,
+        `Este análisis sintetiza ${raw.videos_yt.length} reseñas en video de creadores independientes y ${raw.reviews_ml.total.toLocaleString("es-MX")} opiniones de compradores verificados de Mercado Libre.`,
       actualizado: raw.autoria?.actualizado ?? fechaDefault,
     },
   };
