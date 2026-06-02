@@ -4,7 +4,7 @@
 > de un link de producto → genera una reseña editorial honesta (estilo Wirecutter/RTINGS)
 > → la publica como JSON en este repo → una web Next.js la renderiza.
 
-Última actualización: 2026-06-02 (fin de sesión 1).
+Última actualización: 2026-06-02 (sesión 2).
 
 ---
 
@@ -15,11 +15,12 @@ Google Sheet "Reviews ML"
   ├── pestaña "timerrs" (gid 0)      -> tokens OAuth de Mercado Libre
   └── pestaña "articulos" (gid 1072849850) -> COLA de productos a procesar
 
-n8n (local, http://localhost:5678) — 4 workflows:
+n8n (local, http://localhost:5678) — 5 workflows:
   1. AfiliadosML (id iSQ59pcFepjqmBvC) — PIPELINE PRINCIPAL
-  2. AfiliadosML - Telegram Poll (id wsMIARaCQQISWJtv) — capta /referido
+  2. AfiliadosML - Telegram Poll (id wsMIARaCQQISWJtv) — capta /referido + links ML directos
   3. AfiliadosML - Error Handler (id WNQIZP0Tu3hQGODn) — marca errores en la Sheet
   4. AfiliadosML - Token Refresh (5h) (id PhRg6OJo47YcvsDo) — refresca token ML
+  5. AfiliadosML - Scheduler 7am (id wG6XApFxO6SyCgIY) — cron diario 7:00 AM, pide link del día
 
 Telegram bot @catalogomx_bot — notificaciones + comando /referido (ForceReply)
 GitHub HitoFlores/AfiliadosML — n8n commitea data/{slug}.json
@@ -79,21 +80,28 @@ pending → processing → waiting → (usuario manda /referido) → ready → p
 - Secretos movidos a variables de entorno `$env` (fuera del JSON del workflow).
 - Error handler + token refresh 5h.
 - Probado con 3 productos (Switch 2, Switch OLED, audífonos Bose).
+- **[Sesión 2] Scheduler 7am**: nuevo workflow `AfiliadosML - Scheduler 7am` (cron 7:00 → manda
+  mensaje Telegram pidiendo link del día). Inactivo hasta hostear n8n.
+- **[Sesión 2] Detección de links ML en Poll**: el Poll ahora detecta links de mercadolibre.com.mx
+  enviados directamente. Flujo: link detectado → Switch → Add to Queue (Sheet) → Notify → Run Main.
+- **[Sesión 2] Fix HTML**: Gemini ahora emite `articulo_html` directamente (no markdown).
+  `Convert to HTML` es un passthrough con limpieza mínima. Títulos siempre en `<h2>`/`<h3>`.
+- **[Sesión 2] Fix YouTube**: query más inteligente (evita modelo alfanumérico tipo "890101-0100",
+  usa Línea/Submodelo). `Top videos` requiere que la marca aparezca en el video; rankea por
+  relevancia + vistas.
+- **[Sesión 2] Showcase**: `public/showcase.html` — página standalone con review de ambos productos.
+- **[Sesión 2] Slugs limpios**: todos los `data/*.json` renombrados a slugs cortos (`nintendo-switch-oled`, `asus-vivobook-ultra`, etc.). Pipeline genera slugs limpios desde ahora (Marca+Modelo+Línea, max 60 chars). Opiniones destacadas vacías cuando `reviews_ml.total = 0`.
 
 ## 📋 Pendientes
-1. **(NUEVO, prioritario) Scheduler 7am por Telegram**: todos los días a las 7:00 el bot manda
-   un mensaje pidiendo el link del artículo del día. El usuario responde con el link de ML →
-   n8n lo escribe en la Sheet (estatus `pending`) y arranca el Pass 1. Objetivo: cero entrada
-   manual en la Sheet, todo desde el celular.
+1. ~~Scheduler 7am~~ ✅ hecho (inactivo hasta hostear)
 2. **Migrar a Abacus AI** (API compatible OpenAI, modelo Claude/GPT) → arregla las **comillas
    textuales** que Flash todavía mete en el artículo (problema legal/IP). Requiere reescribir el
    body a formato OpenAI (messages + response_format json_schema).
-3. **Fix "Convert to HTML"**: a veces los títulos del artículo salen como `<p>` en vez de
-   `<h2>/<h3>`. Ideal: que Gemini emita HTML limpio directo. Va junto con (2).
-4. **Query de YouTube**: no generaliza a todas las categorías (al Bose no le encontró videos).
-   Mejorar la construcción del query / filtro de relevancia.
-5. **Hostear**: n8n en VPS/cloud (sacar de la laptop) + web en Vercel. Al hostear, cambiar el
-   Telegram Poll de polling a **webhook** (Telegram Trigger).
+3. ~~Fix "Convert to HTML"~~ ✅ hecho (Gemini emite HTML directo)
+4. ~~Query de YouTube~~ ✅ hecho (query inteligente + filtro por marca)
+5. **Hostear**: n8n en VPS/cloud (sacar de la laptop) + web en Vercel. Al hostear:
+   - Activar Scheduler 7am
+   - Cambiar Telegram Poll de polling a **webhook** (Telegram Trigger)
 
 ## 🔐 Secretos a ROTAR (quedaron expuestos en el chat de armado)
 GitHub PAT · ML client_secret · YouTube API key · Gemini API key · Telegram bot token ·
