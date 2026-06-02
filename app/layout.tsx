@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className={`${inter.className} bg-gray-50 text-gray-900`}>
+      <body className={`${inter.className} bg-gray-50 text-gray-900`} suppressHydrationWarning>
         <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
           <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <a href="/" className="font-bold text-xl text-green-600">

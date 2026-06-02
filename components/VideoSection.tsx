@@ -19,6 +19,8 @@ interface VideoSectionProps {
 export default function VideoSection({ videos }: VideoSectionProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  if (!videos || videos.length === 0) return null;
+
   return (
     <section className="my-12">
       <h2 className="text-2xl font-bold text-gray-900 mb-5">

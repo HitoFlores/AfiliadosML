@@ -27,3 +27,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# n8n — contienen API keys, NO subir
+.n8n-backups/
+.n8n-work/
+
+# Claude Code — config local personal
+.claude/settings.local.json
