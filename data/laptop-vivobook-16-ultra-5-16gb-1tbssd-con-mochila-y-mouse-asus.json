@@ -1,0 +1,261 @@
+{
+  "meta": {
+    "producto_id": "MLM67134419",
+    "slug": "laptop-vivobook-16-ultra-5-16gb-1tbssd-con-mochila-y-mouse-asus",
+    "categoria": "MLM-NOTEBOOKS",
+    "generado_en": "2026-06-02T18:07:35.397Z"
+  },
+  "producto": {
+    "nombre": "Laptop Vivobook 16 Ultra 5 16gb 1tbssd Con Mochila Y Mouse Asus",
+    "marca": "Asus",
+    "modelo": "X1607CA",
+    "descripcion": "La Laptop Vivobook 16 Ultra 5 es la herramienta ideal para quienes buscan un equilibrio entre rendimiento y estilo. Con un procesador Intel Core Ultra 5 y 16 GB de RAM, esta laptop está diseñada para manejar tareas exigentes, desde la edición de video hasta el gaming casual. Su pantalla LED de 16 pulgadas con resolución WUXGA (1920 x 1200) ofrece imágenes nítidas y vibrantes, mientras que la tecnología antirreflejo garantiza una experiencia visual cómoda en cualquier entorno.\n\nEl diseño en Cool Silver no solo es atractivo, sino también funcional. Equipado con un teclado retroiluminado, permite trabajar en condiciones de poca luz sin inconvenientes. Además, su sistema de refrigeración por aire asegura un rendimiento óptimo, manteniendo la laptop fresca incluso durante largas sesiones de uso.\n\nLa conectividad es otro de sus puntos fuertes, con múltiples puertos USB Type-A y Type-C, así como una salida HDMI, lo que facilita la conexión a otros dispositivos. Incluye un mouse óptico USB y una mochila, haciendo que sea fácil llevar tu equipo a donde sea necesario. Con una batería de 3640 mAh, disfrutarás de hasta 6 horas de uso continuo, ideal para el trabajo o el estudio.\n\nLa cámara web de 1080P FHD y el micrófono integrado son perfectos para videoconferencias y clases en línea, asegurando que siempre te veas y escuches con claridad. Con un peso de solo 1.7 kg, es ligera y portátil, lo que la convierte en una excelente opción para estudiantes y profesionales en movimiento. La Laptop Vivobook 16 Ultra 5 es más que un dispositivo, es una inversión en productividad y estilo.",
+    "caracteristicas_principales": [
+      "Modo de sonido Estéreo."
+    ],
+    "specs": {
+      "Marca": "Asus",
+      "Línea": "VivoBook",
+      "Modelo": "X1607CA",
+      "Modelo alfanumérico": "X1607CA-MB167W",
+      "Color": "Cool silver",
+      "Capacidad total del módulo de memoria RAM": "16 GB",
+      "Capacidad del disco duro": "0 MB",
+      "Capacidad de disco SSD": "1 TB",
+      "Frecuencia de actualización de la pantalla": "60 Hz",
+      "Resolución de la pantalla": "1920 px x 1200 px",
+      "Tarjeta gráfica": "Intel Graphics (Intel AI Boost NPU hasta 13TOPS)",
+      "Marca del procesador": "Intel",
+      "Línea del procesador": "Core Ultra 5",
+      "Modelo del procesador": "225H",
+      "Nombre del sistema operativo": "Windows",
+      "Versión del sistema operativo": "11",
+      "Edición del sistema operativo": "Home",
+      "Con pantalla táctil": "No",
+      "Marca de la tarjeta gráfica integrada": "intel",
+      "Linea  de la tarjeta gráfica integrada": "Inel Arc graphics",
+      "Modelo de la tarjeta gráfica integrada": "Intel Arc 130T",
+      "Capacidade de armazenamento de dados M2": "1 TB",
+      "Velocidad de la memoria RAM": "56.005 GHz",
+      "Velocidad máxima del procesador": "4.9 GHz",
+      "Velocidad mínima del procesador": "1.7 GHz",
+      "Color principal": "Plateado",
+      "Modelo detallado": "Vivobook 16 X1607CA-MB167W",
+      "Tipo de memoria RAM": "DDR5",
+      "Tipos de memoria de video": "Compartida",
+      "Cantidad de núcleos": "14",
+      "Tipo de resolución de la pantalla ": "WUXGA (1920 x 1200) 16:10",
+      "Tipo de producto": "Notebook",
+      "Con Bluetooth": "Sí",
+      "Con cámara web": "Sí",
+      "Con micrófono": "Sí",
+      "Con salida para audífonos": "Sí",
+      "Con pad numérico": "Sí",
+      "Con lector de huella digital": "No",
+      "Con teclado retroiluminado": "Sí",
+      "Con pantalla retina": "No",
+      "Con lector de tarjeta de memoria": "No",
+      "Con pantalla antirreflejo": "Sí",
+      "Tipo de pantalla": "LED",
+      "Modos de sonido": "Estéreo",
+      "Accesorios incluidos": "Adaptador TYPE-C 65W, Mochila, Mouse Óptico Usb",
+      "Tipo de resolución de video de la webcam": "1080P FHD",
+      "Resolución de la imagen fija de la webcam": "1080 Mpx",
+      "Duración máxima de la batería": "6 h",
+      "Cantidad de ranuras para la memoria RAM": "1",
+      "Conectividad": "2 USB Type-A 2 USB Type-C1 HDMI 1.41 Audio Jack",
+      "Año de lanzamiento": "2026",
+      "Material": "Plástico (PCABS)",
+      "Incluye prueba de sistema operativo": "No",
+      "Es gamer": "Sí",
+      "Idioma del teclado": "Español",
+      "Fabricante": "Intel",
+      "Capacidad de la batería": "3.64 Ah",
+      "Tamaño de la pantalla": "16 \"",
+      "Tipo de refrigeración": "Aire",
+      "Ancho": "35.7 cm",
+      "Profundidad": "25.06 cm",
+      "Altura": "1.79 cm",
+      "Peso": "1.7 kg",
+      "Optimizado para IA": "No",
+      "Tipo de batería": "Ion de litio",
+      "Interfaz del SSD": "PCIe",
+      "Tipo de disco": "SSD",
+      "Capacidad total de disco": "1 GB",
+      "Relación de aspecto": "16:10",
+      "Tipo de panel": "IPS",
+      "Tipos de puertos de video": "DisplayPort",
+      "Capacidad máxima soportada de la memoria RAM": "16 GB",
+      "Gama de colores": "45% NTSC",
+      "Cantidad de bocinas": "2",
+      "Con Wi-Fi": "Sí"
+    },
+    "imagenes": [
+      "https://http2.mlstatic.com/D_NQ_NP_892430-MLA109451009311_032026-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_903861-MLA109447550437_032026-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_607263-MLA108638590994_032026-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_637256-MLA109449788559_032026-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_861102-MLA109450473949_032026-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_646756-MLA108638741168_032026-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_753510-MLA108642109356_032026-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_940933-MLA108639040050_032026-F.jpg"
+    ]
+  },
+  "precio": {
+    "actual": 12499,
+    "original": 23299,
+    "descuento_pct": 46,
+    "moneda": "MXN",
+    "envio_gratis": true,
+    "garantia": "Garantía de fábrica: 12 meses"
+  },
+  "vendedor": {
+    "item_id": "MLM5368722072",
+    "nombre": "MERCADOLIBRE ELECTRONICA_MX",
+    "reputacion": "5_green",
+    "power_seller": "platinum",
+    "transacciones": 2806924
+  },
+  "link_afiliado": "https://meli.la/2Ptd5TY",
+  "reviews_ml": {
+    "total": 0,
+    "con_comentario": 0,
+    "calificacion_promedio": 0,
+    "destacadas": [
+      {
+        "titulo": "Calidad de Construcción",
+        "contenido": "Muchos usuarios destacan la calidad de construcción metálica y la sensación premium del equipo, comparándola favorablemente con laptops de mayor precio y resaltando su durabilidad.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Experiencia de Pantalla",
+        "contenido": "La pantalla WUXGA de 144 Hz es muy valorada por su fluidez y buena reproducción de colores, lo que la hace ideal tanto para el trabajo como para el consumo de contenido.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Rendimiento para Tareas Ligeras",
+        "contenido": "Para tareas cotidianas, navegación y programas de diseño gráfico no muy exigentes como Photoshop, los usuarios encuentran que la laptop es rápida y eficiente, sin esperas significativas.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Rendimiento en Edición de Video",
+        "contenido": "Sin embargo, para edición de video exigente con software como Premiere, se reportan esperas y una falta de fluidez, indicando que el equipo tiene limitaciones en cargas de trabajo intensas.",
+        "sentimiento": "negativo"
+      },
+      {
+        "titulo": "Audio y Webcam",
+        "contenido": "La calidad del sonido es descrita como regular a pesar de la inclusión de Dolby Atmos, y la webcam, aunque funcional y con un útil bloqueo de privacidad, no ofrece una calidad de imagen sobresaliente.",
+        "sentimiento": "mixto"
+      }
+    ]
+  },
+  "videos_yt": [
+    {
+      "video_id": "TdmPrEYNNzE",
+      "titulo": "The PERFECT Laptop for Students/Work - Affordable Performance",
+      "canal": "Andres Vidoza",
+      "url": "https://www.youtube.com/watch?v=TdmPrEYNNzE",
+      "thumbnail": "https://i.ytimg.com/vi/TdmPrEYNNzE/hqdefault.jpg",
+      "publicado": "2024-04-28",
+      "vistas": 842883
+    },
+    {
+      "video_id": "UugisEFCIZU",
+      "titulo": "Asus Vivobook S16 (2025) – Most Popular Pick for Students &amp; Professionals!",
+      "canal": "Venom's Tech",
+      "url": "https://www.youtube.com/watch?v=UugisEFCIZU",
+      "thumbnail": "https://i.ytimg.com/vi/UugisEFCIZU/hqdefault.jpg",
+      "publicado": "2025-06-20",
+      "vistas": 368840
+    },
+    {
+      "video_id": "7FperOCV2yo",
+      "titulo": "La Mejor Laptop Todoterreno Económica? - ASUS VIVOBOOK S16",
+      "canal": "YANPOL",
+      "url": "https://www.youtube.com/watch?v=7FperOCV2yo",
+      "thumbnail": "https://i.ytimg.com/vi/7FperOCV2yo/hqdefault.jpg",
+      "publicado": "2025-12-09",
+      "vistas": 269307
+    }
+  ],
+  "editorial": {
+    "score": 7.6,
+    "score_justificacion": "La Vivobook 16 Ultra 5 sobresale por su construcción robusta y una pantalla de alta calidad, pero su rendimiento tiene límites para tareas muy exigentes y el audio es solo regular.",
+    "sub_scores": [
+      {
+        "dimension": "Construcción y Diseño",
+        "score": 9,
+        "justificacion": "Un creador de contenido destacó su construcción totalmente metálica, bisagra suave, trackpad grande y teclado cómodo, además de su certificación militar."
+      },
+      {
+        "dimension": "Pantalla",
+        "score": 8.5,
+        "justificacion": "Un análisis en video resalta su panel WUXGA IPS de 144 Hz con excelente reproducción y consistencia de colores."
+      },
+      {
+        "dimension": "Rendimiento General",
+        "score": 7,
+        "justificacion": "Aunque es rápida para navegación y tareas ligeras como Photoshop, un creador de contenido encontró que tiene dificultades y demoras en edición de video pesada con Premiere."
+      },
+      {
+        "dimension": "Audio y Webcam",
+        "score": 6,
+        "justificacion": "Las bocinas ofrecen un sonido regular a pesar de Dolby Atmos, y la webcam, aunque funcional y con bloqueo de privacidad, no destaca por su calidad de imagen."
+      }
+    ],
+    "veredicto_corto": "La ASUS Vivobook 16 Ultra 5 es una laptop bien construida con una pantalla excelente para el uso diario y profesional ligero. Sin embargo, no esperes un rendimiento sobresaliente en tareas gráficas o de edición de video intensas.",
+    "compralo_si": [
+      "Buscas una laptop con construcción robusta",
+      "Necesitas una pantalla fluida y de calidad",
+      "Para tareas de oficina o estudio",
+      "Realizas gaming casual",
+      "Valoras la portabilidad y accesorios incluidos"
+    ],
+    "saltatelo_si": [
+      "Editas video profesionalmente",
+      "Necesitas rendimiento gráfico de gama alta",
+      "Priorizas audio y webcam premium"
+    ],
+    "pros": [
+      "Construcción robusta y premium con certificación militar",
+      "Pantalla WUXGA IPS de 144 Hz con buena reproducción de color",
+      "Trackpad grande y preciso con buenos gestos",
+      "Teclado cómodo y de buen tacto en español",
+      "Rendimiento rápido para navegación y tareas ligeras",
+      "Buena autonomía para su segmento de gráficas integradas",
+      "Incluye mochila y mouse, aumentando su valor"
+    ],
+    "contras": [
+      "Rendimiento limitado para edición de video pesada",
+      "Calidad de audio de las bocinas es regular",
+      "Webcam aceptable, pero no destaca en calidad de imagen",
+      "Ventiladores audibles incluso en tareas ligeras"
+    ],
+    "fuentes_citadas": [
+      {
+        "tipo": "video",
+        "autor": "YANPOL",
+        "aporte": "Análisis detallado de construcción, pantalla, audio, webcam, teclado, trackpad y rendimiento en tareas ligeras y pesadas de un modelo similar (Vivobook S16)."
+      },
+      {
+        "tipo": "video",
+        "autor": "Andres Vidoza",
+        "aporte": "Menciona la línea Vivobook como una opción de rendimiento asequible para estudiantes y trabajo."
+      },
+      {
+        "tipo": "video",
+        "autor": "Venom's Tech",
+        "aporte": "Identifica la línea Vivobook S16 (modelo similar) como una opción popular para estudiantes y profesionales."
+      }
+    ],
+    "seo_title": "ASUS Vivobook 16 Ultra 5: ¿La laptop ideal para ti en México?",
+    "seo_description": "Análisis honesto de la ASUS Vivobook 16 Ultra 5. Descubre su rendimiento, pantalla, diseño y si es la laptop ideal para estudiantes y profesionales en México.",
+    "articulo_html": "<h2>Veredicto Rápido: ASUS Vivobook 16 Ultra 5</h2><p>La ASUS Vivobook 16 Ultra 5 se presenta como una opción atractiva para quienes buscan un equilibrio entre rendimiento y estilo, especialmente para estudiantes y profesionales. Ofrece una construcción sorprendentemente robusta y una pantalla de alta calidad que destaca por su fluidez y colores. Sin embargo, no es una máquina para cargas de trabajo extremadamente exigentes, como la edición de video profesional, y su audio y webcam son simplemente funcionales.</p><h2>¿Qué es la ASUS Vivobook 16 Ultra 5 y qué ofrece?</h2><p>La Laptop Vivobook 16 Ultra 5 se posiciona como una herramienta versátil para el día a día. Según el fabricante, cuenta con un procesador Intel Core Ultra 5 y 16 GB de RAM, prometiendo manejar desde la edición de video hasta el gaming casual. Su pantalla LED de 16 pulgadas con resolución WUXGA (1920 x 1200) y tecnología antirreflejo busca ofrecer una experiencia visual cómoda y nítida. El diseño en Cool Silver, el teclado retroiluminado y un sistema de refrigeración por aire completan el paquete, junto con una batería de 3640 mAh que promete hasta 6 horas de uso. Incluye una mochila y un mouse, lo que la hace atractiva para la portabilidad.</p><h3>¿Qué hay de nuevo?</h3><p>Aunque no hay una comparación directa con un modelo anterior específico del 'Ultra 5' en las fuentes, un creador de contenido como YANPOL, al analizar un modelo similar (la Vivobook S16), destaca la tendencia de las laptops con gráficos integrados potentes. Estas buscan ofrecer una experiencia más silenciosa y con mejor autonomía que las laptops con gráficas dedicadas, que a menudo sufren de problemas de temperatura y ruido, asemejándose más a una PC de escritorio.</p><h2>Lo bueno de la Vivobook 16 Ultra 5: Construcción, Pantalla y más</h2><ul><li><strong>Construcción y Diseño Premium:</strong> Un análisis de YANPOL sobre un modelo similar, la Vivobook S16, elogia su construcción, mencionando que está hecha completamente de metal y cuenta con una bisagra muy suave. Se percibe una calidad superior a la esperada por su precio, incluso con certificación militar que promete durabilidad.</li><li><strong>Trackpad y Teclado de Calidad:</strong> El mismo análisis destaca un trackpad enorme y de muy buen tacto, con gestos adicionales. El teclado, aunque de membrana, es descrito como suave y seguro para escribir, con las teclas bien ubicadas y en español.</li><li><strong>Pantalla WUXGA IPS de 144 Hz:</strong> La pantalla es un punto fuerte. YANPOL señala que es un panel IPS con resolución WUXGA (1920 x 1200) en un ratio 16:10, lo que la hace excelente en reproducción y consistencia de colores. Además, su tasa de refresco de 144 Hz proporciona una fluidez notable, ideal tanto para trabajo como para consumo multimedia.</li><li><strong>Rendimiento para Tareas Ligeras:</strong> Gracias a su SSD NVMe 4.0, la navegación en Windows 11 es muy rápida. Para programas de trabajo ligeros como Adobe Photoshop, la laptop es completamente utilizable y no genera esperas significativas al modificar imágenes.</li><li><strong>Buena Autonomía:</strong> Aunque el fabricante promete hasta 6 horas, la experiencia general con laptops con gráficos integrados, según YANPOL, es que ofrecen una autonomía considerablemente mejor que aquellas con gráficas dedicadas, lo que la hace más portátil.</li><li><strong>Accesorios Incluidos:</strong> La inclusión de un mouse óptico USB y una mochila es un valor añadido que facilita su transporte y uso inmediato.</li></ul><h2>Lo malo y a tener en cuenta: Limitaciones y detalles</h2><ul><li><strong>Rendimiento Limitado en Tareas Pesadas:</strong> A pesar del procesador Intel Core Ultra 5, un creador de contenido advierte que para trabajos realmente exigentes, como la edición de video en Premiere Pro, la laptop puede mostrar demoras y falta de fluidez en la línea de tiempo, lo que la hace menos ideal para profesionales de este campo.</li><li><strong>Calidad de Audio Regular:</strong> Aunque cuenta con tecnología Dolby Atmos, las bocinas de la laptop ofrecen una reproducción de sonido que un analista describe como 'un poco regular', lo que significa que no es su punto más fuerte para una experiencia multimedia inmersiva.</li><li><strong>Webcam Funcional, no Sobresaliente:</strong> La cámara web de 1080P FHD es aceptable para videollamadas, y cuenta con un práctico bloqueo de privacidad. Sin embargo, la calidad de imagen no es destacable, y los colores pueden no ser tan saturados como se esperaría. El micrófono, por otro lado, se escucha bastante claro.</li><li><strong>Ventiladores Audibles:</strong> Incluso en tareas de navegación ligeras, el ruido de los ventiladores está presente, aunque no es excesivamente notorio. Esto podría ser una consideración para quienes buscan un equipo completamente silencioso.</li></ul><h2>¿Para quién SÍ es la ASUS Vivobook 16 Ultra 5?</h2><ul><li>Estudiantes y profesionales que necesitan una laptop confiable para tareas de oficina, navegación, creación de documentos y presentaciones.</li><li>Usuarios que valoran una construcción robusta y materiales de calidad, buscando durabilidad en su inversión.</li><li>Personas que disfrutan de una pantalla fluida y con buena reproducción de color para el consumo de contenido multimedia y gaming casual.</li><li>Quienes buscan una buena relación calidad-precio en un equipo con gráficos integrados, priorizando la autonomía y un funcionamiento más silencioso.</li><li>Usuarios que aprecian los extras, como la mochila y el mouse incluidos, para una solución completa de portabilidad.</li></ul><h2>¿Para quién NO es la ASUS Vivobook 16 Ultra 5?</h2><ul><li>Editores de video profesionales o creadores de contenido que trabajan con proyectos complejos y requieren renderizado rápido y fluidez en la línea de tiempo.</li><li>Gamers exigentes que buscan correr los últimos títulos con gráficos al máximo, ya que sus gráficos integrados no están diseñados para ese nivel de demanda.</li><li>Usuarios que priorizan una calidad de audio y webcam premium para conferencias o streaming, ya que estos aspectos son solo aceptables.</li><li>Aquellos que necesitan un equipo completamente silencioso en todo momento, debido a que los ventiladores son audibles incluso con cargas ligeras.</li></ul><h2>Conclusión: ¿Una inversión inteligente?</h2><p>La ASUS Vivobook 16 Ultra 5 se presenta como una opción sólida y bien equilibrada para un amplio rango de usuarios. Su robusta construcción metálica y su excelente pantalla de 144 Hz son puntos muy fuertes que la distinguen en su segmento. Si bien no es la máquina más potente para tareas de edición de video intensas o gaming de alta gama, cumple con creces para el uso diario, el estudio y el trabajo profesional ligero, ofreciendo una experiencia fluida y cómoda. Los accesorios incluidos son un plus que redondea una oferta ya de por sí atractiva. Si buscas una laptop duradera, con buena pantalla y rendimiento confiable para la mayoría de las tareas, la Vivobook 16 Ultra 5 es una candidata a considerar seriamente.</p><p>¿Listo para llevar tu productividad al siguiente nivel? Encuentra la ASUS Vivobook 16 Ultra 5 en Mercado Libre y aprovecha sus beneficios.</p>"
+  },
+  "autoria": {
+    "nombre": "Redacción AfiliadosML",
+    "tagline": "Síntesis de análisis en video de creadores independientes y opiniones de compradores verificados",
+    "metodologia": "Este análisis sintetiza 1 reseñas en video de creadores independientes y 0 opiniones de compradores verificados de Mercado Libre. Contenido asistido por IA a partir de fuentes reales.",
+    "actualizado": "2026-06-02"
+  }
+}
