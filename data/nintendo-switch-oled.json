@@ -3,7 +3,7 @@
     "producto_id": "MLM18537258",
     "slug": "nintendo-switch-oled",
     "categoria": "MLM-GAME_CONSOLES",
-    "generado_en": "2026-06-02T04:06:57.826Z"
+    "generado_en": "2026-06-02T18:51:05.845Z"
   },
   "producto": {
     "nombre": "Consola Nintendo Switch Oled Neón 64gb Rojo & Azul",
@@ -99,160 +99,153 @@
     "nombre": "LAPTOPMEXICO",
     "reputacion": "5_green",
     "power_seller": "platinum",
-    "transacciones": 47488
+    "transacciones": 47376
   },
   "link_afiliado": "https://meli.la/2cpQ1zX",
   "reviews_ml": {
-    "total": 31382,
-    "con_comentario": 10362,
+    "total": 31386,
+    "con_comentario": 10366,
     "calificacion_promedio": 4.9,
     "destacadas": [
       {
-        "titulo": "Originalidad y región",
-        "contenido": "Muchos compradores confirman que, a pesar de ser la versión japonesa, la consola es completamente original y funciona sin problemas al configurar el idioma y la región.",
+        "titulo": "Satisfacción general",
+        "contenido": "Los compradores expresan una gran satisfacción con la consola, destacando la diversión y el buen estado del producto al recibirlo.",
         "sentimiento": "positivo"
       },
       {
-        "titulo": "Pantalla y audio",
-        "contenido": "Los usuarios destacan la notable mejora en la calidad de la pantalla OLED, con colores más vivos y un audio superior en los modos portátil y semiportátil.",
+        "titulo": "Calidad de pantalla",
+        "contenido": "La nueva pantalla OLED de 7 pulgadas ofrece colores más vivos y contrastes definidos, lo que mejora la inmersión visual en los juegos.",
         "sentimiento": "positivo"
       },
       {
-        "titulo": "Rendimiento y potencia",
-        "contenido": "Varios compradores advierten que la consola no ofrece ninguna mejora en el procesamiento ni en los gráficos en comparación con el modelo original.",
+        "titulo": "Durabilidad y diseño",
+        "contenido": "Se aprecia la incorporación de elementos metálicos en la construcción y un soporte trasero más robusto, lo que sugiere una mayor resistencia y estabilidad.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Rendimiento sin cambios",
+        "contenido": "A pesar de las mejoras visuales y de construcción, la consola no presenta un aumento en la potencia de procesamiento o la resolución máxima en modo portátil.",
         "sentimiento": "negativo"
       },
       {
-        "titulo": "Conectividad WiFi",
-        "contenido": "Un punto recurrente es que la versión oriental de la consola no logra conectarse correctamente a las redes Wi-Fi 5G.",
+        "titulo": "Superficie de la pantalla",
+        "contenido": "La capa superficial de la pantalla OLED es de plástico, lo que la hace susceptible a rayones con objetos comunes, a pesar de que Nintendo menciona una capa de vidrio subyacente.",
         "sentimiento": "negativo"
-      },
-      {
-        "titulo": "Soporte y dock",
-        "contenido": "El nuevo soporte trasero es muy elogiado por su estabilidad y ajuste, y el puerto Ethernet integrado en el dock es un añadido bien recibido.",
-        "sentimiento": "positivo"
       }
     ]
   },
   "videos_yt": [
     {
-      "video_id": "Xqf7Hh_5R2E",
-      "titulo": "Nintendo Switch - OLED Model Review",
-      "canal": "IGN",
-      "url": "https://www.youtube.com/watch?v=Xqf7Hh_5R2E",
-      "thumbnail": "https://i.ytimg.com/vi/Xqf7Hh_5R2E/hqdefault.jpg",
-      "publicado": "2021-10-06",
-      "vistas": 1195202
+      "video_id": "EiT6kP50YsI",
+      "titulo": "Nintendo Switch OLED Console Unboxing (New &amp; Improved Model)",
+      "canal": "TheRelaxingEnd",
+      "url": "https://www.youtube.com/watch?v=EiT6kP50YsI",
+      "thumbnail": "https://i.ytimg.com/vi/EiT6kP50YsI/hqdefault.jpg",
+      "publicado": "2021-10-09",
+      "vistas": 5613345
     },
     {
-      "video_id": "EIA7FIyJYWk",
-      "titulo": "Nintendo Switch Modelo OLED : UNBOXING I Fedelobo",
-      "canal": "El Fedelobo",
-      "url": "https://www.youtube.com/watch?v=EIA7FIyJYWk",
-      "thumbnail": "https://i.ytimg.com/vi/EIA7FIyJYWk/hqdefault.jpg",
-      "publicado": "2021-10-11",
-      "vistas": 1034651
-    },
-    {
-      "video_id": "eEzN-KD-MAk",
-      "titulo": "Nintendo Switch OLED vs Nintendo Switch (Original) 🖤🤍 Precio, Batería, Pantalla y Diferencias",
-      "canal": "Nintendúo",
-      "url": "https://www.youtube.com/watch?v=eEzN-KD-MAk",
-      "thumbnail": "https://i.ytimg.com/vi/eEzN-KD-MAk/hqdefault.jpg",
+      "video_id": "J-iUQoV6d2w",
+      "titulo": "Nintendo Switch OLED Model Neon Blue / Neon Red Unboxing - ASMR",
+      "canal": "Xtracion",
+      "url": "https://www.youtube.com/watch?v=J-iUQoV6d2w",
+      "thumbnail": "https://i.ytimg.com/vi/J-iUQoV6d2w/hqdefault.jpg",
       "publicado": "2021-10-08",
-      "vistas": 668591
+      "vistas": 2567709
+    },
+    {
+      "video_id": "jHwEkX9fFaA",
+      "titulo": "Is the new OLED Nintendo Switch made from METAL?! - Durability Test!",
+      "canal": "JerryRigEverything",
+      "url": "https://www.youtube.com/watch?v=jHwEkX9fFaA",
+      "thumbnail": "https://i.ytimg.com/vi/jHwEkX9fFaA/hqdefault.jpg",
+      "publicado": "2021-10-22",
+      "vistas": 2283848
     }
   ],
   "editorial": {
-    "score": 8.2,
-    "score_justificacion": "Ofrece una pantalla OLED superior y mejoras en el modo portátil, pero sin un salto de rendimiento.",
+    "score": 7.8,
+    "score_justificacion": "La Nintendo Switch OLED mejora la experiencia visual y la calidad de construcción, pero mantiene el mismo rendimiento de hardware que el modelo original.",
     "sub_scores": [
       {
         "dimension": "Pantalla",
-        "score": 9.5,
-        "justificacion": "La pantalla OLED de 7 pulgadas ofrece colores vibrantes y mejor visibilidad en exteriores, según IGN y compradores."
+        "score": 8,
+        "justificacion": "Ofrece una pantalla OLED más grande y vibrante, aunque su superficie es de plástico y la resolución se mantiene en 720p portátil y 1080p en TV, según JerryRigEverything."
       },
       {
-        "dimension": "Diseño y Construcción",
-        "score": 8,
-        "justificacion": "El soporte ajustable es una mejora sustancial, aunque los botones de volumen son menos ergonómicos y el dock se ensucia fácilmente."
+        "dimension": "Construcción y Durabilidad",
+        "score": 8.5,
+        "justificacion": "Incorpora componentes metálicos en el borde de la pantalla y un soporte trasero más robusto, lo que representa una mejora significativa respecto al modelo anterior, según JerryRigEverything."
       },
       {
         "dimension": "Rendimiento",
         "score": 6,
-        "justificacion": "No presenta mejoras en el procesamiento ni en los gráficos respecto al modelo original, según IGN y El Fedelobo."
+        "justificacion": "El rendimiento de procesamiento y gráfico es idéntico al modelo original, sin mejoras en la resolución o la potencia, como señala JerryRigEverything."
       },
       {
-        "dimension": "Conectividad",
-        "score": 7,
-        "justificacion": "Incluye puerto LAN en el dock, pero la versión japonesa no es compatible con redes Wi-Fi 5G."
-      },
-      {
-        "dimension": "Almacenamiento",
+        "dimension": "Ergonomía",
         "score": 7.5,
-        "justificacion": "Duplica el almacenamiento a 64GB, aunque IGN lo considera aún limitado para muchos juegos."
+        "justificacion": "El nuevo soporte ajustable y amplio mejora la experiencia en modo semiportátil, un avance sobre el diseño anterior."
       }
     ],
-    "veredicto_corto": "La Nintendo Switch OLED es la mejor versión para jugar en modo portátil, destacando por su pantalla vibrante y mejoras ergonómicas. Sin embargo, no esperes un salto de rendimiento o gráficos.",
+    "veredicto_corto": "La Nintendo Switch OLED es una mejora iterativa que se centra en la experiencia visual y la calidad de construcción. Si bien la pantalla OLED es un salto notable, no esperes un aumento en el rendimiento de los juegos.",
     "compralo_si": [
-      "Buscas la mejor experiencia portátil",
-      "No tienes una Switch aún",
-      "Valoras una pantalla superior",
-      "Juegas mucho fuera de casa"
+      "Quieres la mejor experiencia visual portátil",
+      "Valorás una construcción más robusta",
+      "Juegas mucho en modo semiportátil",
+      "Necesitas más almacenamiento interno"
     ],
     "saltatelo_si": [
-      "Ya tienes una Switch original",
-      "Priorizas el rendimiento gráfico"
+      "Buscas un salto de rendimiento gráfico",
+      "Tu presupuesto es ajustado",
+      "Juegas principalmente en modo TV",
+      "Ya tienes una Switch y no te importa la pantalla"
     ],
     "pros": [
       "Pantalla OLED de 7 pulgadas con colores vibrantes y contrastes definidos.",
-      "Mejor visibilidad de la pantalla en exteriores.",
-      "Soporte trasero ajustable y mucho más estable.",
-      "Puerto LAN integrado en la base para conexión por cable.",
-      "64 GB de almacenamiento interno, el doble que el modelo anterior.",
+      "Soporte trasero ajustable y robusto, hecho de metal.",
+      "Borde de la pantalla con componentes metálicos para mayor durabilidad.",
+      "64 GB de almacenamiento interno (el doble que el modelo base).",
       "Audio mejorado en modos portátil y semiportátil.",
-      "Diseño más elegante con bordes reducidos.",
-      "Ventilación reposicionada para mayor eficiencia."
+      "Puerto LAN integrado en la base para conexión por cable."
     ],
     "contras": [
-      "Mismo rendimiento gráfico y de procesamiento que el modelo anterior.",
-      "La versión japonesa no es compatible con redes Wi-Fi 5G.",
-      "Ligeramente más pesada, puede cansar en modo portátil extendido.",
-      "Algunos accesorios de Switch original pueden no ser compatibles.",
-      "Botones de encendido y volumen rediseñados son menos ergonómicos.",
-      "El dock con acabado de piano se raya y ensucia con facilidad.",
-      "La consola puede tener un ligero bamboleo en el dock."
+      "La superficie de la pantalla OLED es de plástico y se raya fácilmente, según pruebas de durabilidad.",
+      "Mantiene la misma resolución (720p portátil, 1080p TV) y rendimiento de hardware que el modelo original.",
+      "Los Joy-Cons son idénticos a los de la versión anterior, sin mejoras en su durabilidad interna.",
+      "Requiere un cargador con función Power Delivery (PD) para una carga eficiente mientras se juega.",
+      "Precio superior al modelo original sin mejoras en el rendimiento bruto."
     ],
     "fuentes_citadas": [
       {
+        "tipo": "video",
+        "autor": "JerryRigEverything",
+        "aporte": "Análisis de durabilidad, materiales de construcción, pantalla y rendimiento."
+      },
+      {
+        "tipo": "video",
+        "autor": "TheRelaxingEnd",
+        "aporte": "Demostración visual del producto y su unboxing."
+      },
+      {
+        "tipo": "video",
+        "autor": "Xtracion",
+        "aporte": "Demostración visual del producto y su unboxing."
+      },
+      {
         "tipo": "compradores",
         "autor": "compradores ML",
-        "aporte": "Opiniones sobre la originalidad, región, conectividad, pantalla, peso, soporte, audio, almacenamiento y rendimiento."
-      },
-      {
-        "tipo": "video",
-        "autor": "IGN",
-        "aporte": "Análisis de la pantalla OLED, rendimiento, dock, kickstand, almacenamiento y compatibilidad de accesorios."
-      },
-      {
-        "tipo": "video",
-        "autor": "El Fedelobo",
-        "aporte": "Unboxing y primeras impresiones de la pantalla, dock, botones, ventilación, soporte y confirmación de rendimiento idéntico."
-      },
-      {
-        "tipo": "video",
-        "autor": "Nintendúo",
-        "aporte": "Comparativa detallada de tamaño, pantalla, brillo, diseño, botones, ventilación, soporte y compatibilidad de accesorios."
+        "aporte": "Opiniones generales sobre la satisfacción y el estado del producto."
       }
     ],
-    "seo_title": "Nintendo Switch OLED Review: ¿Vale la pena la pantalla mejorada?",
-    "seo_description": "Análisis honesto de la Nintendo Switch OLED. Descubre si su pantalla vibrante y mejoras portátiles justifican el precio, o si sus limitaciones de rendimiento te harán dudar.",
-    "articulo_html": "<p>Veredicto Rápido Honesto</p>\n<p>La Nintendo Switch OLED es la mejor versión para jugar en modo portátil, gracias a su pantalla vibrante y mejoras ergonómicas. Sin embargo, no ofrece un salto de rendimiento o gráficos respecto al modelo original, lo que la hace una actualización menos atractiva para quienes ya poseen una Switch.</p><p>¿Qué es la Nintendo Switch OLED y qué cambió?</p>\n<p>La Nintendo Switch OLED, lanzada en 2021, es una revisión de la popular consola híbrida de Nintendo. Mantiene la capacidad de jugar en casa o en el camino, pero introduce cambios específicos. La característica más notable es su pantalla OLED de 7 pulgadas, que reemplaza la LCD de 6.2 pulgadas del modelo original, prometiendo colores más brillantes y contrastes definidos. Además, la consola incorpora un soporte trasero ajustable y más robusto, una base con puerto LAN para conexión por cable en modo TV, 64 GB de almacenamiento interno (el doble que los 32 GB anteriores) y un audio mejorado en los altavoces.</p><p>Es importante mencionar que la versión analizada es de región japonesa. No obstante, compradores verificados confirman que la consola es original y universal, permitiendo configurar el idioma y la región al iniciarla sin afectar la experiencia de juego.</p><p>Lo Bueno de la Switch OLED</p>\n<p>Las mejoras de la Switch OLED se centran principalmente en la experiencia portátil y de sobremesa, sin alterar el rendimiento interno.</p><p>1.  <strong>Pantalla OLED Superior:</strong> La pantalla es la mejora más significativa. IGN la describe como una \"mejora sustancial\" que \"transforma la experiencia en modo portátil\". Compradores y canales como El Fedelobo y Nintendúo coinciden en que los colores son más vivos y los negros más profundos, mejorando notablemente la visualización de los juegos. Nintendúo señala un brillo máximo superior, lo que, según IGN, permite jugar \"más cómodamente al aire libre\" o en entornos iluminados, superando una limitación del modelo original. Aunque la resolución se mantiene en 720p en modo portátil, la calidad del panel OLED es un gran avance.</p>\n<p>2.  <strong>Soporte Ajustable y Estable:</strong> El nuevo soporte trasero es muy elogiado. IGN lo considera una \"mejora favorita\", destacando que es \"mucho más firme y flexible\", ofreciendo múltiples ángulos sin riesgo de que la consola se caiga. Compradores y El Fedelobo también resaltan su superioridad frente al modelo original, mejorando la experiencia en modo semiportátil.</p>\n<p>3.  <strong>Puerto LAN Integrado:</strong> La base revisada ahora incluye un puerto Ethernet (RJ45). IGN y los compradores valoran que esto \"mejora drásticamente la estabilidad online y las velocidades de descarga\", eliminando la necesidad de un adaptador externo para quienes juegan en modo TV.</p>\n<p>4.  <strong>Almacenamiento Duplicado:</strong> Con 64 GB de almacenamiento interno, la Switch OLED duplica la capacidad del modelo anterior. Aunque IGN aún lo considera \"bastante limitado\" para la cantidad de juegos actuales, es una mejora bienvenida que ofrece más espacio antes de necesitar una tarjeta microSD.</p>\n<p>5.  <strong>Audio Mejorado:</strong> Los compradores y el fabricante mencionan un audio superior al usar los altavoces de la consola en los modos portátil y semiportátil, contribuyendo a una experiencia más inmersiva.</p>\n<p>6.  <strong>Diseño Refinado:</strong> La consola es ligeramente más grande (unos 2-3 mm más larga, según IGN y Nintendúo), pero los biseles más pequeños alrededor de la pantalla le dan un aspecto más moderno y elegante. Nintendúo también destaca que el sensor de luz se ha reubicado para un diseño más limpio.</p><p>Lo Malo y a Tener en Cuenta</p>\n<p>A pesar de sus mejoras, la Switch OLED presenta puntos débiles, especialmente para quienes ya poseen una Switch.</p><p>1.  <strong>Sin Mejora de Rendimiento:</strong> Este es el aspecto más criticado. IGN, El Fedelobo y los compradores coinciden: la Switch OLED \"no es más potente ni en procesamiento ni gráficamente\". Mantiene las mismas especificaciones internas que el modelo de 2019, lo que significa que los juegos no se verán ni correrán mejor en términos de framerate o resolución en TV.</p>\n<p>2.  <strong>Incompatibilidad con Wi-Fi 5G (Versión Japonesa):</strong> Un comprador advierte que la versión oriental de la consola \"no agarra correctamente las redes wifi 5g\". Esto podría ser un inconveniente para usuarios con routers modernos que dependen de esta banda.</p>\n<p>3.  <strong>Ligeramente Más Pesada:</strong> Un comprador menciona que la consola \"se nota un poco más pesada y jugar en modo portátil puede ser solo un poco más cansado\" que con la versión original. Esto puede influir en sesiones de juego prolongadas.</p>\n<p>4.  <strong>Accesorios No Siempre Compatibles:</strong> Debido a su ligero aumento de tamaño, IGN y Nintendúo señalan que algunos accesorios de la Switch original, como protectores de pantalla o fundas rígidas, podrían no ser compatibles con el modelo OLED.</p>\n<p>5.  <strong>Botones Menos Ergonómicos:</strong> Nintendúo critica el rediseño de los botones de encendido y volumen, que ahora son más alargados y finos, haciendo que sean \"más difíciles de encontrar\" y menos cómodos de usar.</p>\n<p>6.  <strong>Dock Propenso a Rayarse:</strong> El Fedelobo advierte que el acabado de piano del dock \"se me va a ensuciar bastante\" y se raya con facilidad. IGN también menciona un \"pequeño bamboleo\" de la consola al estar conectada.</p><p>¿Para quién es la Nintendo Switch OLED? ¿Y para quién no?</p><p><ul><li>  <strong>Cómprala si:</strong></li>    *   No tienes una Nintendo Switch y buscas la mejor experiencia portátil.</p>\n<p>    *   Valoras una pantalla de alta calidad con colores vibrantes.</p>\n<p>    *   Juegas con frecuencia en modo portátil o semiportátil.</p>\n<p>    *   Aprecias un soporte más robusto y un puerto LAN integrado.</p><p><li>  <strong>Evítala si:</strong></li></ul>    *   Ya tienes una Nintendo Switch original y esperas un salto de rendimiento.</p>\n<p>    *   Juegas casi exclusivamente en modo TV.</p>\n<p>    *   La compatibilidad con redes Wi-Fi 5G es crucial para ti (si adquieres la versión japonesa).</p>\n<p>    *   Tu presupuesto es ajustado.</p><p>Conclusión</p>\n<p>La Nintendo Switch OLED es una mejora enfocada en perfeccionar la experiencia portátil. Su pantalla es espectacular, el soporte funcional y el puerto LAN un añadido práctico. Es la opción más recomendable para nuevos compradores que deseen la mejor versión de la Switch para jugar en cualquier lugar. Sin embargo, si ya posees una Switch y no te importa la pantalla OLED, o si priorizas la potencia gráfica, las mejoras no justifican el desembolso. Considera tus hábitos de juego y lo que valoras más antes de decidir.</p><p>Si las mejoras en la pantalla y la comodidad portátil te convencen, y eres un nuevo usuario de Switch, la OLED es una excelente elección. ¡Encuentra la tuya hoy mismo en Mercado Libre!</p>"
+    "seo_title": "Nintendo Switch OLED: ¿Vale la pena la mejora de pantalla y construcción?",
+    "seo_description": "Análisis honesto de la Nintendo Switch OLED. Descubre si su pantalla vibrante y diseño mejorado justifican el precio sin cambios en rendimiento.",
+    "articulo_html": "<h2>Veredicto Rápido: ¿Una mejora necesaria o un lujo?</h2><p>La Nintendo Switch OLED es, sin duda, la versión más pulida de la consola híbrida hasta la fecha. Su vibrante pantalla OLED de 7 pulgadas y las mejoras en la construcción, como el soporte metálico y los bordes reforzados, ofrecen una experiencia superior en modo portátil y semiportátil. Sin embargo, es crucial entender que esta no es una 'Switch Pro'. El rendimiento interno se mantiene idéntico al modelo original, lo que significa que los juegos no se verán ni correrán mejor en términos de potencia. Es una evolución estética y de calidad de vida, no de rendimiento.</p><h2>¿Qué es la Nintendo Switch OLED y qué cambió?</h2><p>La Nintendo Switch OLED es el último miembro de la familia Switch, diseñada para mejorar la experiencia de juego tanto en casa como en movimiento. Según el fabricante, incorpora una pantalla OLED de 7 pulgadas con colores brillantes y contrastes definidos, un soporte ajustable y amplio, una base con puerto LAN para conexión por cable en modo TV, 64 GB de almacenamiento interno y audio mejorado a través de los altavoces de la consola. Comparada con el modelo original, la principal diferencia es, como su nombre indica, la pantalla. El modelo anterior contaba con una pantalla LCD más pequeña.</p><p>El canal JerryRigEverything, conocido por sus pruebas de durabilidad, señala que la nueva Switch OLED se siente más pesada al sacarla de la caja, lo que sugiere cambios en los materiales. La pantalla es casi una pulgada más grande que la versión LCD anterior. Sin embargo, la resolución se mantiene en 720p en modo portátil y 1080p cuando está conectada a un televisor, exactamente igual que en el lanzamiento original de la Switch hace años. Esto significa que, si bien la calidad visual del panel es superior, la nitidez y el rendimiento gráfico no han evolucionado.</p><h2>Lo bueno: Pantalla, construcción y detalles</h2><h3>Una pantalla que sí importa</h3><p>La pantalla OLED es, sin lugar a dudas, la estrella del espectáculo. Los compradores verificados en Mercado Libre expresan una satisfacción general con el producto, y aunque no detallan la pantalla, la mejora visual es innegable. Los colores son más intensos y los contrastes más definidos, lo que hace que los juegos cobren vida, especialmente en entornos oscuros. Es una mejora significativa para quienes disfrutan de jugar en modo portátil o semiportátil.</p><h3>Construcción más robusta</h3><p>JerryRigEverything destaca varias mejoras en la construcción. El nuevo soporte trasero es un avance sustancial respecto al anterior, que era comparado con un 'palillo de dientes'. Este nuevo soporte es más grande, ajustable y, lo más importante, es de metal. Además, se ha incorporado metal en el borde alrededor de la pantalla, un detalle que el youtuber celebra, ya que en pruebas anteriores el Joy-Con del modelo original llegó a romperse. Estos cambios sugieren una mayor durabilidad general de la consola.</p><h3>Almacenamiento y conectividad</h3><p>La consola ahora viene con 64 GB de almacenamiento interno, el doble que el modelo original, lo que es una ventaja para guardar más juegos sin necesidad de una tarjeta microSD de inmediato. La inclusión de un puerto LAN en la base es también un añadido práctico para aquellos que prefieren una conexión a internet por cable y más estable al jugar en el televisor.</p><h2>Lo malo: Rendimiento estancado y pantalla vulnerable</h2><h3>Mismo rendimiento, mismo hardware</h3><p>Aquí es donde la Switch OLED muestra su lado menos innovador. JerryRigEverything enfatiza que no hay cambios en el rendimiento del procesador o la GPU. La consola no es más potente ni gráficamente superior a la Switch original, lo que puede ser una decepción para quienes esperaban una mejora en la fluidez o la resolución de los juegos. Esto significa que los títulos más exigentes seguirán funcionando con las mismas limitaciones.</p><h3>La pantalla OLED tiene una capa de plástico</h3><p>A pesar de la calidad visual, la durabilidad de la pantalla es un punto a considerar. Según las pruebas de JerryRigEverything, la superficie de la pantalla OLED se raya en el nivel 3 de la escala de Mohs, con surcos más profundos en el nivel 4. Esto indica que la capa superior es de plástico, no de vidrio. Aunque Nintendo afirma que hay una capa de vidrio debajo con un adhesivo anti-dispersión, la superficie plástica la hace vulnerable a objetos comunes como monedas o llaves. Se recomienda encarecidamente un protector de pantalla de vidrio para una mayor resistencia.</p><h3>Joy-Cons sin cambios</h3><p>Los Joy-Cons incluidos con la Switch OLED son, según Nintendo (con algunas declaraciones contradictorias), idénticos a los de la versión original. Esto significa que los problemas de 'drift' que han afectado a muchos usuarios en el pasado podrían persistir, ya que no se han implementado mejoras visibles en su durabilidad interna.</p><h3>Carga portátil específica</h3><p>Si bien no es un 'contra' grave, es importante saber que para cargar la Switch OLED de forma eficiente mientras se juega con una batería externa, esta debe tener la función Power Delivery (PD). Otros cargadores pueden funcionar, pero serán significativamente más lentos.</p><h2>Para quién sí y para quién no</h2><h3>Cómprala si:</h3><ul><li>Valoras enormemente la calidad de la pantalla y juegas mucho en modo portátil.</li><li>Quieres una consola con una construcción más premium y duradera.</li><li>No tienes una Switch aún y buscas la mejor versión disponible.</li><li>Aprecias el almacenamiento extra y la conexión LAN por cable.</li></ul><h3>Saltatela si:</h3><ul><li>Ya tienes una Switch y no te importa la pantalla OLED.</li><li>Esperabas un salto de rendimiento para jugar a mayores resoluciones o con mejores gráficos.</li><li>Tu presupuesto es limitado y el precio extra no justifica las mejoras para ti.</li><li>Principalmente juegas en modo TV y la pantalla OLED no te beneficia directamente.</li></ul><h2>Conclusión: Una mejora bienvenida, pero no revolucionaria</h2><p>La Nintendo Switch OLED es una consola excelente que refina la experiencia original de la Switch. La pantalla OLED es un verdadero deleite visual y las mejoras en la construcción, especialmente el soporte y los bordes metálicos, la hacen sentir más robusta y premium. Sin embargo, es fundamental entender que esta consola no ofrece un aumento de potencia. Si esperabas que tus juegos se vieran o funcionaran mejor en términos de rendimiento, te llevarás una decepción. Es la misma Switch, pero con un vestido mucho más bonito y resistente.</p><p>Si eres un nuevo comprador o buscas la mejor experiencia portátil de Switch y el precio no es un impedimento, la Switch OLED es la elección clara. Si ya tienes una Switch y estás contento con ella, la actualización es un lujo más que una necesidad. ¡Encuentra la tuya en Mercado Libre y decide si esta mejora visual es para ti!</p>"
   },
   "autoria": {
     "nombre": "Redacción AfiliadosML",
     "tagline": "Síntesis de análisis en video de creadores independientes y opiniones de compradores verificados",
-    "metodologia": "Este análisis sintetiza 3 reseñas en video de creadores independientes y 31382 opiniones de compradores verificados de Mercado Libre. Contenido asistido por IA a partir de fuentes reales.",
+    "metodologia": "Este análisis sintetiza 1 reseñas en video de creadores independientes y 31386 opiniones de compradores verificados de Mercado Libre. Contenido asistido por IA a partir de fuentes reales.",
     "actualizado": "2026-06-02"
   }
 }
