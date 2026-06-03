@@ -8,6 +8,20 @@ export const metadata: Metadata = {
   title: "Catalogo MX — Reviews editoriales de Mercado Libre",
   description:
     "Análisis independientes y honestos de los mejores productos en Mercado Libre México. Sin publicidad disfrazada.",
+  openGraph: {
+    title: "Catalogo MX — Reviews editoriales de Mercado Libre",
+    description:
+      "Análisis independientes y honestos de los mejores productos en Mercado Libre México. Sin publicidad disfrazada.",
+    type: "website",
+    locale: "es_MX",
+    siteName: "Catalogo MX",
+  },
+  twitter: {
+    card: "summary",
+    title: "Catalogo MX — Reviews editoriales de Mercado Libre",
+    description:
+      "Análisis independientes y honestos de los mejores productos en Mercado Libre México. Sin publicidad disfrazada.",
+  },
 };
 
 export default function RootLayout({

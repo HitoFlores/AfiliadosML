@@ -1,0 +1,150 @@
+﻿{
+    "updatedAt":  "2026-06-03T01:44:03.878Z",
+    "createdAt":  "2026-06-02T23:39:49.261Z",
+    "id":  "7uVW6atEBK8fuoHV",
+    "name":  "AfiliadosML - Recordatorios",
+    "description":  null,
+    "active":  false,
+    "isArchived":  false,
+    "nodes":  [
+                  {
+                      "id":  "rec-cron-01",
+                      "name":  "Cron Recordatorio",
+                      "type":  "n8n-nodes-base.scheduleTrigger",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       -200,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "rule":  {
+                                                      "interval":  [
+                                                                       {
+                                                                           "field":  "cronExpression",
+                                                                           "expression":  "*/1 * * * *"
+                                                                       }
+                                                                   ]
+                                                  }
+                                     }
+                  },
+                  {
+                      "id":  "rec-sheet-01",
+                      "name":  "Leer Cola",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       0,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos"
+                                                       },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "rec-code-01",
+                      "name":  "Enviar Recordatorios",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       220,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const sd = $getWorkflowStaticData(\u0027global\u0027);\n// ⏱ INTERVALO: 1 min para pruebas → cambiar a 2*60*60*1000 para produccion\nconst REMINDER_MS = 1 * 60 * 1000;\nconst TOKEN = $env.TELEGRAM_BOT_TOKEN;\nconst CHAT  = $env.TELEGRAM_CHAT_ID;\nconst now   = Date.now();\n\nif (!sd.reminders) sd.reminders = {};\n\nconst tg = async (text, extra = {}) =\u003e this.helpers.httpRequest({\n  method: \u0027POST\u0027,\n  url: \u0027https://api.telegram.org/bot\u0027 + TOKEN + \u0027/sendMessage\u0027,\n  body: { chat_id: CHAT, text, ...extra },\n  json: true,\n});\n\nconst rows = $input.all().map(i =\u003e i.json);\n\n// Si hay articulo activo (waiting_confirm/pending/waiting/ready), no recordar waiting_link\nconst hasActiveArticle = rows.some(r =\u003e [\u0027waiting_confirm\u0027,\u0027pending\u0027,\u0027waiting\u0027,\u0027ready\u0027].includes((r.estatus||\u0027\u0027).toLowerCase().trim()));\n\nfor (const row of rows) {\n  const estatus = (row.estatus || \u0027\u0027).toLowerCase().trim();\n  if (![\u0027waiting_link\u0027,\u0027waiting_confirm\u0027,\u0027pending\u0027,\u0027waiting\u0027].includes(estatus)) continue;\n\n  // Si hay articulo activo, saltar los waiting_link\n  if (estatus === \u0027waiting_link\u0027 \u0026\u0026 hasActiveArticle) continue;\n\n  const key = \u0027row_\u0027 + (row.row_number || row.articulo);\n  const lastReminder = sd.reminders[key] || 0;\n  if (now - lastReminder \u003c REMINDER_MS) continue;\n\n  // waiting_link: solo recordar si la fila es de HOY\n  if (estatus === \u0027waiting_link\u0027 \u0026\u0026 row.procesado_en) {\n    const rowDate = new Date(row.procesado_en);\n    const today   = new Date();\n    if (rowDate.toDateString() !== today.toDateString()) continue;\n  }\n\n  let msg = \u0027\u0027;\n  let extra = {};\n  if (estatus === \u0027waiting_link\u0027) {\n    msg = \u0027👋 Ey, aún te estoy esperando! ¿Con qué artículo trabajamos hoy?\\n\\nMandame el link de Mercado Libre 🔗\u0027;\n  } else if (estatus === \u0027waiting_confirm\u0027) {\n    msg = \u0027👋 Sigo esperando tu respuesta!\u0027;\n    extra = { reply_markup: { keyboard: [[{text: \u0027/articulo_correcto\u0027}, {text: \u0027/articulo_incorrecto\u0027}]], resize_keyboard: true, one_time_keyboard: true } };\n  } else if (estatus === \u0027pending\u0027) {\n    msg = \u0027👋 Sigo esperando tu confirmación!\u0027;\n    extra = { reply_markup: { keyboard: [[{text: \u0027/articulo_correcto\u0027}, {text: \u0027/articulo_incorrecto\u0027}]], resize_keyboard: true, one_time_keyboard: true } };\n  } else if (estatus === \u0027waiting\u0027) {\n    msg = \u0027👋 Sigo esperando el link de afiliado!\\n\\nGeneralo en ML Partners y respondelo al mensaje anterior 🔗\u0027;\n  }\n\n  if (!msg) continue;\n  await tg(msg, extra);\n  sd.reminders[key] = now;\n}\n\nreturn [];"
+                                     }
+                  }
+              ],
+    "connections":  {
+                        "Cron Recordatorio":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Leer Cola",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Leer Cola":  {
+                                          "main":  [
+                                                       [
+                                                           {
+                                                               "node":  "Enviar Recordatorios",
+                                                               "type":  "main",
+                                                               "index":  0
+                                                           }
+                                                       ]
+                                                   ]
+                                      }
+                    },
+    "settings":  {
+                     "executionOrder":  "v1"
+                 },
+    "staticData":  {
+                       "node:Cron Recordatorio":  {
+                                                      "recurrenceRules":  [
+
+                                                                          ]
+                                                  },
+                       "global":  {
+                                      "reminders":  {
+                                                        "row_5":  1780457520677,
+                                                        "row_6":  1780457700749,
+                                                        "row_7":  1780443961232,
+                                                        "row_8":  1780443961232,
+                                                        "row_9":  1780443961232,
+                                                        "row_10":  1780444021057
+                                                    }
+                                  }
+                   },
+    "meta":  null,
+    "pinData":  null,
+    "versionId":  "2f1fa580-3162-400f-a126-0eb996c0d373",
+    "activeVersionId":  null,
+    "versionCounter":  3,
+    "triggerCount":  1,
+    "shared":  [
+                   {
+                       "updatedAt":  "2026-06-02T23:39:49.265Z",
+                       "createdAt":  "2026-06-02T23:39:49.265Z",
+                       "role":  "workflow:owner",
+                       "workflowId":  "7uVW6atEBK8fuoHV",
+                       "projectId":  "c3FOjVGbvSdJ6jgk",
+                       "project":  {
+                                       "updatedAt":  "2026-05-30T21:44:15.931Z",
+                                       "createdAt":  "2026-05-30T21:41:26.508Z",
+                                       "id":  "c3FOjVGbvSdJ6jgk",
+                                       "name":  "Hito Flores \u003c8hitodev6@gmail.com\u003e",
+                                       "type":  "personal",
+                                       "icon":  null,
+                                       "description":  null,
+                                       "creatorId":  "d2ec98b9-a94a-48cf-b0dd-c57f014ded2b"
+                                   }
+                   }
+               ],
+    "tags":  [
+
+             ],
+    "activeVersion":  null
+}

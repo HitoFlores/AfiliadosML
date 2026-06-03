@@ -141,7 +141,7 @@ export default async function ReviewPage({
                 -{precio.descuento_pct}%
               </span>
             </div>
-            <div className="flex items-center gap-2 mb-4 text-sm text-gray-500">
+            <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
               {precio.envio_gratis && (
                 <span className="flex items-center gap-1 text-green-600 font-medium">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,6 +153,9 @@ export default async function ReviewPage({
               <span>·</span>
               <span>{precio.moneda}</span>
             </div>
+            <p className="text-[11px] text-gray-400 mb-4">
+              Precio relevado el {autoria.actualizado} · puede variar
+            </p>
             <AffiliateCTA href={affiliateUrl} productName={producto.nombre} />
           </div>
         </div>

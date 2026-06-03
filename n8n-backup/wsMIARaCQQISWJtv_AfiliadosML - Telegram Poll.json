@@ -1,0 +1,1686 @@
+﻿{
+    "updatedAt":  "2026-06-03T02:15:38.602Z",
+    "createdAt":  "2026-06-02T03:08:55.971Z",
+    "id":  "wsMIARaCQQISWJtv",
+    "name":  "AfiliadosML - Telegram Poll",
+    "description":  "",
+    "active":  true,
+    "isArchived":  false,
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "rule":  {
+                                                      "interval":  [
+                                                                       {
+                                                                           "field":  "minutes",
+                                                                           "minutesInterval":  2
+                                                                       }
+                                                                   ]
+                                                  }
+                                     },
+                      "id":  "4422213d-141d-4dfe-a6a2-9b7cf0619dba",
+                      "name":  "Cron 2min",
+                      "type":  "n8n-nodes-base.scheduleTrigger",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       -256,
+                                       0
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const sd    = $getWorkflowStaticData(\u0027global\u0027);\nlet offset  = sd.tg_offset || 0;\nconst TOKEN = $env.TELEGRAM_BOT_TOKEN;\nconst CHAT  = $env.TELEGRAM_CHAT_ID;\n\nconst tg = async (text, extra = {}) =\u003e this.helpers.httpRequest({\n  method: \u0027POST\u0027,\n  url: \u0027https://api.telegram.org/bot\u0027 + TOKEN + \u0027/sendMessage\u0027,\n  body: { chat_id: CHAT, text, parse_mode: \u0027Markdown\u0027, ...extra },\n  json: true,\n});\n\nconst bumpError = async () =\u003e {\n  sd.consecutive_errors = (sd.consecutive_errors || 0) + 1;\n  if (sd.consecutive_errors \u003e= 2) {\n    await tg(\u0027ALERTA: Dos errores seguidos. Deteniendo el procesamiento. Revisa el flujo y reactiva el Poll desde n8n cuando estes listo.\u0027);\n    sd.consecutive_errors = 0;\n    return true; // señal de parar\n  }\n  return false;\n};\n\nconst res = await this.helpers.httpRequest({\n  method: \u0027GET\u0027,\n  url: \u0027https://api.telegram.org/bot\u0027 + TOKEN + \u0027/getUpdates\u0027,\n  qs: offset ? { offset } : {},\n  json: true,\n});\nconst updates = res.result || [];\nif (!updates.length) return [];\n\nlet maxId         = offset - 1;\nlet referido      = null;\nlet askLink       = false;\nlet nuevoArticulo = null;\nlet shouldStop    = false;\nlet confirmFlag   = false;\n\nconst isMlLink = (t) =\u003e Boolean(t \u0026\u0026 (t.includes(\u0027meli.la/\u0027) || t.includes(\u0027mercadolibre\u0027)));\nconst looksLikeLink = (t) =\u003e t.startsWith(\u0027http\u0027) || t.startsWith(\u0027www.\u0027) || t.startsWith(\u0027meli\u0027);\n\n// Detecta respuesta al mensaje del Scheduler (nuevo articulo)\nconst isSchedulerReply = (rt) =\u003e\n  rt.includes(\u0027articulo\u0027) || rt.includes(\u0027Mercado Libre\u0027) || rt.includes(\u0027Buenos dias\u0027);\n\n// Detecta respuesta al mensaje de Notify Esperando (referido)\nconst isReferidoReply = (rt) =\u003e\n  rt.includes(\u0027ML Partners\u0027) || rt.includes(\u0027link de afiliado\u0027) || rt.includes(\u0027mejor vendedor\u0027) || rt.includes(\u0027genera el link\u0027);\n\n// Resuelve meli.la: una sola request que sigue todos los redirects\nconst resolveMeliLa = async (meliUrl) =\u003e {\n  try {\n    const html = await this.helpers.httpRequest({\n      method: \u0027GET\u0027, url: meliUrl,\n      followRedirects: true, ignoreResponseCode: true,\n    });\n    const htmlStr = typeof html === \u0027string\u0027 ? html : JSON.stringify(html);\n    const mlmMatch = htmlStr.match(/MLM[0-9]{6,}/);\n    if (!mlmMatch) return null;\n    const mlmId = mlmMatch[0];\n    const hrefMatch = htmlStr.match(/href=\"https?:\\/\\/www\\.mercadolibre\\.com\\.mx\\/([^\\/\\?\"]+)\\/p\\/(MLM[0-9]+)/);\n    let nombre = mlmId;\n    if (hrefMatch \u0026\u0026 hrefMatch[1]) {\n      nombre = hrefMatch[1].split(\u0027-\u0027).map(w =\u003e w.charAt(0).toUpperCase() + w.slice(1)).join(\u0027 \u0027);\n    }\n    const precioMatch = htmlStr.match(/\\$\\s*([\\d,]+(?:\\.\\d{2})?)/);\n    const precio = precioMatch ? \u0027$\u0027 + precioMatch[1] + \u0027 MXN\u0027 : \u0027\u0027;\n    return { catalogUrl: \u0027https://www.mercadolibre.com.mx/p/\u0027 + mlmId, mlmId, nombre, precio };\n  } catch(e) { return null; }\n};\n\nfor (const u of updates) {\n  if (shouldStop) break;\n  if (u.update_id \u003e maxId) maxId = u.update_id;\n  const msg     = u.message || {};\n  const text    = (msg.text || \u0027\u0027).trim();\n  const replyTo = (msg.reply_to_message \u0026\u0026 msg.reply_to_message.text) || \u0027\u0027;\n\n  // /articulo_correcto\n  if (/^\\/articulo_correcto/i.test(text)) {\n    const url = sd.pending_articulo || \u0027\u0027;\n    if (url) {\n      sd.consecutive_errors = 0;\n      delete sd.pending_articulo; delete sd.pending_nombre;\n      nuevoArticulo = url;\n      await tg(\u0027Perfecto! Buscando el mejor vendedor para *\u0027 + (sd.pending_nombre || url) + \u0027*...\u0027);\n    } else {\n      await tg(\u0027No hay ningun articulo pendiente de confirmacion.\u0027);\n    }\n    continue;\n  }\n\n  // /articulo_incorrecto\n  if (/^\\/articulo_incorrecto/i.test(text)) {\n    delete sd.pending_articulo; delete sd.pending_nombre;\n    shouldStop = await bumpError();\n    if (!shouldStop) {\n      await tg(\u0027Entendido. Manda el link correcto (intento \u0027 + sd.consecutive_errors + \u0027 de 2).\u0027, {\n        reply_markup: { force_reply: true, input_field_placeholder: \u0027https://meli.la/...\u0027 }\n      });\n    }\n    continue;\n  }\n\n  // /referido LINK (comando explicito, sigue funcionando)\n  const m = text.match(/^\\/referido\\s+(\\S+)/i);\n  if (m) { referido = m[1]; sd.consecutive_errors = 0; continue; }\n  if (/^\\/referido\\s*$/i.test(text)) { askLink = true; continue; }\n\n  // Link enviado como respuesta al mensaje de Notify Esperando (sin /referido)\n  if (isReferidoReply(replyTo) \u0026\u0026 looksLikeLink(text)) {\n    referido = text.split(/\\s+/)[0];\n    sd.consecutive_errors = 0;\n    continue;\n  }\n\n  // Respuesta al ForceReply del /referido ask\n  if (/link del referido/i.test(replyTo) || /pegalo en la sheet/i.test(replyTo)) {\n    referido = text.split(/\\s+/)[0];\n    sd.consecutive_errors = 0;\n    continue;\n  }\n\n  // Flujo nuevo articulo (respuesta al scheduler o link directo)\n  if (isSchedulerReply(replyTo) || looksLikeLink(text)) {\n    const candidato = text.split(/\\s+/)[0];\n\n    if (!isMlLink(candidato)) {\n      shouldStop = await bumpError();\n      if (!shouldStop) {\n        await tg(\u0027Ese link no parece ser de Mercado Libre (intento \u0027 + (sd.consecutive_errors) + \u0027 de 2).\\n\\nMandame el link de afiliado (meli.la/...).\u0027, {\n          reply_markup: { force_reply: true, input_field_placeholder: \u0027https://meli.la/...\u0027 }\n        });\n      }\n      continue;\n    }\n\n    await tg(\u0027Verificando tu link...\u0027);\n    const info = await resolveMeliLa(candidato);\n\n    if (info) {\n      sd.pending_articulo = info.catalogUrl;\n      sd.pending_nombre   = info.nombre;\n      confirmFlag = true;\n      await tg(\n        \u0027Encontre este producto:\\n\\n*\u0027 + info.nombre + \u0027*\u0027 +\n        (info.precio ? \u0027\\n\u0027 + info.precio : \u0027\u0027) +\n        \u0027\\nID: \u0027 + info.mlmId +\n        \u0027\\n\\n¿Es correcto?\u0027,\n      { reply_markup: { keyboard: [[{text: \u0027/articulo_correcto\u0027}, {text: \u0027/articulo_incorrecto\u0027}]], resize_keyboard: true, one_time_keyboard: true } }\n      );\n    } else {\n      shouldStop = await bumpError();\n      if (!shouldStop) {\n        await tg(\u0027No pude identificar el producto (intento \u0027 + (sd.consecutive_errors) + \u0027 de 2).\\n\\nIntenta con el link directo:\\nhttps://www.mercadolibre.com.mx/p/MLM...\u0027, {\n          reply_markup: { force_reply: true, input_field_placeholder: \u0027https://meli.la/...\u0027 }\n        });\n      }\n    }\n    continue;\n  }\n}\nsd.tg_offset = maxId + 1;\n\nif (shouldStop) return [];\nif (referido)      return [{ json: { tipo: \u0027referido\u0027,       referido } }];\nif (nuevoArticulo) return [{ json: { tipo: \u0027nuevo_articulo\u0027, articulo_link: nuevoArticulo } }];\nif (askLink) {\n  await tg(\u0027Pega el link del referido (responde a ESTE mensaje):\u0027, {\n    reply_markup: { force_reply: true, input_field_placeholder: \u0027https://meli.la/...\u0027 }\n  });\n}\nif (confirmFlag) return [{ json: { tipo: \u0027confirmar_articulo\u0027 } }];\nreturn [];"
+                                     },
+                      "id":  "034aec39-24c0-4caa-b3a7-b931c78f417b",
+                      "name":  "Poll Telegram",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       -48,
+                                       0
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML",
+                                                            "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit?usp=drivesdk"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos",
+                                                           "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit#gid=1072849850"
+                                                       },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "id":  "39fa4421-9a7a-43db-98f3-cb9aa730ff7f",
+                      "name":  "Get Queue Poll",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       192,
+                                       0
+                                   ],
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const rows = $(\u0027Get Queue Poll\u0027).all().map(i =\u003e i.json);\nconst row  = rows.find(r =\u003e (r.estatus||\u0027\u0027).toString().trim().toLowerCase() === \u0027waiting\u0027);\nconst referido = ($(\u0027Poll Telegram\u0027).first().json.referido || \u0027\u0027).trim();\n\nif (!row) {\n  if (referido) {\n    // Referido recibido pero no hay articulo esperando\n    await this.helpers.httpRequest({\n      method: \u0027POST\u0027,\n      url: \u0027https://api.telegram.org/bot\u0027 + $env.TELEGRAM_BOT_TOKEN + \u0027/sendMessage\u0027,\n      body: { chat_id: $env.TELEGRAM_CHAT_ID, text: \u0027No hay ningun articulo esperando link de afiliado en este momento.\u0027 },\n      json: true\n    });\n  }\n  return [];\n}\n\nif (!referido) return []; // todavia esperando que el usuario mande el link\nreturn [{ json: { row_number: row.row_number, referido } }];"
+                                     },
+                      "id":  "ea5faa17-3419-4f09-8cc0-5a44adaefafe",
+                      "name":  "Find Waiting Row",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       400,
+                                       0
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "update",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML",
+                                                            "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit?usp=drivesdk"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos",
+                                                           "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit#gid=1072849850"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "value":  {
+                                                                       "row_number":  "={{ $json.row_number }}",
+                                                                       "referido":  "={{ $json.referido }}",
+                                                                       "estatus":  "ready"
+                                                                   },
+                                                         "matchingColumns":  [
+                                                                                 "row_number"
+                                                                             ],
+                                                         "schema":  [
+                                                                        {
+                                                                            "id":  "articulo",
+                                                                            "displayName":  "articulo",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "referido",
+                                                                            "displayName":  "referido",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "idioma",
+                                                                            "displayName":  "idioma",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "estatus",
+                                                                            "displayName":  "estatus",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "link_sugerido",
+                                                                            "displayName":  "link_sugerido",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "slug",
+                                                                            "displayName":  "slug",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "procesado_en",
+                                                                            "displayName":  "procesado_en",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "error_msg",
+                                                                            "displayName":  "error_msg",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "row_number",
+                                                                            "displayName":  "row_number",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "number",
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "readOnly":  true,
+                                                                            "removed":  false
+                                                                        }
+                                                                    ],
+                                                         "attemptToConvertTypes":  false,
+                                                         "convertFieldsToString":  true
+                                                     },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "id":  "9e3f68c4-442b-4247-b5b8-67fb7518cb27",
+                      "name":  "Mark Ready",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       624,
+                                       0
+                                   ],
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+                                         "sendBody":  true,
+                                         "contentType":  "raw",
+                                         "rawContentType":  "application/json",
+                                         "body":  "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: \u0027\\u2705 Referido recibido. Generando la review...\u0027 }) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "id":  "bcfbc861-7ac9-4069-8ec7-aee10842ba4f",
+                      "name":  "Notify Recibido",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.4,
+                      "position":  [
+                                       848,
+                                       0
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "workflowId":  {
+                                                            "__rl":  true,
+                                                            "value":  "iSQ59pcFepjqmBvC",
+                                                            "mode":  "list",
+                                                            "cachedResultUrl":  "/workflow/iSQ59pcFepjqmBvC",
+                                                            "cachedResultName":  "AfiliadosML"
+                                                        },
+                                         "workflowInputs":  {
+                                                                "mappingMode":  "defineBelow",
+                                                                "value":  {
+
+                                                                          },
+                                                                "matchingColumns":  [
+
+                                                                                    ],
+                                                                "schema":  [
+
+                                                                           ],
+                                                                "attemptToConvertTypes":  false,
+                                                                "convertFieldsToString":  true
+                                                            },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "id":  "722c6191-fd25-4d92-bb31-ed847dcb55fd",
+                      "name":  "Run Main",
+                      "type":  "n8n-nodes-base.executeWorkflow",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       1072,
+                                       0
+                                   ]
+                  },
+                  {
+                      "id":  "poll-switch-01",
+                      "name":  "Tipo Mensaje",
+                      "type":  "n8n-nodes-base.switch",
+                      "typeVersion":  3.2,
+                      "position":  [
+                                       680,
+                                       220
+                                   ],
+                      "parameters":  {
+                                         "mode":  "expression",
+                                         "output":  "={{ $json.tipo === \u0027nuevo_articulo\u0027 ? 0 : $json.tipo === \u0027confirmar_articulo\u0027 ? 2 : 1 }}",
+                                         "options":  {
+
+                                                     }
+                                     }
+                  },
+                  {
+                      "id":  "poll-append-01",
+                      "name":  "Add to Queue",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.5,
+                      "position":  [
+                                       900,
+                                       120
+                                   ],
+                      "parameters":  {
+                                         "operation":  "append",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML",
+                                                            "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit?usp=drivesdk"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos",
+                                                           "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit#gid=1072849850"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "value":  {
+                                                                       "articulo":  "={{ $json.articulo_link }}",
+                                                                       "idioma":  "es",
+                                                                       "estatus":  "pending"
+                                                                   },
+                                                         "matchingColumns":  [
+
+                                                                             ],
+                                                         "schema":  [
+
+                                                                    ],
+                                                         "attemptToConvertTypes":  false,
+                                                         "convertFieldsToString":  true
+                                                     },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "poll-notify-new-01",
+                      "name":  "Notify Agregado",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       1120,
+                                       120
+                                   ],
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+                                         "sendBody":  true,
+                                         "contentType":  "raw",
+                                         "rawContentType":  "application/json",
+                                         "body":  "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: \"Articulo agregado a la cola! Iniciando analisis...\" }) }}",
+                                         "options":  {
+
+                                                     }
+                                     }
+                  },
+                  {
+                      "id":  "poll-run-main-new-01",
+                      "name":  "Run Main New",
+                      "type":  "n8n-nodes-base.executeWorkflow",
+                      "typeVersion":  1.1,
+                      "position":  [
+                                       1340,
+                                       120
+                                   ],
+                      "parameters":  {
+                                         "workflowId":  {
+                                                            "__rl":  true,
+                                                            "value":  "iSQ59pcFepjqmBvC",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "AfiliadosML"
+                                                        },
+                                         "options":  {
+
+                                                     }
+                                     }
+                  },
+                  {
+                      "id":  "poll-leer-nuevo-01",
+                      "name":  "Leer Cola Link",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       900,
+                                       120
+                                   ],
+                      "parameters":  {
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos"
+                                                       },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "poll-find-espera-01",
+                      "name":  "Encontrar Espera",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1120,
+                                       120
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const sd = $getWorkflowStaticData(\u0027global\u0027);\nconst articulo_link = $(\u0027Poll Telegram\u0027).first().json.articulo_link;\n\n// Usar row_number guardado cuando el producto fue encontrado\nif (sd.pending_row_number) {\n  const rn = sd.pending_row_number;\n  delete sd.pending_row_number;\n  return [{ json: { found: true, row_number: rn, articulo_link } }];\n}\n\n// Fallback: buscar en el sheet\nconst rows = $input.all().map(i =\u003e i.json);\nconst waiting = rows.find(r =\u003e [\u0027waiting_link\u0027,\u0027waiting_confirm\u0027].includes((r.estatus||\u0027\u0027).toLowerCase().trim()));\nreturn [{ json: { found: !!waiting, row_number: waiting ? waiting.row_number : null, articulo_link } }];"
+                                     }
+                  },
+                  {
+                      "id":  "poll-switch-espera-01",
+                      "name":  "waiting_link Existe?",
+                      "type":  "n8n-nodes-base.switch",
+                      "typeVersion":  3.2,
+                      "position":  [
+                                       1340,
+                                       120
+                                   ],
+                      "parameters":  {
+                                         "mode":  "expression",
+                                         "output":  "={{ $json.found ? 0 : 1 }}",
+                                         "options":  {
+
+                                                     }
+                                     }
+                  },
+                  {
+                      "id":  "poll-update-pending-01",
+                      "name":  "Actualizar a Pending",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       1560,
+                                       60
+                                   ],
+                      "parameters":  {
+                                         "operation":  "update",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "value":  {
+                                                                       "row_number":  "={{ $json.row_number }}",
+                                                                       "articulo":  "={{ $json.articulo_link }}",
+                                                                       "estatus":  "pending",
+                                                                       "procesado_en":  "={{ new Date().toISOString() }}"
+                                                                   },
+                                                         "matchingColumns":  [
+                                                                                 "row_number"
+                                                                             ],
+                                                         "schema":  [
+
+                                                                    ],
+                                                         "attemptToConvertTypes":  false,
+                                                         "convertFieldsToString":  true
+                                                     },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "poll-leer-confirm-01",
+                      "name":  "Leer Cola Confirm",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       900,
+                                       320
+                                   ],
+                      "parameters":  {
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos"
+                                                       },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "poll-find-confirm-01",
+                      "name":  "Encontrar Espera Confirm",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1120,
+                                       320
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const rows = $input.all().map(i =\u003e i.json);\nconst waiting = rows.find(r =\u003e (r.estatus||\u0027\u0027).toLowerCase().trim() === \u0027waiting_link\u0027);\nif (!waiting) return [];\nreturn [{ json: { row_number: waiting.row_number } }];"
+                                     }
+                  },
+                  {
+                      "id":  "poll-update-confirm-01",
+                      "name":  "Marcar waiting_confirm",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       1340,
+                                       320
+                                   ],
+                      "parameters":  {
+                                         "operation":  "update",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "value":  {
+                                                                       "row_number":  "={{ $json.row_number }}",
+                                                                       "estatus":  "waiting_confirm"
+                                                                   },
+                                                         "matchingColumns":  [
+                                                                                 "row_number"
+                                                                             ],
+                                                         "schema":  [
+
+                                                                    ],
+                                                         "attemptToConvertTypes":  false,
+                                                         "convertFieldsToString":  true
+                                                     },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "poll-save-rownum-01",
+                      "name":  "Guardar row_number",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1120,
+                                       420
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const sd = $getWorkflowStaticData(\u0027global\u0027);\nconst item = $input.first().json;\nsd.pending_row_number = item.row_number;\nreturn [{ json: item }]; // pass through"
+                                     }
+                  }
+              ],
+    "connections":  {
+                        "Cron 2min":  {
+                                          "main":  [
+                                                       [
+                                                           {
+                                                               "node":  "Poll Telegram",
+                                                               "type":  "main",
+                                                               "index":  0
+                                                           }
+                                                       ]
+                                                   ]
+                                      },
+                        "Poll Telegram":  {
+                                              "main":  [
+                                                           [
+                                                               {
+                                                                   "node":  "Tipo Mensaje",
+                                                                   "type":  "main",
+                                                                   "index":  0
+                                                               }
+                                                           ]
+                                                       ]
+                                          },
+                        "Get Queue Poll":  {
+                                               "main":  [
+                                                            [
+                                                                {
+                                                                    "node":  "Find Waiting Row",
+                                                                    "type":  "main",
+                                                                    "index":  0
+                                                                }
+                                                            ]
+                                                        ]
+                                           },
+                        "Find Waiting Row":  {
+                                                 "main":  [
+                                                              [
+                                                                  {
+                                                                      "node":  "Mark Ready",
+                                                                      "type":  "main",
+                                                                      "index":  0
+                                                                  }
+                                                              ]
+                                                          ]
+                                             },
+                        "Mark Ready":  {
+                                           "main":  [
+                                                        [
+                                                            {
+                                                                "node":  "Notify Recibido",
+                                                                "type":  "main",
+                                                                "index":  0
+                                                            }
+                                                        ]
+                                                    ]
+                                       },
+                        "Notify Recibido":  {
+                                                "main":  [
+                                                             [
+                                                                 {
+                                                                     "node":  "Run Main",
+                                                                     "type":  "main",
+                                                                     "index":  0
+                                                                 }
+                                                             ]
+                                                         ]
+                                            },
+                        "Tipo Mensaje":  {
+                                             "main":  [
+                                                          [
+                                                              {
+                                                                  "node":  "Leer Cola Link",
+                                                                  "type":  "main",
+                                                                  "index":  0
+                                                              }
+                                                          ],
+                                                          [
+                                                              {
+                                                                  "node":  "Get Queue Poll",
+                                                                  "type":  "main",
+                                                                  "index":  0
+                                                              }
+                                                          ],
+                                                          [
+                                                              {
+                                                                  "node":  "Leer Cola Confirm",
+                                                                  "type":  "main",
+                                                                  "index":  0
+                                                              }
+                                                          ]
+                                                      ]
+                                         },
+                        "Add to Queue":  {
+                                             "main":  [
+                                                          [
+                                                              {
+                                                                  "node":  "Notify Agregado",
+                                                                  "type":  "main",
+                                                                  "index":  0
+                                                              }
+                                                          ]
+                                                      ]
+                                         },
+                        "Notify Agregado":  {
+                                                "main":  [
+                                                             [
+                                                                 {
+                                                                     "node":  "Run Main New",
+                                                                     "type":  "main",
+                                                                     "index":  0
+                                                                 }
+                                                             ]
+                                                         ]
+                                            },
+                        "Leer Cola Link":  {
+                                               "main":  [
+                                                            [
+                                                                {
+                                                                    "node":  "Encontrar Espera",
+                                                                    "type":  "main",
+                                                                    "index":  0
+                                                                }
+                                                            ]
+                                                        ]
+                                           },
+                        "Encontrar Espera":  {
+                                                 "main":  [
+                                                              [
+                                                                  {
+                                                                      "node":  "waiting_link Existe?",
+                                                                      "type":  "main",
+                                                                      "index":  0
+                                                                  }
+                                                              ]
+                                                          ]
+                                             },
+                        "waiting_link Existe?":  {
+                                                     "main":  [
+                                                                  [
+                                                                      {
+                                                                          "node":  "Actualizar a Pending",
+                                                                          "type":  "main",
+                                                                          "index":  0
+                                                                      }
+                                                                  ],
+                                                                  [
+                                                                      {
+                                                                          "node":  "Add to Queue",
+                                                                          "type":  "main",
+                                                                          "index":  0
+                                                                      }
+                                                                  ]
+                                                              ]
+                                                 },
+                        "Actualizar a Pending":  {
+                                                     "main":  [
+                                                                  [
+                                                                      {
+                                                                          "node":  "Notify Agregado",
+                                                                          "type":  "main",
+                                                                          "index":  0
+                                                                      }
+                                                                  ]
+                                                              ]
+                                                 },
+                        "Leer Cola Confirm":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Encontrar Espera Confirm",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Encontrar Espera Confirm":  {
+                                                         "main":  [
+                                                                      [
+                                                                          {
+                                                                              "node":  "Guardar row_number",
+                                                                              "type":  "main",
+                                                                              "index":  0
+                                                                          }
+                                                                      ]
+                                                                  ]
+                                                     },
+                        "Guardar row_number":  {
+                                                   "main":  [
+                                                                [
+                                                                    {
+                                                                        "node":  "Marcar waiting_confirm",
+                                                                        "type":  "main",
+                                                                        "index":  0
+                                                                    }
+                                                                ]
+                                                            ]
+                                               }
+                    },
+    "settings":  {
+                     "executionOrder":  "v1",
+                     "binaryMode":  "separate"
+                 },
+    "staticData":  {
+                       "node:Cron 2min":  {
+                                              "recurrenceRules":  [
+
+                                                                  ]
+                                          },
+                       "global":  {
+                                      "tg_offset":  270507855,
+                                      "consecutive_errors":  0
+                                  }
+                   },
+    "meta":  null,
+    "pinData":  {
+
+                },
+    "versionId":  "1b973b80-b640-4836-b8da-b1e17568d5bb",
+    "activeVersionId":  "1b973b80-b640-4836-b8da-b1e17568d5bb",
+    "versionCounter":  21,
+    "triggerCount":  1,
+    "shared":  [
+                   {
+                       "updatedAt":  "2026-06-02T03:08:55.983Z",
+                       "createdAt":  "2026-06-02T03:08:55.983Z",
+                       "role":  "workflow:owner",
+                       "workflowId":  "wsMIARaCQQISWJtv",
+                       "projectId":  "c3FOjVGbvSdJ6jgk",
+                       "project":  {
+                                       "updatedAt":  "2026-05-30T21:44:15.931Z",
+                                       "createdAt":  "2026-05-30T21:41:26.508Z",
+                                       "id":  "c3FOjVGbvSdJ6jgk",
+                                       "name":  "Hito Flores \u003c8hitodev6@gmail.com\u003e",
+                                       "type":  "personal",
+                                       "icon":  null,
+                                       "description":  null,
+                                       "creatorId":  "d2ec98b9-a94a-48cf-b0dd-c57f014ded2b"
+                                   }
+                   }
+               ],
+    "tags":  [
+
+             ],
+    "activeVersion":  {
+                          "updatedAt":  "2026-06-03T02:15:38.603Z",
+                          "createdAt":  "2026-06-03T02:15:38.603Z",
+                          "versionId":  "1b973b80-b640-4836-b8da-b1e17568d5bb",
+                          "workflowId":  "wsMIARaCQQISWJtv",
+                          "nodes":  [
+                                        {
+                                            "parameters":  {
+                                                               "rule":  {
+                                                                            "interval":  [
+                                                                                             {
+                                                                                                 "field":  "minutes",
+                                                                                                 "minutesInterval":  2
+                                                                                             }
+                                                                                         ]
+                                                                        }
+                                                           },
+                                            "id":  "4422213d-141d-4dfe-a6a2-9b7cf0619dba",
+                                            "name":  "Cron 2min",
+                                            "type":  "n8n-nodes-base.scheduleTrigger",
+                                            "typeVersion":  1.2,
+                                            "position":  [
+                                                             -256,
+                                                             0
+                                                         ]
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "jsCode":  "const sd    = $getWorkflowStaticData(\u0027global\u0027);\nlet offset  = sd.tg_offset || 0;\nconst TOKEN = $env.TELEGRAM_BOT_TOKEN;\nconst CHAT  = $env.TELEGRAM_CHAT_ID;\n\nconst tg = async (text, extra = {}) =\u003e this.helpers.httpRequest({\n  method: \u0027POST\u0027,\n  url: \u0027https://api.telegram.org/bot\u0027 + TOKEN + \u0027/sendMessage\u0027,\n  body: { chat_id: CHAT, text, parse_mode: \u0027Markdown\u0027, ...extra },\n  json: true,\n});\n\nconst bumpError = async () =\u003e {\n  sd.consecutive_errors = (sd.consecutive_errors || 0) + 1;\n  if (sd.consecutive_errors \u003e= 2) {\n    await tg(\u0027ALERTA: Dos errores seguidos. Deteniendo el procesamiento. Revisa el flujo y reactiva el Poll desde n8n cuando estes listo.\u0027);\n    sd.consecutive_errors = 0;\n    return true; // señal de parar\n  }\n  return false;\n};\n\nconst res = await this.helpers.httpRequest({\n  method: \u0027GET\u0027,\n  url: \u0027https://api.telegram.org/bot\u0027 + TOKEN + \u0027/getUpdates\u0027,\n  qs: offset ? { offset } : {},\n  json: true,\n});\nconst updates = res.result || [];\nif (!updates.length) return [];\n\nlet maxId         = offset - 1;\nlet referido      = null;\nlet askLink       = false;\nlet nuevoArticulo = null;\nlet shouldStop    = false;\nlet confirmFlag   = false;\n\nconst isMlLink = (t) =\u003e Boolean(t \u0026\u0026 (t.includes(\u0027meli.la/\u0027) || t.includes(\u0027mercadolibre\u0027)));\nconst looksLikeLink = (t) =\u003e t.startsWith(\u0027http\u0027) || t.startsWith(\u0027www.\u0027) || t.startsWith(\u0027meli\u0027);\n\n// Detecta respuesta al mensaje del Scheduler (nuevo articulo)\nconst isSchedulerReply = (rt) =\u003e\n  rt.includes(\u0027articulo\u0027) || rt.includes(\u0027Mercado Libre\u0027) || rt.includes(\u0027Buenos dias\u0027);\n\n// Detecta respuesta al mensaje de Notify Esperando (referido)\nconst isReferidoReply = (rt) =\u003e\n  rt.includes(\u0027ML Partners\u0027) || rt.includes(\u0027link de afiliado\u0027) || rt.includes(\u0027mejor vendedor\u0027) || rt.includes(\u0027genera el link\u0027);\n\n// Resuelve meli.la: una sola request que sigue todos los redirects\nconst resolveMeliLa = async (meliUrl) =\u003e {\n  try {\n    const html = await this.helpers.httpRequest({\n      method: \u0027GET\u0027, url: meliUrl,\n      followRedirects: true, ignoreResponseCode: true,\n    });\n    const htmlStr = typeof html === \u0027string\u0027 ? html : JSON.stringify(html);\n    const mlmMatch = htmlStr.match(/MLM[0-9]{6,}/);\n    if (!mlmMatch) return null;\n    const mlmId = mlmMatch[0];\n    const hrefMatch = htmlStr.match(/href=\"https?:\\/\\/www\\.mercadolibre\\.com\\.mx\\/([^\\/\\?\"]+)\\/p\\/(MLM[0-9]+)/);\n    let nombre = mlmId;\n    if (hrefMatch \u0026\u0026 hrefMatch[1]) {\n      nombre = hrefMatch[1].split(\u0027-\u0027).map(w =\u003e w.charAt(0).toUpperCase() + w.slice(1)).join(\u0027 \u0027);\n    }\n    const precioMatch = htmlStr.match(/\\$\\s*([\\d,]+(?:\\.\\d{2})?)/);\n    const precio = precioMatch ? \u0027$\u0027 + precioMatch[1] + \u0027 MXN\u0027 : \u0027\u0027;\n    return { catalogUrl: \u0027https://www.mercadolibre.com.mx/p/\u0027 + mlmId, mlmId, nombre, precio };\n  } catch(e) { return null; }\n};\n\nfor (const u of updates) {\n  if (shouldStop) break;\n  if (u.update_id \u003e maxId) maxId = u.update_id;\n  const msg     = u.message || {};\n  const text    = (msg.text || \u0027\u0027).trim();\n  const replyTo = (msg.reply_to_message \u0026\u0026 msg.reply_to_message.text) || \u0027\u0027;\n\n  // /articulo_correcto\n  if (/^\\/articulo_correcto/i.test(text)) {\n    const url = sd.pending_articulo || \u0027\u0027;\n    if (url) {\n      sd.consecutive_errors = 0;\n      delete sd.pending_articulo; delete sd.pending_nombre;\n      nuevoArticulo = url;\n      await tg(\u0027Perfecto! Buscando el mejor vendedor para *\u0027 + (sd.pending_nombre || url) + \u0027*...\u0027);\n    } else {\n      await tg(\u0027No hay ningun articulo pendiente de confirmacion.\u0027);\n    }\n    continue;\n  }\n\n  // /articulo_incorrecto\n  if (/^\\/articulo_incorrecto/i.test(text)) {\n    delete sd.pending_articulo; delete sd.pending_nombre;\n    shouldStop = await bumpError();\n    if (!shouldStop) {\n      await tg(\u0027Entendido. Manda el link correcto (intento \u0027 + sd.consecutive_errors + \u0027 de 2).\u0027, {\n        reply_markup: { force_reply: true, input_field_placeholder: \u0027https://meli.la/...\u0027 }\n      });\n    }\n    continue;\n  }\n\n  // /referido LINK (comando explicito, sigue funcionando)\n  const m = text.match(/^\\/referido\\s+(\\S+)/i);\n  if (m) { referido = m[1]; sd.consecutive_errors = 0; continue; }\n  if (/^\\/referido\\s*$/i.test(text)) { askLink = true; continue; }\n\n  // Link enviado como respuesta al mensaje de Notify Esperando (sin /referido)\n  if (isReferidoReply(replyTo) \u0026\u0026 looksLikeLink(text)) {\n    referido = text.split(/\\s+/)[0];\n    sd.consecutive_errors = 0;\n    continue;\n  }\n\n  // Respuesta al ForceReply del /referido ask\n  if (/link del referido/i.test(replyTo) || /pegalo en la sheet/i.test(replyTo)) {\n    referido = text.split(/\\s+/)[0];\n    sd.consecutive_errors = 0;\n    continue;\n  }\n\n  // Flujo nuevo articulo (respuesta al scheduler o link directo)\n  if (isSchedulerReply(replyTo) || looksLikeLink(text)) {\n    const candidato = text.split(/\\s+/)[0];\n\n    if (!isMlLink(candidato)) {\n      shouldStop = await bumpError();\n      if (!shouldStop) {\n        await tg(\u0027Ese link no parece ser de Mercado Libre (intento \u0027 + (sd.consecutive_errors) + \u0027 de 2).\\n\\nMandame el link de afiliado (meli.la/...).\u0027, {\n          reply_markup: { force_reply: true, input_field_placeholder: \u0027https://meli.la/...\u0027 }\n        });\n      }\n      continue;\n    }\n\n    await tg(\u0027Verificando tu link...\u0027);\n    const info = await resolveMeliLa(candidato);\n\n    if (info) {\n      sd.pending_articulo = info.catalogUrl;\n      sd.pending_nombre   = info.nombre;\n      confirmFlag = true;\n      await tg(\n        \u0027Encontre este producto:\\n\\n*\u0027 + info.nombre + \u0027*\u0027 +\n        (info.precio ? \u0027\\n\u0027 + info.precio : \u0027\u0027) +\n        \u0027\\nID: \u0027 + info.mlmId +\n        \u0027\\n\\n¿Es correcto?\u0027,\n      { reply_markup: { keyboard: [[{text: \u0027/articulo_correcto\u0027}, {text: \u0027/articulo_incorrecto\u0027}]], resize_keyboard: true, one_time_keyboard: true } }\n      );\n    } else {\n      shouldStop = await bumpError();\n      if (!shouldStop) {\n        await tg(\u0027No pude identificar el producto (intento \u0027 + (sd.consecutive_errors) + \u0027 de 2).\\n\\nIntenta con el link directo:\\nhttps://www.mercadolibre.com.mx/p/MLM...\u0027, {\n          reply_markup: { force_reply: true, input_field_placeholder: \u0027https://meli.la/...\u0027 }\n        });\n      }\n    }\n    continue;\n  }\n}\nsd.tg_offset = maxId + 1;\n\nif (shouldStop) return [];\nif (referido)      return [{ json: { tipo: \u0027referido\u0027,       referido } }];\nif (nuevoArticulo) return [{ json: { tipo: \u0027nuevo_articulo\u0027, articulo_link: nuevoArticulo } }];\nif (askLink) {\n  await tg(\u0027Pega el link del referido (responde a ESTE mensaje):\u0027, {\n    reply_markup: { force_reply: true, input_field_placeholder: \u0027https://meli.la/...\u0027 }\n  });\n}\nif (confirmFlag) return [{ json: { tipo: \u0027confirmar_articulo\u0027 } }];\nreturn [];"
+                                                           },
+                                            "id":  "034aec39-24c0-4caa-b3a7-b931c78f417b",
+                                            "name":  "Poll Telegram",
+                                            "type":  "n8n-nodes-base.code",
+                                            "typeVersion":  2,
+                                            "position":  [
+                                                             -48,
+                                                             0
+                                                         ]
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "documentId":  {
+                                                                                  "__rl":  true,
+                                                                                  "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                                                  "mode":  "list",
+                                                                                  "cachedResultName":  "Reviews ML",
+                                                                                  "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit?usp=drivesdk"
+                                                                              },
+                                                               "sheetName":  {
+                                                                                 "__rl":  true,
+                                                                                 "value":  1072849850,
+                                                                                 "mode":  "list",
+                                                                                 "cachedResultName":  "articulos",
+                                                                                 "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit#gid=1072849850"
+                                                                             },
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "id":  "39fa4421-9a7a-43db-98f3-cb9aa730ff7f",
+                                            "name":  "Get Queue Poll",
+                                            "type":  "n8n-nodes-base.googleSheets",
+                                            "typeVersion":  4.7,
+                                            "position":  [
+                                                             192,
+                                                             0
+                                                         ],
+                                            "credentials":  {
+                                                                "googleSheetsOAuth2Api":  {
+                                                                                              "id":  "mczXnfHtxMCtnhKP",
+                                                                                              "name":  "Google Sheets account"
+                                                                                          }
+                                                            }
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "jsCode":  "const rows = $(\u0027Get Queue Poll\u0027).all().map(i =\u003e i.json);\nconst row  = rows.find(r =\u003e (r.estatus||\u0027\u0027).toString().trim().toLowerCase() === \u0027waiting\u0027);\nconst referido = ($(\u0027Poll Telegram\u0027).first().json.referido || \u0027\u0027).trim();\n\nif (!row) {\n  if (referido) {\n    // Referido recibido pero no hay articulo esperando\n    await this.helpers.httpRequest({\n      method: \u0027POST\u0027,\n      url: \u0027https://api.telegram.org/bot\u0027 + $env.TELEGRAM_BOT_TOKEN + \u0027/sendMessage\u0027,\n      body: { chat_id: $env.TELEGRAM_CHAT_ID, text: \u0027No hay ningun articulo esperando link de afiliado en este momento.\u0027 },\n      json: true\n    });\n  }\n  return [];\n}\n\nif (!referido) return []; // todavia esperando que el usuario mande el link\nreturn [{ json: { row_number: row.row_number, referido } }];"
+                                                           },
+                                            "id":  "ea5faa17-3419-4f09-8cc0-5a44adaefafe",
+                                            "name":  "Find Waiting Row",
+                                            "type":  "n8n-nodes-base.code",
+                                            "typeVersion":  2,
+                                            "position":  [
+                                                             400,
+                                                             0
+                                                         ]
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "operation":  "update",
+                                                               "documentId":  {
+                                                                                  "__rl":  true,
+                                                                                  "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                                                  "mode":  "list",
+                                                                                  "cachedResultName":  "Reviews ML",
+                                                                                  "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit?usp=drivesdk"
+                                                                              },
+                                                               "sheetName":  {
+                                                                                 "__rl":  true,
+                                                                                 "value":  1072849850,
+                                                                                 "mode":  "list",
+                                                                                 "cachedResultName":  "articulos",
+                                                                                 "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit#gid=1072849850"
+                                                                             },
+                                                               "columns":  {
+                                                                               "mappingMode":  "defineBelow",
+                                                                               "value":  {
+                                                                                             "row_number":  "={{ $json.row_number }}",
+                                                                                             "referido":  "={{ $json.referido }}",
+                                                                                             "estatus":  "ready"
+                                                                                         },
+                                                                               "matchingColumns":  [
+                                                                                                       "row_number"
+                                                                                                   ],
+                                                                               "schema":  [
+                                                                                              {
+                                                                                                  "id":  "articulo",
+                                                                                                  "displayName":  "articulo",
+                                                                                                  "required":  false,
+                                                                                                  "defaultMatch":  false,
+                                                                                                  "display":  true,
+                                                                                                  "type":  "string",
+                                                                                                  "canBeUsedToMatch":  true
+                                                                                              },
+                                                                                              {
+                                                                                                  "id":  "referido",
+                                                                                                  "displayName":  "referido",
+                                                                                                  "required":  false,
+                                                                                                  "defaultMatch":  false,
+                                                                                                  "display":  true,
+                                                                                                  "type":  "string",
+                                                                                                  "canBeUsedToMatch":  true
+                                                                                              },
+                                                                                              {
+                                                                                                  "id":  "idioma",
+                                                                                                  "displayName":  "idioma",
+                                                                                                  "required":  false,
+                                                                                                  "defaultMatch":  false,
+                                                                                                  "display":  true,
+                                                                                                  "type":  "string",
+                                                                                                  "canBeUsedToMatch":  true
+                                                                                              },
+                                                                                              {
+                                                                                                  "id":  "estatus",
+                                                                                                  "displayName":  "estatus",
+                                                                                                  "required":  false,
+                                                                                                  "defaultMatch":  false,
+                                                                                                  "display":  true,
+                                                                                                  "type":  "string",
+                                                                                                  "canBeUsedToMatch":  true
+                                                                                              },
+                                                                                              {
+                                                                                                  "id":  "link_sugerido",
+                                                                                                  "displayName":  "link_sugerido",
+                                                                                                  "required":  false,
+                                                                                                  "defaultMatch":  false,
+                                                                                                  "display":  true,
+                                                                                                  "type":  "string",
+                                                                                                  "canBeUsedToMatch":  true
+                                                                                              },
+                                                                                              {
+                                                                                                  "id":  "slug",
+                                                                                                  "displayName":  "slug",
+                                                                                                  "required":  false,
+                                                                                                  "defaultMatch":  false,
+                                                                                                  "display":  true,
+                                                                                                  "type":  "string",
+                                                                                                  "canBeUsedToMatch":  true
+                                                                                              },
+                                                                                              {
+                                                                                                  "id":  "procesado_en",
+                                                                                                  "displayName":  "procesado_en",
+                                                                                                  "required":  false,
+                                                                                                  "defaultMatch":  false,
+                                                                                                  "display":  true,
+                                                                                                  "type":  "string",
+                                                                                                  "canBeUsedToMatch":  true
+                                                                                              },
+                                                                                              {
+                                                                                                  "id":  "error_msg",
+                                                                                                  "displayName":  "error_msg",
+                                                                                                  "required":  false,
+                                                                                                  "defaultMatch":  false,
+                                                                                                  "display":  true,
+                                                                                                  "type":  "string",
+                                                                                                  "canBeUsedToMatch":  true
+                                                                                              },
+                                                                                              {
+                                                                                                  "id":  "row_number",
+                                                                                                  "displayName":  "row_number",
+                                                                                                  "required":  false,
+                                                                                                  "defaultMatch":  false,
+                                                                                                  "display":  true,
+                                                                                                  "type":  "number",
+                                                                                                  "canBeUsedToMatch":  true,
+                                                                                                  "readOnly":  true,
+                                                                                                  "removed":  false
+                                                                                              }
+                                                                                          ],
+                                                                               "attemptToConvertTypes":  false,
+                                                                               "convertFieldsToString":  true
+                                                                           },
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "id":  "9e3f68c4-442b-4247-b5b8-67fb7518cb27",
+                                            "name":  "Mark Ready",
+                                            "type":  "n8n-nodes-base.googleSheets",
+                                            "typeVersion":  4.7,
+                                            "position":  [
+                                                             624,
+                                                             0
+                                                         ],
+                                            "credentials":  {
+                                                                "googleSheetsOAuth2Api":  {
+                                                                                              "id":  "mczXnfHtxMCtnhKP",
+                                                                                              "name":  "Google Sheets account"
+                                                                                          }
+                                                            }
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "method":  "POST",
+                                                               "url":  "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+                                                               "sendBody":  true,
+                                                               "contentType":  "raw",
+                                                               "rawContentType":  "application/json",
+                                                               "body":  "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: \u0027\\u2705 Referido recibido. Generando la review...\u0027 }) }}",
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "id":  "bcfbc861-7ac9-4069-8ec7-aee10842ba4f",
+                                            "name":  "Notify Recibido",
+                                            "type":  "n8n-nodes-base.httpRequest",
+                                            "typeVersion":  4.4,
+                                            "position":  [
+                                                             848,
+                                                             0
+                                                         ]
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "workflowId":  {
+                                                                                  "__rl":  true,
+                                                                                  "value":  "iSQ59pcFepjqmBvC",
+                                                                                  "mode":  "list",
+                                                                                  "cachedResultUrl":  "/workflow/iSQ59pcFepjqmBvC",
+                                                                                  "cachedResultName":  "AfiliadosML"
+                                                                              },
+                                                               "workflowInputs":  {
+                                                                                      "mappingMode":  "defineBelow",
+                                                                                      "value":  {
+
+                                                                                                },
+                                                                                      "matchingColumns":  [
+
+                                                                                                          ],
+                                                                                      "schema":  [
+
+                                                                                                 ],
+                                                                                      "attemptToConvertTypes":  false,
+                                                                                      "convertFieldsToString":  true
+                                                                                  },
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "id":  "722c6191-fd25-4d92-bb31-ed847dcb55fd",
+                                            "name":  "Run Main",
+                                            "type":  "n8n-nodes-base.executeWorkflow",
+                                            "typeVersion":  1.2,
+                                            "position":  [
+                                                             1072,
+                                                             0
+                                                         ]
+                                        },
+                                        {
+                                            "id":  "poll-switch-01",
+                                            "name":  "Tipo Mensaje",
+                                            "type":  "n8n-nodes-base.switch",
+                                            "typeVersion":  3.2,
+                                            "position":  [
+                                                             680,
+                                                             220
+                                                         ],
+                                            "parameters":  {
+                                                               "mode":  "expression",
+                                                               "output":  "={{ $json.tipo === \u0027nuevo_articulo\u0027 ? 0 : $json.tipo === \u0027confirmar_articulo\u0027 ? 2 : 1 }}",
+                                                               "options":  {
+
+                                                                           }
+                                                           }
+                                        },
+                                        {
+                                            "id":  "poll-append-01",
+                                            "name":  "Add to Queue",
+                                            "type":  "n8n-nodes-base.googleSheets",
+                                            "typeVersion":  4.5,
+                                            "position":  [
+                                                             900,
+                                                             120
+                                                         ],
+                                            "parameters":  {
+                                                               "operation":  "append",
+                                                               "documentId":  {
+                                                                                  "__rl":  true,
+                                                                                  "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                                                  "mode":  "list",
+                                                                                  "cachedResultName":  "Reviews ML",
+                                                                                  "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit?usp=drivesdk"
+                                                                              },
+                                                               "sheetName":  {
+                                                                                 "__rl":  true,
+                                                                                 "value":  1072849850,
+                                                                                 "mode":  "list",
+                                                                                 "cachedResultName":  "articulos",
+                                                                                 "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit#gid=1072849850"
+                                                                             },
+                                                               "columns":  {
+                                                                               "mappingMode":  "defineBelow",
+                                                                               "value":  {
+                                                                                             "articulo":  "={{ $json.articulo_link }}",
+                                                                                             "idioma":  "es",
+                                                                                             "estatus":  "pending"
+                                                                                         },
+                                                                               "matchingColumns":  [
+
+                                                                                                   ],
+                                                                               "schema":  [
+
+                                                                                          ],
+                                                                               "attemptToConvertTypes":  false,
+                                                                               "convertFieldsToString":  true
+                                                                           },
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "credentials":  {
+                                                                "googleSheetsOAuth2Api":  {
+                                                                                              "id":  "mczXnfHtxMCtnhKP",
+                                                                                              "name":  "Google Sheets account"
+                                                                                          }
+                                                            }
+                                        },
+                                        {
+                                            "id":  "poll-notify-new-01",
+                                            "name":  "Notify Agregado",
+                                            "type":  "n8n-nodes-base.httpRequest",
+                                            "typeVersion":  4.2,
+                                            "position":  [
+                                                             1120,
+                                                             120
+                                                         ],
+                                            "parameters":  {
+                                                               "method":  "POST",
+                                                               "url":  "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+                                                               "sendBody":  true,
+                                                               "contentType":  "raw",
+                                                               "rawContentType":  "application/json",
+                                                               "body":  "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: \"Articulo agregado a la cola! Iniciando analisis...\" }) }}",
+                                                               "options":  {
+
+                                                                           }
+                                                           }
+                                        },
+                                        {
+                                            "id":  "poll-run-main-new-01",
+                                            "name":  "Run Main New",
+                                            "type":  "n8n-nodes-base.executeWorkflow",
+                                            "typeVersion":  1.1,
+                                            "position":  [
+                                                             1340,
+                                                             120
+                                                         ],
+                                            "parameters":  {
+                                                               "workflowId":  {
+                                                                                  "__rl":  true,
+                                                                                  "value":  "iSQ59pcFepjqmBvC",
+                                                                                  "mode":  "list",
+                                                                                  "cachedResultName":  "AfiliadosML"
+                                                                              },
+                                                               "options":  {
+
+                                                                           }
+                                                           }
+                                        },
+                                        {
+                                            "id":  "poll-leer-nuevo-01",
+                                            "name":  "Leer Cola Link",
+                                            "type":  "n8n-nodes-base.googleSheets",
+                                            "typeVersion":  4.7,
+                                            "position":  [
+                                                             900,
+                                                             120
+                                                         ],
+                                            "parameters":  {
+                                                               "documentId":  {
+                                                                                  "__rl":  true,
+                                                                                  "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                                                  "mode":  "list",
+                                                                                  "cachedResultName":  "Reviews ML"
+                                                                              },
+                                                               "sheetName":  {
+                                                                                 "__rl":  true,
+                                                                                 "value":  1072849850,
+                                                                                 "mode":  "list",
+                                                                                 "cachedResultName":  "articulos"
+                                                                             },
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "credentials":  {
+                                                                "googleSheetsOAuth2Api":  {
+                                                                                              "id":  "mczXnfHtxMCtnhKP",
+                                                                                              "name":  "Google Sheets account"
+                                                                                          }
+                                                            }
+                                        },
+                                        {
+                                            "id":  "poll-find-espera-01",
+                                            "name":  "Encontrar Espera",
+                                            "type":  "n8n-nodes-base.code",
+                                            "typeVersion":  2,
+                                            "position":  [
+                                                             1120,
+                                                             120
+                                                         ],
+                                            "parameters":  {
+                                                               "jsCode":  "const sd = $getWorkflowStaticData(\u0027global\u0027);\nconst articulo_link = $(\u0027Poll Telegram\u0027).first().json.articulo_link;\n\n// Usar row_number guardado cuando el producto fue encontrado\nif (sd.pending_row_number) {\n  const rn = sd.pending_row_number;\n  delete sd.pending_row_number;\n  return [{ json: { found: true, row_number: rn, articulo_link } }];\n}\n\n// Fallback: buscar en el sheet\nconst rows = $input.all().map(i =\u003e i.json);\nconst waiting = rows.find(r =\u003e [\u0027waiting_link\u0027,\u0027waiting_confirm\u0027].includes((r.estatus||\u0027\u0027).toLowerCase().trim()));\nreturn [{ json: { found: !!waiting, row_number: waiting ? waiting.row_number : null, articulo_link } }];"
+                                                           }
+                                        },
+                                        {
+                                            "id":  "poll-switch-espera-01",
+                                            "name":  "waiting_link Existe?",
+                                            "type":  "n8n-nodes-base.switch",
+                                            "typeVersion":  3.2,
+                                            "position":  [
+                                                             1340,
+                                                             120
+                                                         ],
+                                            "parameters":  {
+                                                               "mode":  "expression",
+                                                               "output":  "={{ $json.found ? 0 : 1 }}",
+                                                               "options":  {
+
+                                                                           }
+                                                           }
+                                        },
+                                        {
+                                            "id":  "poll-update-pending-01",
+                                            "name":  "Actualizar a Pending",
+                                            "type":  "n8n-nodes-base.googleSheets",
+                                            "typeVersion":  4.7,
+                                            "position":  [
+                                                             1560,
+                                                             60
+                                                         ],
+                                            "parameters":  {
+                                                               "operation":  "update",
+                                                               "documentId":  {
+                                                                                  "__rl":  true,
+                                                                                  "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                                                  "mode":  "list",
+                                                                                  "cachedResultName":  "Reviews ML"
+                                                                              },
+                                                               "sheetName":  {
+                                                                                 "__rl":  true,
+                                                                                 "value":  1072849850,
+                                                                                 "mode":  "list",
+                                                                                 "cachedResultName":  "articulos"
+                                                                             },
+                                                               "columns":  {
+                                                                               "mappingMode":  "defineBelow",
+                                                                               "value":  {
+                                                                                             "row_number":  "={{ $json.row_number }}",
+                                                                                             "articulo":  "={{ $json.articulo_link }}",
+                                                                                             "estatus":  "pending",
+                                                                                             "procesado_en":  "={{ new Date().toISOString() }}"
+                                                                                         },
+                                                                               "matchingColumns":  [
+                                                                                                       "row_number"
+                                                                                                   ],
+                                                                               "schema":  [
+
+                                                                                          ],
+                                                                               "attemptToConvertTypes":  false,
+                                                                               "convertFieldsToString":  true
+                                                                           },
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "credentials":  {
+                                                                "googleSheetsOAuth2Api":  {
+                                                                                              "id":  "mczXnfHtxMCtnhKP",
+                                                                                              "name":  "Google Sheets account"
+                                                                                          }
+                                                            }
+                                        },
+                                        {
+                                            "id":  "poll-leer-confirm-01",
+                                            "name":  "Leer Cola Confirm",
+                                            "type":  "n8n-nodes-base.googleSheets",
+                                            "typeVersion":  4.7,
+                                            "position":  [
+                                                             900,
+                                                             320
+                                                         ],
+                                            "parameters":  {
+                                                               "documentId":  {
+                                                                                  "__rl":  true,
+                                                                                  "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                                                  "mode":  "list",
+                                                                                  "cachedResultName":  "Reviews ML"
+                                                                              },
+                                                               "sheetName":  {
+                                                                                 "__rl":  true,
+                                                                                 "value":  1072849850,
+                                                                                 "mode":  "list",
+                                                                                 "cachedResultName":  "articulos"
+                                                                             },
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "credentials":  {
+                                                                "googleSheetsOAuth2Api":  {
+                                                                                              "id":  "mczXnfHtxMCtnhKP",
+                                                                                              "name":  "Google Sheets account"
+                                                                                          }
+                                                            }
+                                        },
+                                        {
+                                            "id":  "poll-find-confirm-01",
+                                            "name":  "Encontrar Espera Confirm",
+                                            "type":  "n8n-nodes-base.code",
+                                            "typeVersion":  2,
+                                            "position":  [
+                                                             1120,
+                                                             320
+                                                         ],
+                                            "parameters":  {
+                                                               "jsCode":  "const rows = $input.all().map(i =\u003e i.json);\nconst waiting = rows.find(r =\u003e (r.estatus||\u0027\u0027).toLowerCase().trim() === \u0027waiting_link\u0027);\nif (!waiting) return [];\nreturn [{ json: { row_number: waiting.row_number } }];"
+                                                           }
+                                        },
+                                        {
+                                            "id":  "poll-update-confirm-01",
+                                            "name":  "Marcar waiting_confirm",
+                                            "type":  "n8n-nodes-base.googleSheets",
+                                            "typeVersion":  4.7,
+                                            "position":  [
+                                                             1340,
+                                                             320
+                                                         ],
+                                            "parameters":  {
+                                                               "operation":  "update",
+                                                               "documentId":  {
+                                                                                  "__rl":  true,
+                                                                                  "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                                                  "mode":  "list",
+                                                                                  "cachedResultName":  "Reviews ML"
+                                                                              },
+                                                               "sheetName":  {
+                                                                                 "__rl":  true,
+                                                                                 "value":  1072849850,
+                                                                                 "mode":  "list",
+                                                                                 "cachedResultName":  "articulos"
+                                                                             },
+                                                               "columns":  {
+                                                                               "mappingMode":  "defineBelow",
+                                                                               "value":  {
+                                                                                             "row_number":  "={{ $json.row_number }}",
+                                                                                             "estatus":  "waiting_confirm"
+                                                                                         },
+                                                                               "matchingColumns":  [
+                                                                                                       "row_number"
+                                                                                                   ],
+                                                                               "schema":  [
+
+                                                                                          ],
+                                                                               "attemptToConvertTypes":  false,
+                                                                               "convertFieldsToString":  true
+                                                                           },
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "credentials":  {
+                                                                "googleSheetsOAuth2Api":  {
+                                                                                              "id":  "mczXnfHtxMCtnhKP",
+                                                                                              "name":  "Google Sheets account"
+                                                                                          }
+                                                            }
+                                        },
+                                        {
+                                            "id":  "poll-save-rownum-01",
+                                            "name":  "Guardar row_number",
+                                            "type":  "n8n-nodes-base.code",
+                                            "typeVersion":  2,
+                                            "position":  [
+                                                             1120,
+                                                             420
+                                                         ],
+                                            "parameters":  {
+                                                               "jsCode":  "const sd = $getWorkflowStaticData(\u0027global\u0027);\nconst item = $input.first().json;\nsd.pending_row_number = item.row_number;\nreturn [{ json: item }]; // pass through"
+                                                           }
+                                        }
+                                    ],
+                          "connections":  {
+                                              "Cron 2min":  {
+                                                                "main":  [
+                                                                             [
+                                                                                 {
+                                                                                     "node":  "Poll Telegram",
+                                                                                     "type":  "main",
+                                                                                     "index":  0
+                                                                                 }
+                                                                             ]
+                                                                         ]
+                                                            },
+                                              "Poll Telegram":  {
+                                                                    "main":  [
+                                                                                 [
+                                                                                     {
+                                                                                         "node":  "Tipo Mensaje",
+                                                                                         "type":  "main",
+                                                                                         "index":  0
+                                                                                     }
+                                                                                 ]
+                                                                             ]
+                                                                },
+                                              "Get Queue Poll":  {
+                                                                     "main":  [
+                                                                                  [
+                                                                                      {
+                                                                                          "node":  "Find Waiting Row",
+                                                                                          "type":  "main",
+                                                                                          "index":  0
+                                                                                      }
+                                                                                  ]
+                                                                              ]
+                                                                 },
+                                              "Find Waiting Row":  {
+                                                                       "main":  [
+                                                                                    [
+                                                                                        {
+                                                                                            "node":  "Mark Ready",
+                                                                                            "type":  "main",
+                                                                                            "index":  0
+                                                                                        }
+                                                                                    ]
+                                                                                ]
+                                                                   },
+                                              "Mark Ready":  {
+                                                                 "main":  [
+                                                                              [
+                                                                                  {
+                                                                                      "node":  "Notify Recibido",
+                                                                                      "type":  "main",
+                                                                                      "index":  0
+                                                                                  }
+                                                                              ]
+                                                                          ]
+                                                             },
+                                              "Notify Recibido":  {
+                                                                      "main":  [
+                                                                                   [
+                                                                                       {
+                                                                                           "node":  "Run Main",
+                                                                                           "type":  "main",
+                                                                                           "index":  0
+                                                                                       }
+                                                                                   ]
+                                                                               ]
+                                                                  },
+                                              "Tipo Mensaje":  {
+                                                                   "main":  [
+                                                                                [
+                                                                                    {
+                                                                                        "node":  "Leer Cola Link",
+                                                                                        "type":  "main",
+                                                                                        "index":  0
+                                                                                    }
+                                                                                ],
+                                                                                [
+                                                                                    {
+                                                                                        "node":  "Get Queue Poll",
+                                                                                        "type":  "main",
+                                                                                        "index":  0
+                                                                                    }
+                                                                                ],
+                                                                                [
+                                                                                    {
+                                                                                        "node":  "Leer Cola Confirm",
+                                                                                        "type":  "main",
+                                                                                        "index":  0
+                                                                                    }
+                                                                                ]
+                                                                            ]
+                                                               },
+                                              "Add to Queue":  {
+                                                                   "main":  [
+                                                                                [
+                                                                                    {
+                                                                                        "node":  "Notify Agregado",
+                                                                                        "type":  "main",
+                                                                                        "index":  0
+                                                                                    }
+                                                                                ]
+                                                                            ]
+                                                               },
+                                              "Notify Agregado":  {
+                                                                      "main":  [
+                                                                                   [
+                                                                                       {
+                                                                                           "node":  "Run Main New",
+                                                                                           "type":  "main",
+                                                                                           "index":  0
+                                                                                       }
+                                                                                   ]
+                                                                               ]
+                                                                  },
+                                              "Leer Cola Link":  {
+                                                                     "main":  [
+                                                                                  [
+                                                                                      {
+                                                                                          "node":  "Encontrar Espera",
+                                                                                          "type":  "main",
+                                                                                          "index":  0
+                                                                                      }
+                                                                                  ]
+                                                                              ]
+                                                                 },
+                                              "Encontrar Espera":  {
+                                                                       "main":  [
+                                                                                    [
+                                                                                        {
+                                                                                            "node":  "waiting_link Existe?",
+                                                                                            "type":  "main",
+                                                                                            "index":  0
+                                                                                        }
+                                                                                    ]
+                                                                                ]
+                                                                   },
+                                              "waiting_link Existe?":  {
+                                                                           "main":  [
+                                                                                        [
+                                                                                            {
+                                                                                                "node":  "Actualizar a Pending",
+                                                                                                "type":  "main",
+                                                                                                "index":  0
+                                                                                            }
+                                                                                        ],
+                                                                                        [
+                                                                                            {
+                                                                                                "node":  "Add to Queue",
+                                                                                                "type":  "main",
+                                                                                                "index":  0
+                                                                                            }
+                                                                                        ]
+                                                                                    ]
+                                                                       },
+                                              "Actualizar a Pending":  {
+                                                                           "main":  [
+                                                                                        [
+                                                                                            {
+                                                                                                "node":  "Notify Agregado",
+                                                                                                "type":  "main",
+                                                                                                "index":  0
+                                                                                            }
+                                                                                        ]
+                                                                                    ]
+                                                                       },
+                                              "Leer Cola Confirm":  {
+                                                                        "main":  [
+                                                                                     [
+                                                                                         {
+                                                                                             "node":  "Encontrar Espera Confirm",
+                                                                                             "type":  "main",
+                                                                                             "index":  0
+                                                                                         }
+                                                                                     ]
+                                                                                 ]
+                                                                    },
+                                              "Encontrar Espera Confirm":  {
+                                                                               "main":  [
+                                                                                            [
+                                                                                                {
+                                                                                                    "node":  "Guardar row_number",
+                                                                                                    "type":  "main",
+                                                                                                    "index":  0
+                                                                                                }
+                                                                                            ]
+                                                                                        ]
+                                                                           },
+                                              "Guardar row_number":  {
+                                                                         "main":  [
+                                                                                      [
+                                                                                          {
+                                                                                              "node":  "Marcar waiting_confirm",
+                                                                                              "type":  "main",
+                                                                                              "index":  0
+                                                                                          }
+                                                                                      ]
+                                                                                  ]
+                                                                     }
+                                          },
+                          "authors":  "Hito Flores",
+                          "name":  null,
+                          "description":  null,
+                          "autosaved":  false,
+                          "workflowPublishHistory":  [
+                                                         {
+                                                             "createdAt":  "2026-06-03T02:15:38.815Z",
+                                                             "id":  58,
+                                                             "workflowId":  "wsMIARaCQQISWJtv",
+                                                             "versionId":  "1b973b80-b640-4836-b8da-b1e17568d5bb",
+                                                             "event":  "activated",
+                                                             "userId":  "d2ec98b9-a94a-48cf-b0dd-c57f014ded2b"
+                                                         }
+                                                     ]
+                      }
+}

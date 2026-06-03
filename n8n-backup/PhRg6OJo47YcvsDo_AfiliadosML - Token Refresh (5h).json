@@ -1,0 +1,263 @@
+﻿{
+    "updatedAt":  "2026-06-01T22:22:29.582Z",
+    "createdAt":  "2026-06-01T21:34:06.573Z",
+    "id":  "PhRg6OJo47YcvsDo",
+    "name":  "AfiliadosML - Token Refresh (5h)",
+    "description":  null,
+    "active":  false,
+    "isArchived":  false,
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "rule":  {
+                                                      "interval":  [
+                                                                       {
+                                                                           "field":  "hours",
+                                                                           "hoursInterval":  5
+                                                                       }
+                                                                   ]
+                                                  }
+                                     },
+                      "id":  "2bd33093-d657-4249-bef2-01f46fa226d2",
+                      "name":  "Schedule Trigger",
+                      "type":  "n8n-nodes-base.scheduleTrigger",
+                      "typeVersion":  1.3,
+                      "position":  [
+                                       -256,
+                                       0
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML",
+                                                            "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit?usp=drivesdk"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  "gid=0",
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "Sheet1",
+                                                           "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit#gid=0"
+                                                       },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       -32,
+                                       0
+                                   ],
+                      "id":  "f2ad7559-0cd4-4fcf-9836-6368be9042c7",
+                      "name":  "Get tokens",
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "=https://api.mercadolibre.com/oauth/token",
+                                         "sendBody":  true,
+                                         "contentType":  "form-urlencoded",
+                                         "bodyParameters":  {
+                                                                "parameters":  [
+                                                                                   {
+                                                                                       "name":  "client_id",
+                                                                                       "value":  "={{ $env.ML_CLIENT_ID }}"
+                                                                                   },
+                                                                                   {
+                                                                                       "name":  "client_secret",
+                                                                                       "value":  "={{ $env.ML_CLIENT_SECRET }}"
+                                                                                   },
+                                                                                   {
+                                                                                       "name":  "refresh_token",
+                                                                                       "value":  "={{ $json.refresh_token }}"
+                                                                                   },
+                                                                                   {
+                                                                                       "name":  "grant_type",
+                                                                                       "value":  "refresh_token"
+                                                                                   }
+                                                                               ]
+                                                            },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.4,
+                      "position":  [
+                                       192,
+                                       0
+                                   ],
+                      "id":  "b9329ee2-8626-40de-bdba-a579af6a8b7f",
+                      "name":  "Refresh Token"
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "update",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML",
+                                                            "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit?usp=drivesdk"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  "gid=0",
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "Sheet1",
+                                                           "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit#gid=0"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "value":  {
+                                                                       "row_number":  2,
+                                                                       "access_token":  "={{ $(\u0027Refresh Token\u0027).item.json.access_token }}",
+                                                                       "refresh_token":  "={{ $(\u0027Refresh Token\u0027).item.json.refresh_token }}",
+                                                                       "updated_at":  "={{ $now }}"
+                                                                   },
+                                                         "matchingColumns":  [
+                                                                                 "row_number"
+                                                                             ],
+                                                         "schema":  [
+                                                                        {
+                                                                            "id":  "access_token",
+                                                                            "displayName":  "access_token",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "refresh_token",
+                                                                            "displayName":  "refresh_token",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "updated_at",
+                                                                            "displayName":  "updated_at",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "row_number",
+                                                                            "displayName":  "row_number",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "number",
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "readOnly":  true,
+                                                                            "removed":  false
+                                                                        }
+                                                                    ],
+                                                         "attemptToConvertTypes":  false,
+                                                         "convertFieldsToString":  false
+                                                     },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       416,
+                                       0
+                                   ],
+                      "id":  "6186b824-9bb5-4a6a-86f5-56cd424c0aff",
+                      "name":  "Put Tokens",
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  }
+              ],
+    "connections":  {
+                        "Schedule Trigger":  {
+                                                 "main":  [
+                                                              [
+                                                                  {
+                                                                      "node":  "Get tokens",
+                                                                      "type":  "main",
+                                                                      "index":  0
+                                                                  }
+                                                              ]
+                                                          ]
+                                             },
+                        "Get tokens":  {
+                                           "main":  [
+                                                        [
+                                                            {
+                                                                "node":  "Refresh Token",
+                                                                "type":  "main",
+                                                                "index":  0
+                                                            }
+                                                        ]
+                                                    ]
+                                       },
+                        "Refresh Token":  {
+                                              "main":  [
+                                                           [
+                                                               {
+                                                                   "node":  "Put Tokens",
+                                                                   "type":  "main",
+                                                                   "index":  0
+                                                               }
+                                                           ]
+                                                       ]
+                                          }
+                    },
+    "settings":  {
+                     "executionOrder":  "v1"
+                 },
+    "staticData":  null,
+    "meta":  null,
+    "pinData":  null,
+    "versionId":  "d71b199d-e208-47c8-a543-97fda16e5a35",
+    "activeVersionId":  null,
+    "versionCounter":  2,
+    "triggerCount":  0,
+    "shared":  [
+                   {
+                       "updatedAt":  "2026-06-01T21:34:06.578Z",
+                       "createdAt":  "2026-06-01T21:34:06.578Z",
+                       "role":  "workflow:owner",
+                       "workflowId":  "PhRg6OJo47YcvsDo",
+                       "projectId":  "c3FOjVGbvSdJ6jgk",
+                       "project":  {
+                                       "updatedAt":  "2026-05-30T21:44:15.931Z",
+                                       "createdAt":  "2026-05-30T21:41:26.508Z",
+                                       "id":  "c3FOjVGbvSdJ6jgk",
+                                       "name":  "Hito Flores \u003c8hitodev6@gmail.com\u003e",
+                                       "type":  "personal",
+                                       "icon":  null,
+                                       "description":  null,
+                                       "creatorId":  "d2ec98b9-a94a-48cf-b0dd-c57f014ded2b"
+                                   }
+                   }
+               ],
+    "tags":  [
+
+             ],
+    "activeVersion":  null
+}

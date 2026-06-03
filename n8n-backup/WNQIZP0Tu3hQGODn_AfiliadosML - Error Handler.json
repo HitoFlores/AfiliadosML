@@ -1,0 +1,309 @@
+﻿{
+    "updatedAt":  "2026-06-02T02:55:50.344Z",
+    "createdAt":  "2026-06-02T00:09:13.609Z",
+    "id":  "WNQIZP0Tu3hQGODn",
+    "name":  "AfiliadosML - Error Handler",
+    "description":  null,
+    "active":  false,
+    "isArchived":  false,
+    "nodes":  [
+                  {
+                      "parameters":  {
+
+                                     },
+                      "id":  "9ef83e4c-8935-4085-a6f1-3c159e19d477",
+                      "name":  "Error Trigger",
+                      "type":  "n8n-nodes-base.errorTrigger",
+                      "typeVersion":  1,
+                      "position":  [
+                                       -200,
+                                       0
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML",
+                                                            "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit?usp=drivesdk"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos",
+                                                           "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit#gid=1072849850"
+                                                       },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "id":  "21277c81-7fef-4cb1-a8fc-0e2297c83b63",
+                      "name":  "Get Queue EH",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       20,
+                                       0
+                                   ],
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "mode":  "runOnceForAllItems",
+                                         "jsCode":  "const rows = $(\u0027Get Queue EH\u0027).all().map(i =\u003e i.json);\nconst row = rows.find(r =\u003e (r.estatus||\u0027\u0027).toString().trim().toLowerCase() === \u0027processing\u0027);\nconst err = $(\u0027Error Trigger\u0027).first().json;\nconst msg = (err?.execution?.error?.message || err?.error?.message || \u0027Error desconocido\u0027).toString().slice(0,300);\nif (!row) return [];\nreturn [{ json: { row_number: row.row_number, error_msg: msg } }];"
+                                     },
+                      "id":  "28253488-9b66-4da6-8fe2-039bccf60922",
+                      "name":  "Find Processing Row",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       240,
+                                       0
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "update",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML",
+                                                            "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit?usp=drivesdk"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos",
+                                                           "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw/edit#gid=1072849850"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "value":  {
+                                                                       "row_number":  "={{ $json.row_number }}",
+                                                                       "estatus":  "error",
+                                                                       "error_msg":  "={{ $json.error_msg }}"
+                                                                   },
+                                                         "matchingColumns":  [
+                                                                                 "row_number"
+                                                                             ],
+                                                         "schema":  [
+                                                                        {
+                                                                            "id":  "articulo",
+                                                                            "displayName":  "articulo",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "removed":  false
+                                                                        },
+                                                                        {
+                                                                            "id":  "referido",
+                                                                            "displayName":  "referido",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "removed":  false
+                                                                        },
+                                                                        {
+                                                                            "id":  "idioma",
+                                                                            "displayName":  "idioma",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "estatus",
+                                                                            "displayName":  "estatus",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "link_sugerido",
+                                                                            "displayName":  "link_sugerido",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "slug",
+                                                                            "displayName":  "slug",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "procesado_en",
+                                                                            "displayName":  "procesado_en",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "error_msg",
+                                                                            "displayName":  "error_msg",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "canBeUsedToMatch":  true
+                                                                        },
+                                                                        {
+                                                                            "id":  "row_number",
+                                                                            "displayName":  "row_number",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "display":  true,
+                                                                            "type":  "number",
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "readOnly":  true,
+                                                                            "removed":  false
+                                                                        }
+                                                                    ],
+                                                         "attemptToConvertTypes":  false,
+                                                         "convertFieldsToString":  true
+                                                     },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "id":  "1bdca00a-60e7-4ec7-9dd2-e27132c1d839",
+                      "name":  "Mark Error",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       460,
+                                       0
+                                   ],
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+                                         "sendBody":  true,
+                                         "contentType":  "raw",
+                                         "rawContentType":  "application/json",
+                                         "body":  "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: \u0027\\u274C Error en el flujo\\n\\n\u0027 + ($(\u0027Find Processing Row\u0027).first().json.error_msg || \u0027sin detalle\u0027) }) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "id":  "963fb573-5ca2-4188-a8a6-270cd1010b39",
+                      "name":  "Notify Error",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.4,
+                      "position":  [
+                                       680,
+                                       0
+                                   ]
+                  }
+              ],
+    "connections":  {
+                        "Error Trigger":  {
+                                              "main":  [
+                                                           [
+                                                               {
+                                                                   "node":  "Get Queue EH",
+                                                                   "type":  "main",
+                                                                   "index":  0
+                                                               }
+                                                           ]
+                                                       ]
+                                          },
+                        "Get Queue EH":  {
+                                             "main":  [
+                                                          [
+                                                              {
+                                                                  "node":  "Find Processing Row",
+                                                                  "type":  "main",
+                                                                  "index":  0
+                                                              }
+                                                          ]
+                                                      ]
+                                         },
+                        "Find Processing Row":  {
+                                                    "main":  [
+                                                                 [
+                                                                     {
+                                                                         "node":  "Mark Error",
+                                                                         "type":  "main",
+                                                                         "index":  0
+                                                                     }
+                                                                 ]
+                                                             ]
+                                                },
+                        "Mark Error":  {
+                                           "main":  [
+                                                        [
+                                                            {
+                                                                "node":  "Notify Error",
+                                                                "type":  "main",
+                                                                "index":  0
+                                                            }
+                                                        ]
+                                                    ]
+                                       }
+                    },
+    "settings":  {
+                     "executionOrder":  "v1"
+                 },
+    "staticData":  null,
+    "meta":  null,
+    "pinData":  null,
+    "versionId":  "96c90c20-18df-455e-8d86-467277892f6b",
+    "activeVersionId":  null,
+    "versionCounter":  5,
+    "triggerCount":  0,
+    "shared":  [
+                   {
+                       "updatedAt":  "2026-06-02T00:09:13.618Z",
+                       "createdAt":  "2026-06-02T00:09:13.618Z",
+                       "role":  "workflow:owner",
+                       "workflowId":  "WNQIZP0Tu3hQGODn",
+                       "projectId":  "c3FOjVGbvSdJ6jgk",
+                       "project":  {
+                                       "updatedAt":  "2026-05-30T21:44:15.931Z",
+                                       "createdAt":  "2026-05-30T21:41:26.508Z",
+                                       "id":  "c3FOjVGbvSdJ6jgk",
+                                       "name":  "Hito Flores \u003c8hitodev6@gmail.com\u003e",
+                                       "type":  "personal",
+                                       "icon":  null,
+                                       "description":  null,
+                                       "creatorId":  "d2ec98b9-a94a-48cf-b0dd-c57f014ded2b"
+                                   }
+                   }
+               ],
+    "tags":  [
+
+             ],
+    "activeVersion":  null
+}

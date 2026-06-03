@@ -1,0 +1,320 @@
+﻿{
+    "updatedAt":  "2026-06-03T02:31:08.055Z",
+    "createdAt":  "2026-06-02T16:19:28.838Z",
+    "id":  "wG6XApFxO6SyCgIY",
+    "name":  "AfiliadosML - Scheduler 7am",
+    "description":  "",
+    "active":  false,
+    "isArchived":  false,
+    "nodes":  [
+                  {
+                      "id":  "sched-cron-01",
+                      "name":  "Cron 7am",
+                      "type":  "n8n-nodes-base.scheduleTrigger",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       240,
+                                       300
+                                   ],
+                      "parameters":  {
+                                         "rule":  {
+                                                      "interval":  [
+                                                                       {
+                                                                           "field":  "cronExpression",
+                                                                           "expression":  "*/1 * * * *"
+                                                                       }
+                                                                   ]
+                                                  }
+                                     }
+                  },
+                  {
+                      "id":  "sched-leer-01",
+                      "name":  "Leer Sheet",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       460,
+                                       300
+                                   ],
+                      "parameters":  {
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos"
+                                                       },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "sched-find-01",
+                      "name":  "Determinar Estado",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       680,
+                                       300
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const rows = $input.all().map(i =\u003e i.json);\n\n// Activo = cualquier estado que NO sea done, error ni waiting_link\n// Si hay algo en proceso -\u003e parar, dejar que termine\nconst hasActive = rows.some(r =\u003e {\n  const s = (r.estatus || \u0027\u0027).toLowerCase().trim();\n  return s \u0026\u0026 ![\u0027done\u0027, \u0027error\u0027, \u0027waiting_link\u0027].includes(s);\n});\nif (hasActive) return [{ json: { estado: \u0027activo\u0027 } }];\n\n// Solo waiting_link -\u003e actualizar timestamp, sin mandar Telegram de nuevo\nconst wl = rows.find(r =\u003e (r.estatus || \u0027\u0027).toLowerCase().trim() === \u0027waiting_link\u0027);\nif (wl) return [{ json: { estado: \u0027esperando\u0027, row_number: wl.row_number } }];\n\n// Todo done/error o sheet vacio -\u003e crear nuevo ciclo\nreturn [{ json: { estado: \u0027nuevo\u0027 } }];"
+                                     }
+                  },
+                  {
+                      "id":  "sched-switch-01",
+                      "name":  "Ya existe?",
+                      "type":  "n8n-nodes-base.switch",
+                      "typeVersion":  3.2,
+                      "position":  [
+                                       900,
+                                       300
+                                   ],
+                      "parameters":  {
+                                         "mode":  "expression",
+                                         "output":  "={{ $json.estado === \u0027activo\u0027 ? 0 : $json.estado === \u0027esperando\u0027 ? 1 : 2 }}",
+                                         "options":  {
+
+                                                     }
+                                     }
+                  },
+                  {
+                      "id":  "sched-update-01",
+                      "name":  "Actualizar Timestamp",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       1120,
+                                       200
+                                   ],
+                      "parameters":  {
+                                         "operation":  "update",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "value":  {
+                                                                       "row_number":  "={{ $json.row_number }}",
+                                                                       "procesado_en":  "={{ new Date().toISOString() }}"
+                                                                   },
+                                                         "matchingColumns":  [
+                                                                                 "row_number"
+                                                                             ],
+                                                         "schema":  [
+
+                                                                    ],
+                                                         "attemptToConvertTypes":  false,
+                                                         "convertFieldsToString":  true
+                                                     },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "sched-append-01",
+                      "name":  "Crear waiting_link",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.5,
+                      "position":  [
+                                       1120,
+                                       420
+                                   ],
+                      "parameters":  {
+                                         "operation":  "append",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1en3wKvNrJYPJ0oQBrFzH4uHedT3zkA8VMIu2m3wghEw",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Reviews ML"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  1072849850,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "articulos"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "value":  {
+                                                                       "articulo":  "WAITING_LINK",
+                                                                       "estatus":  "waiting_link",
+                                                                       "procesado_en":  "={{ new Date().toISOString() }}"
+                                                                   },
+                                                         "matchingColumns":  [
+
+                                                                             ],
+                                                         "schema":  [
+
+                                                                    ],
+                                                         "attemptToConvertTypes":  false,
+                                                         "convertFieldsToString":  true
+                                                     },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "mczXnfHtxMCtnhKP",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "sched-tg-01",
+                      "name":  "Pedir Articulo del Dia",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       1340,
+                                       300
+                                   ],
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+                                         "sendBody":  true,
+                                         "contentType":  "raw",
+                                         "rawContentType":  "application/json",
+                                         "body":  "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: \"Buenos dias! Que articulo analizamos hoy?\\n\\nMandame el link del producto en Mercado Libre (responde a ESTE mensaje):\", reply_markup: { force_reply: true, input_field_placeholder: \"https://www.mercadolibre.com.mx/p/MLM...\" } }) }}",
+                                         "options":  {
+
+                                                     }
+                                     }
+                  }
+              ],
+    "connections":  {
+                        "Cron 7am":  {
+                                         "main":  [
+                                                      [
+                                                          {
+                                                              "node":  "Leer Sheet",
+                                                              "type":  "main",
+                                                              "index":  0
+                                                          }
+                                                      ]
+                                                  ]
+                                     },
+                        "Leer Sheet":  {
+                                           "main":  [
+                                                        [
+                                                            {
+                                                                "node":  "Determinar Estado",
+                                                                "type":  "main",
+                                                                "index":  0
+                                                            }
+                                                        ]
+                                                    ]
+                                       },
+                        "Ya existe?":  {
+                                           "main":  [
+                                                        [
+
+                                                        ],
+                                                        [
+                                                            {
+                                                                "node":  "Actualizar Timestamp",
+                                                                "type":  "main",
+                                                                "index":  0
+                                                            }
+                                                        ],
+                                                        [
+                                                            {
+                                                                "node":  "Crear waiting_link",
+                                                                "type":  "main",
+                                                                "index":  0
+                                                            }
+                                                        ]
+                                                    ]
+                                       },
+                        "Crear waiting_link":  {
+                                                   "main":  [
+                                                                [
+                                                                    {
+                                                                        "node":  "Pedir Articulo del Dia",
+                                                                        "type":  "main",
+                                                                        "index":  0
+                                                                    }
+                                                                ]
+                                                            ]
+                                               },
+                        "Determinar Estado":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Ya existe?",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              }
+                    },
+    "settings":  {
+                     "executionOrder":  "v1"
+                 },
+    "staticData":  {
+                       "node:Cron 7am":  {
+                                             "recurrenceRules":  [
+
+                                                                 ]
+                                         }
+                   },
+    "meta":  null,
+    "pinData":  null,
+    "versionId":  "2ccd460f-3de5-4d97-bb2c-2a4eccb71da7",
+    "activeVersionId":  null,
+    "versionCounter":  10,
+    "triggerCount":  1,
+    "shared":  [
+                   {
+                       "updatedAt":  "2026-06-02T16:19:28.848Z",
+                       "createdAt":  "2026-06-02T16:19:28.848Z",
+                       "role":  "workflow:owner",
+                       "workflowId":  "wG6XApFxO6SyCgIY",
+                       "projectId":  "c3FOjVGbvSdJ6jgk",
+                       "project":  {
+                                       "updatedAt":  "2026-05-30T21:44:15.931Z",
+                                       "createdAt":  "2026-05-30T21:41:26.508Z",
+                                       "id":  "c3FOjVGbvSdJ6jgk",
+                                       "name":  "Hito Flores \u003c8hitodev6@gmail.com\u003e",
+                                       "type":  "personal",
+                                       "icon":  null,
+                                       "description":  null,
+                                       "creatorId":  "d2ec98b9-a94a-48cf-b0dd-c57f014ded2b"
+                                   }
+                   }
+               ],
+    "tags":  [
+
+             ],
+    "activeVersion":  null
+}
