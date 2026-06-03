@@ -33,11 +33,6 @@ export default function RootLayout({
                   src="/logo.png"
                   alt="Catalogo MX"
                   className="w-8 h-8 object-contain"
-                  style={{ mixBlendMode: "screen" }}
-                  onError={(e) => {
-                    // fallback mientras no está el archivo
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
                 />
               </div>
               <span className="font-bold text-white text-base tracking-tight">
