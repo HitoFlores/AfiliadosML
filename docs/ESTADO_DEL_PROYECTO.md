@@ -4,7 +4,7 @@
 > de un link de producto → genera una reseña editorial honesta (estilo Wirecutter/RTINGS)
 > → la publica como JSON en este repo → una web Next.js la renderiza.
 
-Última actualización: 2026-06-02 (sesión 2 — completada).
+Última actualización: 2026-06-03 (sesión 3 — completada).
 
 ---
 
@@ -15,36 +15,49 @@ Google Sheet "Reviews ML"
   ├── pestaña "timerrs" (gid 0)           -> tokens OAuth de Mercado Libre
   └── pestaña "articulos" (gid 1072849850) -> COLA de productos a procesar
 
-n8n (local, http://localhost:5678) — 5 workflows:
-  1. AfiliadosML            (id iSQ59pcFepjqmBvC) — PIPELINE PRINCIPAL (activo)
-  2. AfiliadosML - Telegram Poll (id wsMIARaCQQISWJtv) — Poll cada 2min (activo)
-  3. AfiliadosML - Error Handler (id WNQIZP0Tu3hQGODn) — marca errores en Sheet
-  4. AfiliadosML - Token Refresh (5h) (id PhRg6OJo47YcvsDo) — refresca token ML
-  5. AfiliadosML - Scheduler 7am (id wG6XApFxO6SyCgIY) — cron 7:00 AM (inactivo hasta hostear)
+n8n (local, http://localhost:5678) — 6 workflows:
+  1. AfiliadosML                    (id iSQ59pcFepjqmBvC) — PIPELINE PRINCIPAL (activo)
+  2. AfiliadosML - Telegram Poll    (id wsMIARaCQQISWJtv) — Poll cada 2min (activo)
+  3. AfiliadosML - Error Handler    (id WNQIZP0Tu3hQGODn) — marca errores en Sheet
+  4. AfiliadosML - Token Refresh    (id PhRg6OJo47YcvsDo) — refresca token ML (5h)
+  5. AfiliadosML - Scheduler 7am    (id wG6XApFxO6SyCgIY) — cron 7:00 AM (INACTIVO — activar al hostear)
+  6. AfiliadosML - Recordatorios    (id 7uVW6atEBK8fuoHV) — recordatorios cada 2h (INACTIVO — activar al hostear)
 
 Telegram bot @catalogomx_bot
 GitHub HitoFlores/AfiliadosML — n8n commitea data/{slug}.json
-Web Next.js (App Router) — homepage dinámica + /reviews/[slug]
+Web Next.js (App Router) — "Catalogo MX" — homepage dinámica + /reviews/[slug]
 ```
 
-### Flujo completo desde celular (estado actual)
+### Flujo completo desde celular
 ```
 1. Scheduler 7am → bot manda "¿Qué artículo hoy?" (ForceReply)
+   → Sheet: fila WAITING_LINK creada (o timestamp actualizado si ya existe)
 2. Usuario responde con meli.la/xxx
 3. Poll detecta link → "Verificando..." → resuelve social page → extrae MLM ID + nombre
-4. Bot: "Encontré: [Producto]. ¿Es correcto? /articulo_correcto / /articulo_incorrecto"
-5. Usuario: /articulo_correcto → artículo se agrega a la Sheet (pending)
+   → Sheet: fila pasa a waiting_confirm
+4. Bot: "Encontré: [Producto]. ¿Es correcto?" + botones teclado
+5. Usuario: /articulo_correcto → fila pasa a pending
 6. Pass 1 corre: encuentra mejor vendedor verde → Notify con link_sugerido + ForceReply
-7. Usuario va a ML Partners → genera link de afiliado del vendedor sugerido → responde al bot
-8. Poll detecta el link (reply al mensaje del bot) → estatus ready → dispara Pass 2
+   → Sheet: fila pasa a waiting
+7. Usuario va a ML Partners → genera link de afiliado → responde al bot
+8. Poll detecta el link → estatus ready → dispara Pass 2
 9. Pass 2: Gemini genera review → commitea data/{slug}.json → "✅ Review publicada"
+   → Sheet: fila pasa a done
 ```
 
 ### Estados de la columna `estatus`
 ```
-pending → waiting → ready → done
-                          └→ error
+waiting_link → (link recibido) → waiting_confirm → (/articulo_correcto) → pending
+  → (Pass 1) → waiting → (referido recibido) → ready → (Pass 2) → done
+                                                                  └→ error
 ```
+
+### Recordatorios automáticos (Recordatorios workflow)
+| Estado | Mensaje del bot |
+|---|---|
+| `waiting_link` | "👋 Ey, aún te estoy esperando! ¿Con qué artículo trabajamos hoy?" |
+| `waiting_confirm` | "👋 Sigo esperando tu respuesta!" + botones /articulo_correcto |
+| `waiting` | "👋 Sigo esperando el link de afiliado!" |
 
 ### Columnas de la pestaña "articulos"
 `articulo` · `referido` · `idioma` (default es) · `estatus` · `link_sugerido` · `slug` · `procesado_en` · `error_msg`
@@ -53,22 +66,15 @@ pending → waiting → ready → done
 
 ## 🤖 Generación con Gemini (pendiente migrar a Abacus AI)
 
-- Modelo: **gemini-2.5-flash**, temperatura **0.2** (más estable que antes)
+- Modelo: **gemini-2.5-flash**, temperatura **0.2**
 - Output: `articulo_html` directo (no markdown), títulos en `<h2>`/`<h3>`
-- Prompt: escéptico, parafrasea siempre, solo evalúa el producto, cita fuentes
-- **PENDIENTE**: sigue metiendo comillas textuales a veces → se resolverá al migrar a Abacus AI (Claude)
+- API key: `$env.GEMINI_API_KEY` (ya no hardcodeada en el nodo)
+- **PENDIENTE**: migrar a Abacus AI (Claude) para mejor calidad
 
-### YouTube (fix sesión 2)
+### YouTube
 - Query: `[Marca] [Modelo/Línea] review análisis`, `order=relevance`
-- `Top videos`: requiere que la **marca** aparezca en título/desc
-- Bonus +2 si el título contiene "review/análisis/reseña/unboxing/vale la pena/vs"
-- Penalidad -2 si contiene "gameplay/scratch test/bend test/teardown/relaxing/asmr"
-- Detecta si videos son de **modelos similares** → lo menciona en metodología y artículo
-
-### Slugs (fix sesión 2)
-- Fórmula: `{Marca}-{Modelo_texto}-{Línea}-{Submodelo}`, máx 60 chars
-- Evita: códigos alfanuméricos, colores, specs numéricas, accesorios incluidos
-- Ejemplos: `nintendo-switch-oled`, `asus-vivobook-ultra`, `bose-ultra-quietcomfort`
+- Scoring: +2 si review/análisis/unboxing, -2 si gameplay/teardown/asmr
+- Detecta modelos similares → lo menciona en metodología y artículo
 
 ### Artículos publicados (en GitHub + web)
 | Slug | Producto | Score |
@@ -77,76 +83,71 @@ pending → waiting → ready → done
 | `asus-vivobook-ultra` | ASUS VivoBook 16 Ultra 5 | 7.1 |
 | `bose-ultra-quietcomfort` | Bose QC Ultra 2a Gen Reacondicionado | 7.0 |
 | `nintendo-switch-2` | Nintendo Switch 2 | — (YT falló, sin videos) |
+| `delonghi-de-mexico-specialista-touch` | Cafetera De'Longhi La Specialista Touch EC9445M | 8.2 |
 
 ---
 
-## 🌐 Web (Next.js)
+## 🌐 Web (Next.js) — "Catalogo MX"
 
-- `app/page.tsx` — homepage dinámica: lee todos `data/*.json`, grid de cards con imagen/score/precio
-- `lib/product.ts` — normalizador. Fallbacks: autor="Hito Flores", sin mención de IA
-- `components/Byline.tsx` — avatar "HF", sin "Contenido asistido por IA"
-- `/reviews/[slug]` — página individual con todos los componentes
+- **Branding**: "Catalogo MX" con logo propio (public/logo.png, fondo transparente)
+- **Header**: dark zinc-950, logo + nav minimal (Reviews · Open source ↗)
+- **Homepage**: hero editorial + artículo destacado (mayor score) + grid del resto
+- **Trust bar**: 3 pilares editoriales al pie (fuentes, sin notas infladas, metodología)
+- **Footer**: dark, disclosure de afiliado
+- `/reviews` → redirige a `/#reviews` (ya no da 404)
 - Correr local: `npm run dev` → http://localhost:3000
 
 ---
 
-## ✅ Hecho en sesión 2
+## ✅ Hecho en sesión 3
 
-- **Flujo móvil completo**: meli.la → resolve social page → confirmación → Pass 1 → Pass 2
-- **Confirmación de producto**: bot pide /articulo_correcto o /articulo_incorrecto antes de procesar
-- **ALERTA 2 errores**: si 2 fallos seguidos → para todo y notifica
-- **Referido sin /referido**: basta con responder al mensaje del bot con el link
-- **Scheduler 7am**: nuevo workflow, ForceReply, inactivo hasta hostear
-- **YouTube v2**: query "review análisis" + order=relevance + scoring por tipo de video
-- **HTML fix**: Gemini emite HTML directo, títulos en `<h2>/<h3>`
-- **Slugs limpios**: todos los JSON renombrados + nueva lógica de generación
-- **Sin IA visible**: removido "Contenido asistido por IA" de todo
-- **Autor = Hito Flores**: en JSONs, web, showcase
-- **Opiniones destacadas**: vacías cuando reviews_ml.total = 0
-- **Metodología honesta**: detecta automáticamente si videos son de modelos similares
-- **Temperatura 0.2**: scores más estables entre regeneraciones
-- **Commit message**: `feat: review {slug}` (antes: `feat: pending product {nombre_largo}`)
-- **Homepage dinámica**: grid con todas las reviews, badge de color por score
-- **Showcase**: `public/showcase.html` standalone para compartir
+- **Secretos rotados**: GitHub PAT · ML client_secret · YouTube · Gemini · Telegram · Supadata
+- **GitHub CLI**: autenticado con token separado `claude-cli` (repo + workflow + read:org)
+- **Workflow Recordatorios** (nuevo): bot castroso que insiste por estado — waiting_link / waiting_confirm / waiting
+- **Scheduler inteligente**: no dispara si hay artículo activo (cualquier estado != done/error/waiting_link)
+- **waiting_confirm**: nuevo estado entre "link recibido" y "/articulo_correcto" — evita recordatorios incorrectos
+- **row_number en staticData**: se guarda cuando se confirma el producto para actualizar la fila correcta
+- **Confirmación con botones**: /articulo_correcto y /articulo_incorrecto como botones de teclado (sin problema del _)
+- **Gemini key**: movida de hardcodeada a `$env.GEMINI_API_KEY`
+- **Fix BOM**: bose y nintendo-switch-2 JSON tenían UTF-8 BOM que rompía JSON.parse en Next.js
+- **Review generada**: De'Longhi La Specialista Touch EC9445M — score 8.2 ✅
+- **Rebrand**: AfiliadosML → Catalogo MX
+- **Homepage rediseñada**: hero editorial + featured card + grid + trust bar
+- **Logo**: ícono custom con fondo transparente (flood fill para preservar ojos)
+- **Fix /reviews 404**: redirige a /#reviews
 
 ---
 
 ## 📋 Pendientes (en orden de prioridad)
 
-### 1. 🔐 Rotar secretos (URGENTE — quedaron expuestos en chats anteriores)
-Secretos a rotar: GitHub PAT · ML client_secret · YouTube API key · Gemini API key · Telegram bot token · n8n API key
-
-**Cómo rotar sin exponer en chat** — correr esto en tu propia terminal:
-```powershell
-@('GITHUB_TOKEN|GitHub PAT (ghp_...)','ML_CLIENT_SECRET|ML client secret','YOUTUBE_API_KEY|YouTube API key','GEMINI_API_KEY|Gemini API key','TELEGRAM_BOT_TOKEN|Telegram token') | ForEach-Object { $p=$_.Split('|'); $s=Read-Host $p[1] -AsSecureString; [Environment]::SetEnvironmentVariable($p[0],[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($s)),'User'); Write-Host "✓ $($p[0])" }
-```
-Después generar nueva n8n API key desde `localhost:5678/settings/api` y pasársela a Claude.
-
-### 2. 🤖 Migrar generación a Abacus AI
-- Abacus AI RouteLLM soporta `response_format json_schema` ✅ (confirmado en doc oficial)
+### 1. 🤖 Migrar generación a Abacus AI
+- Abacus AI RouteLLM soporta `response_format json_schema` ✅
 - Base URL: `https://routellm.abacus.ai/v1`
-- Modelo recomendado: `claude-haiku-4-5` (barato, sigue instrucciones mejor que Flash)
-- **3 nodos a cambiar**:
+- Modelo recomendado: `claude-haiku-4-5`
+- **3 nodos a cambiar en el pipeline principal**:
   - `Build Gemini Prompt`: body formato OpenAI (`messages` + `response_format json_schema`)
-  - `Gemini Generate Article`: URL + header `Authorization: Bearer ABACUS_KEY`
+  - `Gemini Generate Article`: URL → routellm.abacus.ai + header `Authorization: Bearer ABACUS_KEY`
   - `Parse Gemini JSON`: leer `choices[0].message.content` en vez de `candidates[0]...`
-- Agrega `ABACUS_API_KEY` a las variables de entorno
+- Agregar `ABACUS_API_KEY` a variables de entorno
 
-### 3. 🚀 Hostear
+### 2. 🚀 Hostear
 - n8n en VPS/cloud (Railway, Render, o VPS DigitalOcean)
 - Web en Vercel (conectar repo GitHub → auto-deploy en cada push)
-- Al hostear: activar Scheduler 7am + cambiar Poll de polling a Telegram webhook
+- **Al hostear**: activar Scheduler 7am + Recordatorios (cambiar crons de */1 a producción)
+  - Scheduler: `*/1 * * * *` → `0 7 * * *`
+  - Recordatorios: `*/1 * * * *` → `0 */2 * * *`
+  - Poll: cambiar de polling a Telegram webhook
 
 ---
 
 ## ⚙️ Cómo correr n8n localmente
 
 ```powershell
-'YOUTUBE_API_KEY','SUPADATA_API_KEY','ML_CLIENT_ID','ML_CLIENT_SECRET','TELEGRAM_BOT_TOKEN','TELEGRAM_CHAT_ID','GITHUB_TOKEN' | ForEach-Object { Set-Item "env:$_" ([Environment]::GetEnvironmentVariable($_,'User')) }; $env:N8N_BLOCK_ENV_ACCESS_IN_NODE='false'; n8n start
+'YOUTUBE_API_KEY','SUPADATA_API_KEY','ML_CLIENT_ID','ML_CLIENT_SECRET','TELEGRAM_BOT_TOKEN','TELEGRAM_CHAT_ID','GITHUB_TOKEN','GEMINI_API_KEY' | ForEach-Object { Set-Item "env:$_" ([Environment]::GetEnvironmentVariable($_,'User')) }; $env:N8N_BLOCK_ENV_ACCESS_IN_NODE='false'; n8n start
 ```
 
-Workflows activos al cerrar sesión: **AfiliadosML** (principal) + **Telegram Poll** (2min).
-Scheduler 7am y demás: **inactivos** (activar manualmente cuando se use).
+Workflows activos al cerrar sesión 3: **AfiliadosML** (principal) + **Telegram Poll** (2min).
+Scheduler 7am y Recordatorios: **INACTIVOS** — activar manualmente cuando se use localmente.
 
 ---
 
@@ -158,6 +159,9 @@ ML_CLIENT_ID         → Mercado Libre OAuth client id
 ML_CLIENT_SECRET     → Mercado Libre OAuth client secret
 TELEGRAM_BOT_TOKEN   → @catalogomx_bot token
 TELEGRAM_CHAT_ID     → tu chat ID de Telegram
-GITHUB_TOKEN         → PAT con permisos repo completo
+GITHUB_TOKEN         → PAT "n8n-afiliadosml" (repo)
+GEMINI_API_KEY       → Gemini API key (aistudio.google.com)
 ABACUS_API_KEY       → (pendiente, para la migración)
 ```
+
+GitHub CLI autenticado con token separado `claude-cli` (repo + workflow + read:org).
