@@ -3,7 +3,7 @@
     "producto_id": "MLM67134419",
     "slug": "asus-vivobook-ultra",
     "categoria": "MLM-NOTEBOOKS",
-    "generado_en": "2026-06-04T01:46:19.403Z"
+    "generado_en": "2026-06-04T04:41:44.228Z"
   },
   "producto": {
     "nombre": "Laptop Vivobook 16 Ultra 5 16gb 1tbssd Con Mochila Y Mouse Asus",
@@ -114,14 +114,40 @@
     "nombre": "MERCADOLIBRE ELECTRONICA_MX",
     "reputacion": "5_green",
     "power_seller": "platinum",
-    "transacciones": 2828520
+    "transacciones": 2808428
   },
   "link_afiliado": "https://meli.la/2Ptd5TY",
   "reviews_ml": {
-    "total": 0,
-    "con_comentario": 0,
-    "calificacion_promedio": 0,
-    "destacadas": []
+    "total": 4,
+    "con_comentario": 4,
+    "calificacion_promedio": 5,
+    "destacadas": [
+      {
+        "titulo": "Construcción del chasis",
+        "contenido": "Al menos un comprador notó que la parte trasera inferior del equipo es de plástico, lo que contrasta con la apariencia general del producto.",
+        "sentimiento": "negativo"
+      },
+      {
+        "titulo": "Impresión general al recibirlo",
+        "contenido": "Varios compradores describen el producto como de buena calidad visual y sin defectos aparentes desde el primer uso.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Rendimiento en uso diario",
+        "contenido": "Quienes ya lo pusieron a trabajar reportan que responde con rapidez y eficiencia en tareas cotidianas.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Contenido del paquete",
+        "contenido": "Los compradores confirman que la mochila y el mouse llegan junto con la laptop tal como se anuncia.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Batería (referencia de modelo similar)",
+        "contenido": "Según el canal KALUS en su análisis de un Vivobook 16 con hardware comparable, la autonomía real ronda las 4 horas, por debajo de lo que sugiere el fabricante.",
+        "sentimiento": "negativo"
+      }
+    ]
   },
   "videos_yt": [
     {
@@ -131,7 +157,7 @@
       "url": "https://www.youtube.com/watch?v=kSP6A8Zo7vc",
       "thumbnail": "https://i.ytimg.com/vi/kSP6A8Zo7vc/hqdefault.jpg",
       "publicado": "2024-09-10",
-      "vistas": 130444
+      "vistas": 130463
     },
     {
       "video_id": "NTQwgLJyYp0",
@@ -140,7 +166,7 @@
       "url": "https://www.youtube.com/watch?v=NTQwgLJyYp0",
       "thumbnail": "https://i.ytimg.com/vi/NTQwgLJyYp0/hqdefault.jpg",
       "publicado": "2025-03-09",
-      "vistas": 91996
+      "vistas": 92005
     },
     {
       "video_id": "G5Ui495B0ek",
@@ -149,142 +175,147 @@
       "url": "https://www.youtube.com/watch?v=G5Ui495B0ek",
       "thumbnail": "https://i.ytimg.com/vi/G5Ui495B0ek/hqdefault.jpg",
       "publicado": "2025-02-13",
-      "vistas": 50962
+      "vistas": 50963
     }
   ],
   "editorial": {
     "score": 7.2,
-    "score_justificacion": "Buena portabilidad y teclado sólido para su categoría, pero la pantalla de 45% NTSC y la batería limitada la dejan por debajo de rivales en el mismo rango de precio.",
+    "score_justificacion": "Procesador Intel Core Ultra 5 con 16 GB RAM y 1 TB SSD es una combinación sólida para productividad, pero la batería de apenas 3640 mAh y la construcción parcialmente plástica limitan su valor a largo plazo.",
     "sub_scores": [
-      {
-        "dimension": "Pantalla",
-        "score": 6.5,
-        "justificacion": "Panel IPS de 16 pulgadas con resolución WUXGA y antirreflejo, pero solo 300 nits de brillo y 45% NTSC, insuficiente para trabajo con color según el canal SoulOfTech."
-      },
-      {
-        "dimension": "Teclado y trackpad",
-        "score": 8,
-        "justificacion": "El canal SoulOfTech destaca el recorrido de teclas, la retroiluminación efectiva y un trackpad sin flex notable; el canal KALUS confirma el teclado numérico completo."
-      },
       {
         "dimension": "Rendimiento",
         "score": 7.5,
-        "justificacion": "El procesador Intel Core Ultra 5 maneja productividad y tareas moderadas con soltura; los gráficos integrados permiten juegos ligeros a fps reducidos según KALUS."
+        "justificacion": "El Core Ultra 5 con 16 GB RAM maneja bien tareas de oficina y programas moderados; según el canal KALUS, procesadores similares de esta línea superan en benchmarks a varios chips de escritorio de generaciones anteriores."
+      },
+      {
+        "dimension": "Pantalla",
+        "score": 7,
+        "justificacion": "Panel de 16 pulgadas WUXGA (1920x1200) antirreflejo con 60 Hz; según KALUS, modelos similares tienen 300 nits, suficiente para interiores pero justo para exteriores con mucha luz."
       },
       {
         "dimension": "Batería",
         "score": 5.5,
-        "justificacion": "KALUS reportó alrededor de 4 horas reales de autonomía en el modelo con i5 de generación anterior; la descripción del fabricante indica 3640 mAh, una capacidad modesta para uso móvil."
+        "justificacion": "La batería de 3640 mAh es notablemente pequeña; el fabricante promete hasta 6 horas, pero KALUS midió cerca de 4 horas en un modelo similar, lo que es insuficiente para jornadas largas."
       },
       {
-        "dimension": "Construcción y portabilidad",
-        "score": 7.5,
-        "justificacion": "Chasis completamente plástico pero sin flex excesivo; pesa 1.7-1.8 kg, lo que es ligero para una laptop de 16 pulgadas según ambos canales."
+        "dimension": "Construcción",
+        "score": 6.5,
+        "justificacion": "Un comprador verificado señala que la parte inferior es de plástico; el chasis no es completamente metálico, lo que afecta la percepción de durabilidad."
+      },
+      {
+        "dimension": "Teclado",
+        "score": 6.5,
+        "justificacion": "Según KALUS, el teclado tiene textura rugosa aceptable y viene en tamaño completo con numpad, aunque el retroiluminado puede hacer que las letras parezcan pegatinas bajo ciertos ángulos de luz."
       },
       {
         "dimension": "Audio",
         "score": 6.5,
-        "justificacion": "KALUS señala que los altavoces suenan bien a volumen alto pero presentan algo de distorsión en el límite; SoulOfTech confirma configuración de disparo inferior."
+        "justificacion": "KALUS indica que los parlantes suenan bien a volumen alto pero presentan algo de distorsión en el límite; la potencia estimada ronda los 4 W."
+      },
+      {
+        "dimension": "Portabilidad",
+        "score": 8,
+        "justificacion": "Con 1.7 kg declarados por el fabricante (KALUS midió 1.8 kg en modelo similar), es ligera para ser una laptop de 16 pulgadas, lo que favorece su uso móvil."
       },
       {
         "dimension": "Conectividad",
         "score": 7.5,
-        "justificacion": "Puertos USB-A, USB-C, HDMI y jack de audio presentes; SoulOfTech califica la selección de puertos como saludable sin quejas."
-      },
-      {
-        "dimension": "Webcam",
-        "score": 6,
-        "justificacion": "La descripción del fabricante indica 1080p FHD; KALUS en el modelo anterior reportó 720p con calidad suficiente para videollamadas, no para producción."
+        "justificacion": "Incluye múltiples USB Type-A, Type-C y HDMI; según KALUS en modelo similar, hay un USB 2.0 en el lado izquierdo que es el más lento del conjunto."
       }
     ],
-    "veredicto_corto": "La Asus Vivobook 16 con Core Ultra 5 es una laptop de productividad competente para estudiantes y oficinistas que priorizan portabilidad y teclado cómodo. La pantalla con cobertura de color limitada y la batería modesta son sus puntos más débiles. Si no necesitas edición de color ni autonomía de todo el día, cumple bien su función.",
+    "veredicto_corto": "La Vivobook 16 con Core Ultra 5 es una laptop competente para estudiantes y trabajo de oficina, con buena pantalla y almacenamiento generoso. Su talón de Aquiles es la batería pequeña y la construcción con plástico en la base, detalles que hay que aceptar antes de comprar.",
     "compralo_si": [
-      "Necesitas laptop ligera de 16 pulgadas para oficina",
-      "Usas aplicaciones de productividad y videollamadas",
-      "Quieres teclado completo con numpad retroiluminado",
-      "Juegas títulos ligeros ocasionalmente"
+      "Necesitas pantalla grande para estudiar o trabajar",
+      "Buscas 1 TB de almacenamiento en este rango",
+      "Priorizas portabilidad en laptop de 16 pulgadas",
+      "Trabajas principalmente enchufado a la corriente"
     ],
     "saltatelo_si": [
-      "Editas fotos o video con precisión de color",
-      "Necesitas más de 5 horas de batería fuera de casa",
-      "Buscas pantalla de alta frecuencia de actualización"
+      "Necesitas más de 5 horas de batería real",
+      "Buscas construcción premium todo metálica",
+      "Requieres GPU dedicada para gaming o edición pesada"
     ],
     "pros": [
-      "Peso de 1.7 kg destacable para un equipo de 16 pulgadas",
-      "Teclado de tamaño completo con numpad y buena retroiluminación",
-      "Pantalla antirreflejo IPS con relación de aspecto 16:10",
-      "Selección de puertos completa: USB-A, USB-C, HDMI y audio",
-      "RAM de 16 GB y SSD de 1 TB desde fábrica",
-      "Procesador Intel Core Ultra 5 capaz en tareas de productividad",
-      "Posibilidad de abrir el equipo y ampliar RAM o SSD"
+      "Procesador Intel Core Ultra 5 con 16 GB RAM para multitarea fluida",
+      "1 TB SSD ofrece almacenamiento generoso sin expansión inmediata",
+      "Pantalla de 16 pulgadas WUXGA antirreflejo cómoda para uso prolongado",
+      "Peso de 1.7 kg ligero para su tamaño",
+      "Teclado completo con numpad y retroiluminación",
+      "Incluye mochila y mouse en el paquete",
+      "Buena variedad de puertos: USB-A, USB-C y HDMI"
     ],
     "contras": [
-      "Batería de capacidad reducida: autonomía real cercana a 4 horas según pruebas de canal independiente",
-      "Cobertura de color de solo 45% NTSC, inadecuada para trabajo creativo con color",
-      "Pantalla limitada a 60 Hz sin opción de mayor frecuencia",
-      "Chasis completamente plástico que no transmite sensación premium",
-      "Bisagra de dos etapas puede generar desgaste a largo plazo según SoulOfTech",
-      "Altavoces con tendencia a distorsionar al máximo volumen",
-      "Abrir la tapa con una sola mano levanta todo el equipo"
+      "Batería de 3640 mAh muy pequeña; autonomía real cercana a 4 horas según reseñas de modelos similares",
+      "La parte inferior del chasis es de plástico, no metal",
+      "El retroiluminado del teclado puede hacer que las letras parezcan pegatinas bajo luz directa",
+      "Abrir la pantalla con una sola mano levanta todo el equipo, requiere dos manos",
+      "Los parlantes distorsionan ligeramente al máximo volumen",
+      "La cámara en modelos similares es de 720p; el fabricante anuncia 1080p pero conviene verificarlo al recibir"
     ],
     "fuentes_citadas": [
       {
+        "tipo": "compradores",
+        "autor": "Compradores ML",
+        "aporte": "Confirmaron que la parte inferior es plástico; impresiones iniciales positivas sobre calidad general y que viene con mochila y mouse."
+      },
+      {
         "tipo": "video",
         "autor": "KALUS",
-        "aporte": "Revisión de modelo Vivobook 16 con i5 anterior: batería, teclado, apertura interna, rendimiento en juegos ligeros y detalles de construcción"
+        "aporte": "Review detallada de Vivobook 16 con procesador similar: batería real ~4 horas, teclado con efecto pegatina bajo luz, parlantes con leve distorsión, peso real 1.8 kg, apertura de pantalla requiere dos manos."
       },
       {
         "tipo": "video",
         "autor": "SoulOfTech",
-        "aporte": "Revisión del Vivobook 16 2025 con Snapdragon X: pantalla, teclado, trackpad, puertos, bisagra y rendimiento general"
+        "aporte": "Confirma que la línea Vivobook 16 2025 tiene variantes Intel, AMD y Snapdragon orientadas a productividad con presupuesto ajustado."
       },
       {
         "tipo": "video",
         "autor": "Digit",
-        "aporte": "Revisión del Vivobook 16 con Intel Arrow Lake mencionada en título; sin transcripción disponible, aporte limitado"
+        "aporte": "Analiza la Vivobook 16 con Intel Arrow Lake como opción de oficina competitiva en su segmento de precio."
       }
     ],
     "faq": [
       {
-        "pregunta": "¿Sirve para editar video o diseño gráfico profesional?",
-        "respuesta": "Para edición básica o de aprendizaje puede funcionar, pero la pantalla cubre solo el 45% del espacio de color NTSC, lo que significa que los colores que ves no son precisos. Para trabajo profesional con color necesitas un panel con mayor cobertura."
+        "pregunta": "¿Sirve para edición de video o diseño gráfico moderado?",
+        "respuesta": "Para edición de video en resoluciones bajas o diseño gráfico no muy exigente puede funcionar, ya que el Core Ultra 5 con 16 GB RAM tiene margen. Sin embargo, no tiene GPU dedicada, así que proyectos pesados en 4K o renders complejos serán lentos. Es aceptable para uso ocasional, no profesional intensivo."
       },
       {
-        "pregunta": "¿Cuánto dura la batería en uso real?",
-        "respuesta": "Las pruebas en canales independientes con modelos similares de la línea Vivobook 16 reportan alrededor de 4 horas en uso activo. La capacidad de 3640 mAh que indica el fabricante es modesta; planea tener el cargador cerca si trabajas fuera de casa."
+        "pregunta": "¿Cuántas horas de batería da realmente?",
+        "respuesta": "El fabricante anuncia hasta 6 horas, pero en modelos similares de la misma línea el canal KALUS midió cerca de 4 horas con uso real. La batería de 3640 mAh es pequeña para una laptop de 16 pulgadas. Si planeas usarla lejos de un enchufe por jornadas largas, esto es un punto débil real."
       },
       {
         "pregunta": "¿Se puede jugar con esta laptop?",
-        "respuesta": "Sí, pero con expectativas ajustadas. Títulos ligeros y bien optimizados como Minecraft, Fortnite o Apex Legends corren en configuración baja a resolución reducida, con fps en el rango de 35 a 45. No es una laptop para gaming exigente."
+        "respuesta": "Juegos ligeros y bien optimizados como Minecraft, Fortnite o Apex Legends en configuración baja a media son posibles, con framerate alrededor de 35-45 fps según KALUS en hardware similar. No está pensada para gaming y no reemplaza una laptop con GPU dedicada."
       },
       {
-        "pregunta": "¿Es posible ampliar la RAM o cambiar el SSD?",
-        "respuesta": "Sí. Al abrir la tapa inferior se accede a una ranura de RAM expandible y al slot M.2 para el SSD. Si decides ampliar, recuerda que tendrás que reinstalar Windows y descargar los drivers desde la página oficial de ASUS."
+        "pregunta": "¿Es posible ampliar la RAM o el almacenamiento?",
+        "respuesta": "Según el análisis de KALUS en un modelo similar de la línea, la RAM puede expandirse y el SSD M.2 puede cambiarse. Sin embargo, abrir el equipo requiere cuidado y puede afectar la garantía. Si planeas hacer upgrades, investiga el modelo exacto antes de comprar."
       },
       {
-        "pregunta": "¿Vale la pena el mouse y la mochila incluidos?",
-        "respuesta": "Son accesorios de entrada incluidos como complemento comercial. No cambian la calidad del equipo en sí; evalúa la laptop por sus especificaciones técnicas y considera los accesorios como un extra sin peso en la decisión."
+        "pregunta": "¿La mochila y el mouse incluidos son de buena calidad?",
+        "respuesta": "Los compradores confirman que llegan incluidos, pero no hay evaluaciones detalladas de su calidad en las fuentes disponibles. Tratalos como accesorios de cortesía, no como el argumento principal de compra."
       }
     ],
-    "precio_valor": "En el rango de precio en que se ubica, la Vivobook 16 ofrece una combinación razonable de procesador moderno, 16 GB de RAM y 1 TB de almacenamiento, que en papel es competitiva. Sin embargo, la pantalla de baja cobertura de color y la batería limitada son concesiones importantes que rivales en precio similar a veces resuelven mejor. Si el paquete incluye mochila y mouse como diferenciador, considera que esos accesorios tienen valor marginal; el precio debería justificarse por el hardware, no por los complementos.",
+    "precio_valor": "En su rango de precio, la combinación de Core Ultra 5, 16 GB RAM y 1 TB SSD es competitiva y difícil de igualar en especificaciones puras. Sin embargo, la batería pequeña y la construcción con plástico en la base son concesiones reales que justifican ese precio. Si la usas principalmente en escritorio o con acceso frecuente a corriente, la relación valor-precio es razonable; si necesitas autonomía real todo el día, el precio se vuelve difícil de justificar frente a opciones con mejor batería.",
     "alternativas": [
       {
         "tipo": "Opción más económica",
-        "descripcion": "Busca laptops de 15 pulgadas con procesadores Intel Core i5 de generación anterior o AMD Ryzen 5 serie 7000. Sacrificarás pantalla más grande y posiblemente RAM, pero el precio puede ser significativamente menor para tareas básicas de estudio u oficina."
+        "descripcion": "Busca una laptop de 15 pulgadas con procesador Intel Core i5 de generación anterior o AMD Ryzen 5 serie 7000 y 8 GB RAM ampliable. Sacrificarás pantalla más grande, RAM y almacenamiento, pero ganarás en precio de entrada. Ideal si tus tareas son básicas: navegación, documentos y videollamadas."
       },
       {
         "tipo": "Opción premium",
-        "descripcion": "Con mayor presupuesto, considera laptops de la misma línea Vivobook en variante Pro o S, o equipos de otras marcas con paneles de mayor cobertura de color (90%+ sRGB), mayor brillo y baterías de 50 Wh o más. Vale la pena el gasto extra si trabajas con contenido visual o necesitas autonomía real de 8 horas."
+        "descripcion": "Considera laptops de 16 pulgadas con GPU dedicada (NVIDIA RTX serie 40 o AMD RX 7000) y batería de 70 Wh o más. Gastarás considerablemente más, pero obtendrás autonomía real de 8-10 horas, capacidad para edición de video profesional y gaming fluido. Vale la pena si tu trabajo depende del rendimiento gráfico o pasas muchas horas fuera de un enchufe."
       }
     ],
     "seo_title": "Asus Vivobook 16 Ultra 5 Review: ¿Vale la pena en 2025?",
-    "seo_description": "Análisis honesto de la Asus Vivobook 16 con Core Ultra 5, 16GB y 1TB SSD. Descubre sus puntos fuertes, limitaciones reales y para quién es la mejor opción.",
-    "articulo_html": "<h2>Veredicto rápido</h2>\n<p>La Asus Vivobook 16 con Intel Core Ultra 5 es una laptop de productividad que cumple bien en lo básico: teclado cómodo, buen almacenamiento desde fábrica y un peso sorprendentemente bajo para su tamaño. Sus limitaciones más concretas son la pantalla con cobertura de color reducida y una batería que no alcanza para un día completo fuera de casa. Si tus necesidades son oficina, estudio y uso general, es una opción razonable. Si editas contenido visual o necesitas autonomía extendida, hay mejores alternativas.</p>\n\n<h2>Qué es y qué ofrece este modelo</h2>\n<p>La línea Vivobook de Asus representa la propuesta de entrada y gama media de la marca: sin lujos, sin pretensiones de gaming serio, orientada a productividad cotidiana. Este modelo específico llega con un procesador Intel Core Ultra 5, 16 GB de RAM y 1 TB de almacenamiento SSD, una configuración que en papel es sólida para su categoría. La pantalla de 16 pulgadas con relación de aspecto 16:10 y resolución WUXGA (1920×1200) es un punto a favor frente al estándar 16:9 más común, ya que ofrece algo más de espacio vertical para trabajar.</p>\n<p>Es importante señalar que las reseñas en video disponibles corresponden a modelos similares de la línea Vivobook 16 —uno con procesador Intel Core i5 de generación anterior y otro con Snapdragon X— por lo que las conclusiones son orientativas pero pueden variar respecto a este modelo específico con Core Ultra 5.</p>\n\n<h2>Lo bueno: donde cumple de verdad</h2>\n<h3>Portabilidad real para 16 pulgadas</h3>\n<p>Con un peso de 1.7 kg, este equipo está por debajo del promedio de laptops de 16 pulgadas, que suelen superar los 2 kg con facilidad. El canal KALUS lo confirma en su análisis: para el tamaño de pantalla que ofrece, la portabilidad es uno de sus argumentos más sólidos.</p>\n\n<h3>Teclado que se nota en el uso diario</h3>\n<p>El canal SoulOfTech destaca que el teclado tiene buen recorrido de teclas, retroiluminación efectiva y teclas con suficiente superficie por carácter. Incluye teclado numérico completo, algo que no todos los equipos de 16 pulgadas garantizan. Para quienes escriben mucho, es una ventaja concreta.</p>\n\n<h3>Almacenamiento y memoria generosos desde el inicio</h3>\n<p>Arrancar con 16 GB de RAM y 1 TB de SSD evita la necesidad de actualizar el equipo en el corto plazo. Además, según el canal KALUS, el equipo permite abrir la tapa inferior para ampliar la RAM o cambiar el SSD si en algún momento se necesita más capacidad.</p>\n\n<h3>Conectividad sin quejas</h3>\n<p>La selección de puertos incluye USB-A, USB-C, HDMI y salida de audio. El canal SoulOfTech califica esta combinación como saludable para un equipo de esta categoría, sin carencias evidentes para uso cotidiano.</p>\n\n<h2>Lo malo: puntos concretos a considerar</h2>\n<h3>Pantalla básica en cobertura de color</h3>\n<p>El panel IPS cubre apenas el 45% del espacio de color NTSC, equivalente a aproximadamente 56% sRGB. Según el canal SoulOfTech, esto hace que el equipo no sea adecuado para actividades donde la precisión cromática importa. Para edición fotográfica o de video profesional, esta pantalla no es suficiente. El brillo de 300 nits es aceptable en interiores pero puede quedarse corto bajo luz directa intensa.</p>\n\n<h3>Batería que obliga a llevar el cargador</h3>\n<p>La capacidad de 3640 mAh que indica el fabricante es modesta. En pruebas con modelos similares de la línea, el canal KALUS reportó una autonomía real cercana a las 4 horas en uso activo. Para trabajo fuera de casa durante un día completo, esto es insuficiente.</p>\n\n<h3>Construcción completamente plástica</h3>\n<p>El chasis es plástico de arriba a abajo. SoulOfTech aclara que no hay flex excesivo y se siente razonablemente sólido, pero la sensación en mano no transmite durabilidad premium. La bisagra de dos etapas que permite apertura a 180° ejerce fuerza considerable sobre el cuerpo principal, lo que podría implicar desgaste con el tiempo.</p>\n\n<h3>Altavoces con límite claro</h3>\n<p>El canal KALUS señala que los altavoces suenan bien a volumen moderado, pero presentan distorsión al llegar al máximo. Para uso casual están bien; para quienes consumen mucho contenido multimedia sin auriculares, puede ser un punto de fricción.</p>\n\n<h3>Abrir la tapa requiere dos manos</h3>\n<p>Un detalle menor pero molesto en el uso diario: al intentar abrir la pantalla con una sola mano, la base del equipo se levanta. Hay que sostener la base con una mano y levantar la pantalla con la otra.</p>\n\n<h2>¿Para quién sí y para quién no?</h2>\n<ul>\n<li><strong>Sí tiene sentido si:</strong> eres estudiante o trabajas en oficina con tareas de texto, hojas de cálculo, videollamadas y navegación; valoras tener pantalla grande sin cargar un equipo pesado; o juegas títulos ligeros de forma ocasional.</li>\n<li><strong>No tiene sentido si:</strong> tu trabajo implica edición de fotos o video con precisión de color; necesitas más de 5 horas de autonomía sin enchufe; o buscas una pantalla con frecuencia de actualización superior a 60 Hz para gaming o fluidez visual.</li>\n</ul>\n\n<h2>Conclusión</h2>\n<p>La Asus Vivobook 16 con Core Ultra 5 es un equipo honesto: no promete lo que no puede dar y en su terreno —productividad diaria, portabilidad y almacenamiento generoso— cumple bien. Las concesiones en pantalla y batería son reales y hay que tenerlas en cuenta antes de comprar. Si el perfil de uso encaja, es una opción competitiva en su segmento.</p>\n<p>Si después de leer este análisis te convence, puedes encontrarla disponible en Mercado Libre con el paquete que incluye mochila y mouse. Compara precios entre vendedores y verifica que la configuración sea exactamente la que describes: 16 GB de RAM y 1 TB de SSD con Core Ultra 5.</p>"
+    "seo_description": "Análisis honesto de la Asus Vivobook 16 Core Ultra 5, 16 GB RAM y 1 TB SSD. Descubre sus puntos fuertes, la batería corta y para quién es la mejor opción.",
+    "articulo_html": "<h2>Veredicto rápido</h2>\n<p>La Asus Vivobook 16 con Intel Core Ultra 5, 16 GB de RAM y 1 TB de almacenamiento es una laptop sólida para estudiantes y trabajadores de oficina que priorizan pantalla grande y almacenamiento generoso sobre autonomía. El problema más concreto es su batería pequeña, que en la práctica no alcanza para una jornada completa sin enchufe. Si eso no te preocupa, el resto del paquete es competitivo en su segmento.</p>\n\n<h2>Qué es y a quién va dirigida</h2>\n<p>La Vivobook 16 es la línea de laptops de entrada-media de Asus, orientada a productividad, estudios y uso general. No es una máquina para gaming serio ni para edición de video profesional. Este modelo específico llega con el procesador Intel Core Ultra 5, que representa un salto generacional respecto a los Core i5 de décima y undécima generación, aunque las reseñas en video disponibles corresponden a modelos similares de la línea Vivobook 16 con procesadores anteriores — las conclusiones son orientativas pero pueden variar en rendimiento puro respecto a esta versión con Core Ultra 5.</p>\n<p>El paquete incluye mochila y mouse, lo que los compradores verificados confirman que efectivamente llega junto con el equipo. Es un detalle práctico, aunque no debería ser el argumento central de compra.</p>\n\n<h2>Lo bueno: dónde cumple</h2>\n<h3>Pantalla y portabilidad</h3>\n<p>El panel de 16 pulgadas con resolución WUXGA (1920x1200) y recubrimiento antirreflejo es uno de los puntos más sólidos. El formato 16:10 da más espacio vertical que el estándar 16:9, útil para documentos y hojas de cálculo. Según el canal KALUS en su análisis de un Vivobook 16 con hardware comparable, el brillo ronda los 300 nits, suficiente para interiores pero justo si trabajas cerca de una ventana con luz directa.</p>\n<p>Para ser una laptop de 16 pulgadas, el peso declarado de 1.7 kg es un punto a favor real. KALUS midió 1.8 kg en un modelo similar, lo que sigue siendo ligero para este tamaño de pantalla.</p>\n\n<h3>Rendimiento para uso cotidiano</h3>\n<p>El Core Ultra 5 con 16 GB de RAM maneja con comodidad multitarea, navegación con múltiples pestañas, videollamadas y aplicaciones de oficina. Los compradores que ya lo pusieron a trabajar reportan respuesta rápida en tareas del día a día. Para programas 3D moderados o edición de video en resolución estándar, el procesador tiene margen, aunque sin GPU dedicada los tiempos de render serán más largos que en equipos especializados.</p>\n\n<h3>Almacenamiento y conectividad</h3>\n<p>1 TB en SSD M.2 es generoso en este rango de precio y elimina la necesidad de expansión inmediata. En conectividad, el equipo ofrece puertos USB Type-A, Type-C y salida HDMI, lo que cubre la mayoría de escenarios de uso. Un detalle a tener en cuenta: en modelos similares analizados por KALUS, uno de los puertos USB del lado izquierdo es USB 2.0, el más lento del conjunto.</p>\n\n<h2>Lo malo: puntos concretos a considerar</h2>\n<h3>Batería insuficiente para jornadas largas</h3>\n<p>Este es el problema más serio. La batería de 3640 mAh es pequeña incluso para los estándares de laptops de 14 pulgadas, y más aún para una de 16. El fabricante anuncia hasta 6 horas, pero el canal KALUS midió cerca de 4 horas en condiciones de uso real con un modelo de la misma línea. Si planeas trabajar o estudiar lejos de un enchufe por más de media jornada, esto es un obstáculo real.</p>\n\n<h3>Construcción parcialmente plástica</h3>\n<p>Un comprador verificado señaló directamente que la parte inferior del chasis es de plástico. No es un defecto de fabricación, es una decisión de diseño para mantener el precio, pero afecta la percepción de durabilidad y resistencia a golpes cotidianos.</p>\n\n<h3>Teclado retroiluminado con efecto visual poco elegante</h3>\n<p>Según KALUS, cuando hay luz incidiendo sobre el teclado desde arriba, las letras pueden verse como si fueran pegatinas aplicadas sobre las teclas. No afecta la funcionalidad, pero es un detalle estético que molesta a quienes valoran el acabado visual.</p>\n\n<h3>Apertura de pantalla con una sola mano</h3>\n<p>El canal KALUS advierte que intentar abrir la pantalla con una sola mano levanta todo el equipo. Hay que sujetar la base con una mano y levantar la tapa con la otra. Es un hábito que se aprende rápido, pero es una limitación de diseño.</p>\n\n<h3>Audio con distorsión al máximo volumen</h3>\n<p>Los parlantes suenan bien a volumen medio, pero según KALUS presentan algo de distorsión cuando se llevan al límite. Para uso con auriculares o a volumen moderado no es un problema.</p>\n\n<h2>¿Para quién sí y para quién no?</h2>\n<h3>Cómprala si...</h3>\n<ul>\n<li>Trabajas o estudias principalmente en escritorio o con acceso frecuente a corriente eléctrica.</li>\n<li>Necesitas pantalla grande (16 pulgadas) sin cargar un equipo pesado.</li>\n<li>Buscas 1 TB de almacenamiento y 16 GB de RAM en un precio accesible.</li>\n<li>Tus tareas son ofimática, videollamadas, navegación y programas de productividad.</li>\n</ul>\n\n<h3>Evítala si...</h3>\n<ul>\n<li>Necesitas más de 5 horas de autonomía real sin enchufe.</li>\n<li>Buscas una laptop para gaming o edición de video profesional.</li>\n<li>Priorizas construcción premium con chasis completamente metálico.</li>\n</ul>\n\n<h2>Conclusión</h2>\n<p>La Asus Vivobook 16 Ultra 5 es una propuesta honesta para su segmento: buenas especificaciones de procesador y almacenamiento, pantalla cómoda y peso razonable, a cambio de una batería que no acompaña jornadas largas y una construcción que no es premium. No es la laptop perfecta, pero para quien la usa principalmente enchufada o en sesiones cortas, cumple bien su función.</p>\n<p>Si después de leer esto el perfil encaja con tu uso, puedes encontrarla disponible en Mercado Libre. Compara precios entre vendedores y verifica que el listado incluya explícitamente la mochila y el mouse antes de confirmar la compra.</p>"
   },
+  "productos_similares_ml": [],
   "autoria": {
     "nombre": "Hito Flores",
     "tagline": "An?lisis independiente de productos en Mercado Libre M?xico",
-    "metodologia": "Este an?lisis sintetiza 2 rese?as en video de creadores independientes y 0 opiniones de compradores verificados de Mercado Libre.",
+    "metodologia": "Este an?lisis sintetiza 1 rese?as en video de creadores independientes y 4 opiniones de compradores verificados de Mercado Libre.",
     "actualizado": "2026-06-04"
   }
 }
