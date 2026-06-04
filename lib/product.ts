@@ -258,8 +258,14 @@ export function loadProductBySlug(slug: string): NormalizedProduct | null {
   if (!fs.existsSync(dir)) return null;
   const files = fs.readdirSync(dir).filter((f) => f.endsWith(".json"));
   for (const file of files) {
-    const raw: RawProduct = JSON.parse(fs.readFileSync(path.join(dir, file), "utf-8"));
-    if (raw.meta?.slug === slug) return normalize(raw);
+    try {
+      const raw: RawProduct = JSON.parse(
+        fs.readFileSync(path.join(dir, file), "utf-8").replace(/^﻿/, "")
+      );
+      if (raw.meta?.slug === slug) return normalize(raw);
+    } catch {
+      // archivo corrupto o schema incompatible — se ignora
+    }
   }
   return null;
 }
@@ -270,8 +276,14 @@ export function allSlugs(): { slug: string }[] {
   return fs
     .readdirSync(dir)
     .filter((f) => f.endsWith(".json"))
-    .map((file) => {
-      const raw: RawProduct = JSON.parse(fs.readFileSync(path.join(dir, file), "utf-8"));
-      return { slug: raw.meta.slug };
+    .flatMap((file) => {
+      try {
+        const raw: RawProduct = JSON.parse(
+          fs.readFileSync(path.join(dir, file), "utf-8").replace(/^﻿/, "")
+        );
+        return raw.meta?.slug ? [{ slug: raw.meta.slug }] : [];
+      } catch {
+        return [];
+      }
     });
 }
