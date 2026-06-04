@@ -8,6 +8,8 @@ import SpecsTable from "@/components/SpecsTable";
 import BuyerReviews from "@/components/BuyerReviews";
 import VideoSection from "@/components/VideoSection";
 import AffiliateCTA from "@/components/AffiliateCTA";
+import FAQSection from "@/components/FAQSection";
+import AlternativasSection from "@/components/AlternativasSection";
 import JsonLd from "@/components/JsonLd";
 import SubScores from "@/components/SubScores";
 import Verdict from "@/components/Verdict";
@@ -50,6 +52,7 @@ export default async function ReviewPage({
   if (!data) notFound();
 
   const { producto, precio, reviews_ml, videos_yt, editorial, autoria } = data;
+  const { faq, precioValor, alternativas } = editorial;
   const affiliateUrl = data.link_afiliado ?? "#";
   const pageUrl = `${SITE_URL}/reviews/${slug}`;
 
@@ -156,6 +159,14 @@ export default async function ReviewPage({
             <p className="text-[11px] text-gray-400 mb-4">
               Precio relevado el {autoria.actualizado} · puede variar
             </p>
+            {precioValor && (
+              <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 mb-4">
+                <p className="text-xs font-bold text-green-700 uppercase tracking-wide mb-1">
+                  ¿Vale la pena?
+                </p>
+                <p className="text-sm text-gray-700 leading-relaxed">{precioValor}</p>
+              </div>
+            )}
             <AffiliateCTA href={affiliateUrl} productName={producto.nombre} />
           </div>
         </div>
@@ -265,8 +276,14 @@ export default async function ReviewPage({
       {/* Specs */}
       <SpecsTable specs={producto.specs} />
 
+      {/* FAQ */}
+      <FAQSection faq={faq} />
+
       {/* Videos */}
       <VideoSection videos={videos_yt} />
+
+      {/* Alternativas */}
+      <AlternativasSection alternativas={alternativas} />
 
       {/* Reviews de compradores */}
       <BuyerReviews reviews={reviews_ml} />

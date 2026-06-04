@@ -16,6 +16,16 @@ interface RawFuente {
   aporte: string;
 }
 
+interface RawFaq {
+  pregunta: string;
+  respuesta: string;
+}
+
+interface RawAlternativa {
+  tipo: string;
+  descripcion: string;
+}
+
 interface RawEditorial {
   score: number;
   score_justificacion?: string;
@@ -27,6 +37,10 @@ interface RawEditorial {
   pros?: string[];
   contras?: string[];
   fuentes_citadas?: RawFuente[];
+  // v3 — FAQ, precio-valor, alternativas
+  faq?: RawFaq[];
+  precio_valor?: string;
+  alternativas?: RawAlternativa[];
   // v1 (legacy)
   mejor_para?: string[];
   no_ideal_para?: string[];
@@ -123,6 +137,16 @@ export interface Autoria {
   actualizado: string;
 }
 
+export interface FaqItem {
+  pregunta: string;
+  respuesta: string;
+}
+
+export interface Alternativa {
+  tipo: string;
+  descripcion: string;
+}
+
 export interface NormalizedProduct extends Omit<RawProduct, "editorial" | "autoria"> {
   editorial: {
     score: number;
@@ -134,6 +158,10 @@ export interface NormalizedProduct extends Omit<RawProduct, "editorial" | "autor
     pros: string[];
     contras: string[];
     fuentesCitadas: Fuente[];
+    // v3
+    faq: FaqItem[];
+    precioValor: string | null;
+    alternativas: Alternativa[];
     seoTitle: string;
     seoDescription: string;
     articuloHtml: string;
@@ -178,6 +206,9 @@ function normalize(raw: RawProduct): NormalizedProduct {
       pros: e.pros ?? [],
       contras: e.contras ?? [],
       fuentesCitadas,
+      faq: e.faq ?? [],
+      precioValor: e.precio_valor ?? null,
+      alternativas: e.alternativas ?? [],
       seoTitle: e.seo_title,
       seoDescription: e.seo_description,
       articuloHtml: e.articulo_html,
