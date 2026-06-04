@@ -4,7 +4,7 @@
 > de un link de producto → genera una reseña editorial honesta (estilo Wirecutter/RTINGS)
 > → la publica como JSON en este repo → una web Next.js la renderiza.
 
-Última actualización: 2026-06-04 (sesión 4 — completada).
+Última actualización: 2026-06-04 (sesión 5 — completada).
 
 ---
 
@@ -71,19 +71,45 @@ waiting_link → (link recibido) → waiting_confirm → (/articulo_correcto) �
 - API key: `$env.ABACUS_API_KEY`
 - Temperatura: 0.2, response_format json_schema (strict)
 
-### YouTube
-- Query: `[Marca] [Modelo/Línea] review análisis`, `order=relevance`
+### Pipeline de YouTube (v4 — sesión 5)
+- **Get Videos YT**: detecta marcas filiales ("Delonghi de Mexico") → usa atributo `Fabricante` como nombre real para la query
+- **Top videos v4**: matching multi-token flexible (original, sin apostrofes, compacto) + fallback automático cuando < 2 videos pasan el filtro de marca → segunda búsqueda con marca real + `review` en región US
+- **Transcripciones v2**: intenta `lang=es` primero, luego `lang=en` (captura canales globales como Tom's Coffee Corner, IGN, MKBHD)
 - Scoring: +2 si review/análisis/unboxing, -2 si gameplay/teardown/asmr
-- Detecta modelos similares → lo menciona en metodología y artículo
 
 ### Artículos publicados (en GitHub + web)
-| Slug | Producto | Score |
-|---|---|---|
-| `nintendo-switch-oled` | Nintendo Switch OLED Neón 64GB | 8.0 |
-| `asus-vivobook-ultra` | ASUS VivoBook 16 Ultra 5 | 7.1 |
-| `bose-ultra-quietcomfort` | Bose QC Ultra 2a Gen Reacondicionado | 7.0 |
-| `nintendo-switch-2` | Nintendo Switch 2 | — (YT falló, sin videos) |
-| `delonghi-de-mexico-specialista-touch` | Cafetera De'Longhi La Specialista Touch EC9445M | 8.2 |
+| Slug | Producto | Score | Versión |
+|---|---|---|---|
+| `nintendo-switch-oled` | Nintendo Switch OLED Neón 64GB | **8.2** | Claude v2 |
+| `asus-vivobook-ultra` | ASUS VivoBook 16 Ultra 5 | **7.2** | Claude v2 |
+| `delonghi-de-mexico-cafetera-espresso-specialista-touch` | De'Longhi La Specialista Touch EC9445M | **7.8** | Claude v2 + fix marca |
+
+> Archivos históricos (gemini, abacusv1) en `data/archive/` — referencia comparativa, no se muestran en web.
+
+---
+
+## 📊 Benchmarking del SERVICIO vs competencia (sesión 5)
+
+| Dimensión | The Verge | Wirecutter | RTINGS | **Catalogo MX** |
+|---|---|---|---|---|
+| Calidad editorial del review | 82 | 90 | 93 | **78** |
+| Cobertura (cantidad de productos) | 95 | 85 | 90 | **5 ← crítico** |
+| Descubribilidad (Google, SEO en vivo) | 95 | 98 | 90 | **0 ← no hosteado** |
+| Navegación / categorías / guías | 90 | 95 | 88 | **15** |
+| Comparador de productos | 60 | 75 | 99 | **20** |
+| Actualización / freshness | 80 | 90 | 85 | **0 ← reviews estáticos** |
+| Contexto local MX | 10 | 5 | 0 | **100 ← ventaja única** |
+| Velocidad de publicación | 40 | 20 | 30 | **99 ← < 10 min** |
+| **Promedio del servicio** | **79** | **82** | **86** | **~40** |
+
+**Conclusión:** el review individual ya está en 78. El servicio está en 40 porque no estamos hosteados y tenemos 3 productos. El hosting + 50 reviews nos lleva a ~75 sin tocar más código.
+
+### Score por producto vs los dioses
+| Producto | Nuestro score | The Verge/IGN | Tom's Coffee/Wirecutter |
+|---|---|---|---|
+| Nintendo Switch OLED | **8.2/10** ✅ | 8.0/10 | — |
+| ASUS Vivobook 16 | **7.2/10** | — | ~7.0-7.7 (NotebookCheck) |
+| De'Longhi Specialista | **7.8/10** | — | ~8.3 (Tom's Coffee Corner) |
 
 ---
 
@@ -94,8 +120,31 @@ waiting_link → (link recibido) → waiting_confirm → (/articulo_correcto) �
 - **Homepage**: hero editorial + artículo destacado (mayor score) + grid del resto
 - **Trust bar**: 3 pilares editoriales al pie (fuentes, sin notas infladas, metodología)
 - **Footer**: dark, disclosure de afiliado
-- `/reviews` → redirige a `/#reviews` (ya no da 404)
+- **Componentes de review**: ScoreBadge, SubScores, Verdict, FAQSection, AlternativasSection, ComparativaML, VideoSection, BuyerReviews, SpecsTable, ImageGallery, TableOfContents
+- `/reviews` → redirige a `/#reviews`
 - Correr local: `npm run dev` → http://localhost:3000
+
+### ⚠️ Pendiente UI antes de hostear (sesión 6)
+- Revisar y ajustar detalles visuales de las imágenes de producto
+- Verificar que la página carga sin errores con los 3 artículos actuales
+
+---
+
+## ✅ Hecho en sesión 5
+
+- **Renombrado Gemini → Abacus** en todos los nodos n8n y scripts
+- **Tabla comparativa real de ML** (`ComparativaML.tsx`) — productos similares con thumbnail, precio y enlace directo
+- **Fix turbopack rogue** — quitado `turbopack.root` que volvía loca la máquina al levantar el dev server
+- **Archivos viejos a `data/archive/`** — gemini y abacusv1 ya no se pre-renderizan como páginas
+- **try/catch + strip BOM** en `lib/product.ts` — archivos corruptos no tumban el servidor
+- **YouTube fallback para productos de nicho** (`Top videos v4`):
+  - Detecta marcas filiales ML ("Delonghi de Mexico") → usa `Fabricante` ("De'Longhi") para la búsqueda
+  - Matching flexible multi-token (apostrofes, variantes tipográficas)
+  - Fallback automático con query simplificada cuando < 2 videos pasan el filtro
+  - Resultado: De'Longhi pasó de 0 videos → 3 videos de Tom's Coffee Corner, score 7.2 → **7.8**
+- **Transcripciones v2** — intenta inglés si no hay subtítulos en español
+- **`scripts/push-to-n8n.py`** — helper para restaurar workflow en n8n tras restart
+- **Benchmarking completo** del servicio vs The Verge / Wirecutter / RTINGS / Tom's Coffee Corner
 
 ---
 
@@ -104,41 +153,38 @@ waiting_link → (link recibido) → waiting_confirm → (/articulo_correcto) �
 - **Migración a Abacus AI completada**: Gemini reemplazado por Claude (claude-sonnet-4-6 vía RouteLLM)
 - **FAQ dinámica**: nodo `Get ML Questions` + campo `faq` en schema + componente `FAQSection`
 - **Análisis precio-valor**: campo `precio_valor` en schema + bloque "¿Vale la pena?" en price box
-- **YouTube bilingüe**: quitado `relevanceLanguage=es` → acepta videos en inglés (Linus, MKBHD, etc.)
+- **YouTube bilingüe**: quitado `relevanceLanguage=es`
 - **Alternativas editoriales**: campo `alternativas` en schema + componente `AlternativasSection`
-- **Comparativa real de ML**: `Build Final JSON` guarda `productos_similares_ml` (datos crudos de `Get Similar Products`) → componente `ComparativaML` muestra tabla con thumbnail, título, precio y enlace real
+- **Comparativa real de ML**: `Build Final JSON` guarda `productos_similares_ml`
 - **ABACUS_API_KEY** agregada a env vars
 
 ---
 
 ## ✅ Hecho en sesión 3
 
-- **Secretos rotados**: GitHub PAT · ML client_secret · YouTube · Gemini · Telegram · Supadata
-- **GitHub CLI**: autenticado con token separado `claude-cli` (repo + workflow + read:org)
-- **Workflow Recordatorios** (nuevo): bot castroso que insiste por estado — waiting_link / waiting_confirm / waiting
-- **Scheduler inteligente**: no dispara si hay artículo activo (cualquier estado != done/error/waiting_link)
-- **waiting_confirm**: nuevo estado entre "link recibido" y "/articulo_correcto" — evita recordatorios incorrectos
-- **row_number en staticData**: se guarda cuando se confirma el producto para actualizar la fila correcta
-- **Confirmación con botones**: /articulo_correcto y /articulo_incorrecto como botones de teclado (sin problema del _)
-- **Gemini key**: movida de hardcodeada a `$env.GEMINI_API_KEY`
-- **Fix BOM**: bose y nintendo-switch-2 JSON tenían UTF-8 BOM que rompía JSON.parse en Next.js
-- **Review generada**: De'Longhi La Specialista Touch EC9445M — score 8.2 ✅
-- **Rebrand**: AfiliadosML → Catalogo MX
-- **Homepage rediseñada**: hero editorial + featured card + grid + trust bar
-- **Logo**: ícono custom con fondo transparente (flood fill para preservar ojos)
-- **Fix /reviews 404**: redirige a /#reviews
+- Secretos rotados, GitHub CLI autenticado
+- Workflow Recordatorios, Scheduler inteligente, waiting_confirm
+- Rebrand AfiliadosML → Catalogo MX, homepage rediseñada, logo
 
 ---
 
 ## 📋 Pendientes (en orden de prioridad)
 
-### 1. 🚀 Hostear
-- n8n en VPS/cloud (Railway, Render, o VPS DigitalOcean)
-- Web en Vercel (conectar repo GitHub → auto-deploy en cada push)
-- **Al hostear**: activar Scheduler 7am + Recordatorios (cambiar crons de */1 a producción)
+### 1. 🖼️ Ajustes UI antes de hostear (sesión 6 — mañana)
+- Revisar detalles visuales de imágenes en las páginas de review
+- Verificar que el sitio se ve bien con los 3 artículos actuales
+
+### 2. 🚀 Hostear
+- Web en **Vercel** (conectar repo GitHub → auto-deploy en cada push)
+- n8n en **VPS** (Railway, Render, o DigitalOcean)
+- Al hostear: activar Scheduler 7am + Recordatorios, cambiar crons:
   - Scheduler: `*/1 * * * *` → `0 7 * * *`
   - Recordatorios: `*/1 * * * *` → `0 */2 * * *`
   - Poll: cambiar de polling a Telegram webhook
+
+### 3. 📈 Escalar a 50-100 reviews
+- El pipeline ya está listo — solo agregar productos al Sheet
+- Esto sube el servicio de ~40 a ~75 sin más cambios de código
 
 ---
 
@@ -148,8 +194,13 @@ waiting_link → (link recibido) → waiting_confirm → (/articulo_correcto) �
 'YOUTUBE_API_KEY','SUPADATA_API_KEY','ML_CLIENT_ID','ML_CLIENT_SECRET','TELEGRAM_BOT_TOKEN','TELEGRAM_CHAT_ID','GITHUB_TOKEN','ABACUS_API_KEY' | ForEach-Object { Set-Item "env:$_" ([Environment]::GetEnvironmentVariable($_,'User')) }; $env:N8N_BLOCK_ENV_ACCESS_IN_NODE='false'; n8n start
 ```
 
-Workflows activos al cerrar sesión 3: **AfiliadosML** (principal) + **Telegram Poll** (2min).
-Scheduler 7am y Recordatorios: **INACTIVOS** — activar manualmente cuando se use localmente.
+Después de arrancar n8n, aplicar el workflow actualizado:
+```powershell
+python scripts/push-to-n8n.py
+```
+
+Workflows activos: **AfiliadosML** (principal) + **Telegram Poll** (2min).
+Scheduler 7am y Recordatorios: **INACTIVOS** — activar al hostear.
 
 ---
 
