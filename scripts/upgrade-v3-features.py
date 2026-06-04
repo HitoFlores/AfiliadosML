@@ -17,7 +17,7 @@ BACKUP   = os.path.join(os.path.dirname(__file__), "..", "n8n-backup",
 
 # Node IDs
 ID_YT_SEARCH  = "af3cab7a-7f15-4a28-ab93-49561388b7a0"  # Get Videos YT
-ID_BUILD      = "944acde7-4624-4ddd-96f5-a8e11898b46d"  # Build Gemini Prompt
+ID_BUILD      = "944acde7-4624-4ddd-96f5-a8e11898b46d"  # Build Abacus Prompt
 ID_FINAL      = "df9c2a23-3d8a-4abf-aad4-fd07971aeeaf"  # Build Final JSON
 
 def api_get(path):
@@ -66,9 +66,9 @@ NEW_SCHEMA_FIELDS = r"""    faq: {
     },"""
 
 # ── 3. Nuevos campos en Build Final JSON ─────────────────────────────────────
-FINAL_JSON_INJECTION = """    faq:           parsedGemini.faq || [],
-    precio_valor:  parsedGemini.precio_valor || null,
-    alternativas:  parsedGemini.alternativas || [],"""
+FINAL_JSON_INJECTION = """    faq:           parsedAbacus.faq || [],
+    precio_valor:  parsedAbacus.precio_valor || null,
+    alternativas:  parsedAbacus.alternativas || [],"""
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 print("Leyendo backup...")
@@ -216,7 +216,7 @@ for node in wf["nodes"]:
         code = params.get("jsCode", "")
         if "faq:" not in code:
             # Insertar después de "fuentesCitadas" en el return
-            OLD_FUENTES = "fuentes_citadas:   parsedGemini.fuentes_citadas || [],"
+            OLD_FUENTES = "fuentes_citadas:   parsedAbacus.fuentes_citadas || [],"
             if OLD_FUENTES in code:
                 params["jsCode"] = code.replace(
                     OLD_FUENTES,

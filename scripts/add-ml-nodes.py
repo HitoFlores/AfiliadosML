@@ -3,7 +3,7 @@ add-ml-nodes.py
 Agrega al pipeline AfiliadosML:
   1. Get ML Questions  — preguntas reales de compradores via ML API
   2. Get Similar Products — búsqueda por categoría + rango de precio
-Inserta ambos entre Transcripciones y Build Gemini Prompt.
+Inserta ambos entre Transcripciones y Build Abacus Prompt.
 Actualiza el Build Prompt para usar los datos reales.
 """
 import json, urllib.request, uuid, os
@@ -16,7 +16,7 @@ BACKUP = os.path.join(os.path.dirname(__file__), "..", "n8n-backup",
                       "iSQ59pcFepjqmBvC_AfiliadosML.json")
 
 ID_BUILD        = "944acde7-4624-4ddd-96f5-a8e11898b46d"
-NAME_BUILD      = "Build Gemini Prompt"
+NAME_BUILD      = "Build Abacus Prompt"
 NAME_TRANS      = "Transcripciones"
 ID_ML_Q         = str(uuid.uuid4())
 ID_ML_SIM       = str(uuid.uuid4())
@@ -145,7 +145,7 @@ print(f"OK Nodos agregados: {NAME_ML_Q}, {NAME_ML_SIM}")
 # ── 2. Actualizar conexiones ──────────────────────────────────────────────────
 conns = wf["connections"]
 
-# Quitar: Transcripciones -> Build Gemini Prompt
+# Quitar: Transcripciones -> Build Abacus Prompt
 if NAME_TRANS in conns:
     for i, output_list in enumerate(conns[NAME_TRANS].get("main", [])):
         conns[NAME_TRANS]["main"][i] = [
@@ -169,7 +169,7 @@ conns[NAME_ML_Q] = {"main": [[
 ]]}
 print(f"OK Conectado: {NAME_ML_Q} -> {NAME_ML_SIM}")
 
-# Agregar: Get Similar Products -> Build Gemini Prompt
+# Agregar: Get Similar Products -> Build Abacus Prompt
 conns[NAME_ML_SIM] = {"main": [[
     {"node": NAME_BUILD, "type": "main", "index": 0}
 ]]}

@@ -41,7 +41,7 @@ Web Next.js (App Router) — "Catalogo MX" — homepage dinámica + /reviews/[sl
    → Sheet: fila pasa a waiting
 7. Usuario va a ML Partners → genera link de afiliado → responde al bot
 8. Poll detecta el link → estatus ready → dispara Pass 2
-9. Pass 2: Gemini genera review → commitea data/{slug}.json → "✅ Review publicada"
+9. Pass 2: Abacus (Claude) genera review → commitea data/{slug}.json → "✅ Review publicada"
    → Sheet: fila pasa a done
 ```
 
