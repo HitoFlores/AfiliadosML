@@ -26,6 +26,16 @@ interface RawAlternativa {
   descripcion: string;
 }
 
+interface RawProductoSimilarML {
+  id: string;
+  titulo: string;
+  precio: number;
+  precio_original: number;
+  thumbnail: string | null;
+  permalink: string;
+  envio_gratis: boolean;
+}
+
 interface RawEditorial {
   score: number;
   score_justificacion?: string;
@@ -88,6 +98,7 @@ export interface RawProduct {
     transacciones: number;
   };
   link_afiliado: string | null;
+  productos_similares_ml?: RawProductoSimilarML[];
   reviews_ml: {
     total: number;
     con_comentario: number;
@@ -145,6 +156,16 @@ export interface FaqItem {
 export interface Alternativa {
   tipo: string;
   descripcion: string;
+}
+
+export interface ProductoSimilarML {
+  id: string;
+  titulo: string;
+  precio: number;
+  precio_original: number;
+  thumbnail: string | null;
+  permalink: string;
+  envio_gratis: boolean;
 }
 
 export interface NormalizedProduct extends Omit<RawProduct, "editorial" | "autoria"> {

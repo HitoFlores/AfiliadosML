@@ -10,6 +10,7 @@ import VideoSection from "@/components/VideoSection";
 import AffiliateCTA from "@/components/AffiliateCTA";
 import FAQSection from "@/components/FAQSection";
 import AlternativasSection from "@/components/AlternativasSection";
+import ComparativaML from "@/components/ComparativaML";
 import JsonLd from "@/components/JsonLd";
 import SubScores from "@/components/SubScores";
 import Verdict from "@/components/Verdict";
@@ -281,6 +282,9 @@ export default async function ReviewPage({
 
       {/* Videos */}
       <VideoSection videos={videos_yt} />
+
+      {/* Tabla comparativa con productos reales de ML */}
+      <ComparativaML productos={data.productos_similares_ml ?? []} />
 
       {/* Alternativas */}
       <AlternativasSection alternativas={alternativas} />
