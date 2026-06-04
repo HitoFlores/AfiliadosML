@@ -1,0 +1,251 @@
+﻿{
+    "meta":  {
+                 "producto_id":  "MLM67134419",
+                 "slug":  "asus-vivobook-ultra-gemini",
+                 "categoria":  "MLM-NOTEBOOKS",
+                 "generado_en":  "2026-06-02T19:19:01.833Z"
+             },
+    "producto":  {
+                     "nombre":  "Laptop Vivobook 16 Ultra 5 16gb 1tbssd Con Mochila Y Mouse Asus",
+                     "marca":  "Asus",
+                     "modelo":  "X1607CA",
+                     "descripcion":  "La Laptop Vivobook 16 Ultra 5 es la herramienta ideal para quienes buscan un equilibrio entre rendimiento y estilo. Con un procesador Intel Core Ultra 5 y 16 GB de RAM, esta laptop está diseñada para manejar tareas exigentes, desde la edición de video hasta el gaming casual. Su pantalla LED de 16 pulgadas con resolución WUXGA (1920 x 1200) ofrece imágenes nítidas y vibrantes, mientras que la tecnología antirreflejo garantiza una experiencia visual cómoda en cualquier entorno.\n\nEl diseño en Cool Silver no solo es atractivo, sino también funcional. Equipado con un teclado retroiluminado, permite trabajar en condiciones de poca luz sin inconvenientes. Además, su sistema de refrigeración por aire asegura un rendimiento óptimo, manteniendo la laptop fresca incluso durante largas sesiones de uso.\n\nLa conectividad es otro de sus puntos fuertes, con múltiples puertos USB Type-A y Type-C, así como una salida HDMI, lo que facilita la conexión a otros dispositivos. Incluye un mouse óptico USB y una mochila, haciendo que sea fácil llevar tu equipo a donde sea necesario. Con una batería de 3640 mAh, disfrutarás de hasta 6 horas de uso continuo, ideal para el trabajo o el estudio.\n\nLa cámara web de 1080P FHD y el micrófono integrado son perfectos para videoconferencias y clases en línea, asegurando que siempre te veas y escuches con claridad. Con un peso de solo 1.7 kg, es ligera y portátil, lo que la convierte en una excelente opción para estudiantes y profesionales en movimiento. La Laptop Vivobook 16 Ultra 5 es más que un dispositivo, es una inversión en productividad y estilo.",
+                     "caracteristicas_principales":  [
+                                                         "Modo de sonido Estéreo."
+                                                     ],
+                     "specs":  {
+                                   "Marca":  "Asus",
+                                   "Línea":  "VivoBook",
+                                   "Modelo":  "X1607CA",
+                                   "Modelo alfanumérico":  "X1607CA-MB167W",
+                                   "Color":  "Cool silver",
+                                   "Capacidad total del módulo de memoria RAM":  "16 GB",
+                                   "Capacidad del disco duro":  "0 MB",
+                                   "Capacidad de disco SSD":  "1 TB",
+                                   "Frecuencia de actualización de la pantalla":  "60 Hz",
+                                   "Resolución de la pantalla":  "1920 px x 1200 px",
+                                   "Tarjeta gráfica":  "Intel Graphics (Intel AI Boost NPU hasta 13TOPS)",
+                                   "Marca del procesador":  "Intel",
+                                   "Línea del procesador":  "Core Ultra 5",
+                                   "Modelo del procesador":  "225H",
+                                   "Nombre del sistema operativo":  "Windows",
+                                   "Versión del sistema operativo":  "11",
+                                   "Edición del sistema operativo":  "Home",
+                                   "Con pantalla táctil":  "No",
+                                   "Marca de la tarjeta gráfica integrada":  "intel",
+                                   "Linea  de la tarjeta gráfica integrada":  "Inel Arc graphics",
+                                   "Modelo de la tarjeta gráfica integrada":  "Intel Arc 130T",
+                                   "Capacidade de armazenamento de dados M2":  "1 TB",
+                                   "Velocidad de la memoria RAM":  "56.005 GHz",
+                                   "Velocidad máxima del procesador":  "4.9 GHz",
+                                   "Velocidad mínima del procesador":  "1.7 GHz",
+                                   "Color principal":  "Plateado",
+                                   "Modelo detallado":  "Vivobook 16 X1607CA-MB167W",
+                                   "Tipo de memoria RAM":  "DDR5",
+                                   "Tipos de memoria de video":  "Compartida",
+                                   "Cantidad de núcleos":  "14",
+                                   "Tipo de resolución de la pantalla ":  "WUXGA (1920 x 1200) 16:10",
+                                   "Tipo de producto":  "Notebook",
+                                   "Con Bluetooth":  "Sí",
+                                   "Con cámara web":  "Sí",
+                                   "Con micrófono":  "Sí",
+                                   "Con salida para audífonos":  "Sí",
+                                   "Con pad numérico":  "Sí",
+                                   "Con lector de huella digital":  "No",
+                                   "Con teclado retroiluminado":  "Sí",
+                                   "Con pantalla retina":  "No",
+                                   "Con lector de tarjeta de memoria":  "No",
+                                   "Con pantalla antirreflejo":  "Sí",
+                                   "Tipo de pantalla":  "LED",
+                                   "Modos de sonido":  "Estéreo",
+                                   "Accesorios incluidos":  "Adaptador TYPE-C 65W, Mochila, Mouse Óptico Usb",
+                                   "Tipo de resolución de video de la webcam":  "1080P FHD",
+                                   "Resolución de la imagen fija de la webcam":  "1080 Mpx",
+                                   "Duración máxima de la batería":  "6 h",
+                                   "Cantidad de ranuras para la memoria RAM":  "1",
+                                   "Conectividad":  "2 USB Type-A 2 USB Type-C1 HDMI 1.41 Audio Jack",
+                                   "Año de lanzamiento":  "2026",
+                                   "Material":  "Plástico (PCABS)",
+                                   "Incluye prueba de sistema operativo":  "No",
+                                   "Es gamer":  "Sí",
+                                   "Idioma del teclado":  "Español",
+                                   "Fabricante":  "Intel",
+                                   "Capacidad de la batería":  "3.64 Ah",
+                                   "Tamaño de la pantalla":  "16 \"",
+                                   "Tipo de refrigeración":  "Aire",
+                                   "Ancho":  "35.7 cm",
+                                   "Profundidad":  "25.06 cm",
+                                   "Altura":  "1.79 cm",
+                                   "Peso":  "1.7 kg",
+                                   "Optimizado para IA":  "No",
+                                   "Tipo de batería":  "Ion de litio",
+                                   "Interfaz del SSD":  "PCIe",
+                                   "Tipo de disco":  "SSD",
+                                   "Capacidad total de disco":  "1 GB",
+                                   "Relación de aspecto":  "16:10",
+                                   "Tipo de panel":  "IPS",
+                                   "Tipos de puertos de video":  "DisplayPort",
+                                   "Capacidad máxima soportada de la memoria RAM":  "16 GB",
+                                   "Gama de colores":  "45% NTSC",
+                                   "Cantidad de bocinas":  "2",
+                                   "Con Wi-Fi":  "Sí"
+                               },
+                     "imagenes":  [
+                                      "https://http2.mlstatic.com/D_NQ_NP_892430-MLA109451009311_032026-F.jpg",
+                                      "https://http2.mlstatic.com/D_NQ_NP_903861-MLA109447550437_032026-F.jpg",
+                                      "https://http2.mlstatic.com/D_NQ_NP_607263-MLA108638590994_032026-F.jpg",
+                                      "https://http2.mlstatic.com/D_NQ_NP_637256-MLA109449788559_032026-F.jpg",
+                                      "https://http2.mlstatic.com/D_NQ_NP_861102-MLA109450473949_032026-F.jpg",
+                                      "https://http2.mlstatic.com/D_NQ_NP_646756-MLA108638741168_032026-F.jpg",
+                                      "https://http2.mlstatic.com/D_NQ_NP_753510-MLA108642109356_032026-F.jpg",
+                                      "https://http2.mlstatic.com/D_NQ_NP_940933-MLA108639040050_032026-F.jpg"
+                                  ]
+                 },
+    "precio":  {
+                   "actual":  12499,
+                   "original":  23299,
+                   "descuento_pct":  46,
+                   "moneda":  "MXN",
+                   "envio_gratis":  true,
+                   "garantia":  "Garantía de fábrica: 12 meses"
+               },
+    "vendedor":  {
+                     "item_id":  "MLM5368722072",
+                     "nombre":  "MERCADOLIBRE ELECTRONICA_MX",
+                     "reputacion":  "5_green",
+                     "power_seller":  "platinum",
+                     "transacciones":  2809435
+                 },
+    "link_afiliado":  "https://meli.la/2Ptd5TY",
+    "reviews_ml":  {
+                       "total":  0,
+                       "con_comentario":  0,
+                       "calificacion_promedio":  0,
+                       "destacadas":  [
+
+                                      ]
+                   },
+    "videos_yt":  [
+                      {
+                          "video_id":  "F6BGoToQPXg",
+                          "titulo":  "¡LAPTOP CON PANTALLA OLED! Asus Vivobook Go 15 OLED | Unboxing y vistazo",
+                          "canal":  "Isa Marcial",
+                          "url":  "https://www.youtube.com/watch?v=F6BGoToQPXg",
+                          "thumbnail":  "https://i.ytimg.com/vi/F6BGoToQPXg/hqdefault.jpg",
+                          "publicado":  "2024-01-11",
+                          "vistas":  400835
+                      },
+                      {
+                          "video_id":  "kSP6A8Zo7vc",
+                          "titulo":  "Asus Vivobook 16 / Juegos ligeros, Home Office y Estudios [REVIEW]",
+                          "canal":  "KALUS",
+                          "url":  "https://www.youtube.com/watch?v=kSP6A8Zo7vc",
+                          "thumbnail":  "https://i.ytimg.com/vi/kSP6A8Zo7vc/hqdefault.jpg",
+                          "publicado":  "2024-09-10",
+                          "vistas":  130208
+                      },
+                      {
+                          "video_id":  "ot0jOvnHTH0",
+                          "titulo":  "ASUS Vivobook 16 Hands On First Look Review : Best Student Laptop?",
+                          "canal":  "GadgetsBoy",
+                          "url":  "https://www.youtube.com/watch?v=ot0jOvnHTH0",
+                          "thumbnail":  "https://i.ytimg.com/vi/ot0jOvnHTH0/hqdefault.jpg",
+                          "publicado":  "2025-01-10",
+                          "vistas":  129544
+                      }
+                  ],
+    "editorial":  {
+                      "score":  7.1,
+                      "score_justificacion":  "Ofrece un equilibrio decente para productividad y estudio con un buen procesador, pero la batería y el audio no destacan y el rendimiento para gaming es limitado.",
+                      "sub_scores":  [
+                                         {
+                                             "dimension":  "Rendimiento",
+                                             "score":  7.5,
+                                             "justificacion":  "El procesador Intel Core Ultra 5 y 16 GB de RAM son adecuados para tareas exigentes y programas 3D ligeros, aunque el gaming es limitado a títulos poco demandantes según análisis de modelos similares."
+                                         },
+                                         {
+                                             "dimension":  "Pantalla",
+                                             "score":  7,
+                                             "justificacion":  "La pantalla LED de 16 pulgadas con resolución WUXGA y tecnología antirreflejo es buena para la productividad, aunque no ofrece la vivacidad del OLED ni una alta tasa de refresco vista en otros modelos de la línea."
+                                         },
+                                         {
+                                             "dimension":  "Diseño y Portabilidad",
+                                             "score":  8,
+                                             "justificacion":  "Con 1.7 kg, es ligera para su tamaño de 16 pulgadas y presenta un acabado estético metálico, aunque su construcción es en plástico y la pantalla se levanta si se abre con una sola mano."
+                                         },
+                                         {
+                                             "dimension":  "Batería",
+                                             "score":  5.5,
+                                             "justificacion":  "Mientras el fabricante promete hasta 6 horas, una revisión independiente de un modelo similar reporta una duración de aproximadamente 4 horas, lo cual es limitado para uso continuo."
+                                         },
+                                         {
+                                             "dimension":  "Teclado y Conectividad",
+                                             "score":  8,
+                                             "justificacion":  "El teclado retroiluminado con tres niveles de brillo y teclado numérico ofrece una buena experiencia de escritura, complementado por una conectividad moderna con WiFi 6E y varios puertos USB-A y USB-C."
+                                         },
+                                         {
+                                             "dimension":  "Cámara y Audio",
+                                             "score":  6.5,
+                                             "justificacion":  "La cámara web 1080P FHD es un punto a favor para videollamadas, pero los altavoces estéreo pueden distorsionar ligeramente a volumen alto según pruebas en modelos similares."
+                                         }
+                                     ],
+                      "veredicto_corto":  "La Vivobook 16 Ultra 5 es una laptop competente para estudiantes y profesionales que priorizan la productividad y un diseño ligero. Su procesador Ultra 5 y 16 GB de RAM ofrecen un rendimiento sólido, pero no esperes milagros en autonomía o calidad de audio.",
+                      "compralo_si":  [
+                                          "Necesitas buena potencia para productividad",
+                                          "Buscas una laptop ligera de 16 pulgadas",
+                                          "Valorar un teclado cómodo y retroiluminado",
+                                          "Para uso de oficina y estudio",
+                                          "Conectividad moderna y variada",
+                                          "Presupuesto ajustado para estas specs"
+                                      ],
+                      "saltatelo_si":  [
+                                           "Priorizas batería de larga duración",
+                                           "Buscas una experiencia multimedia premium",
+                                           "Eres gamer de títulos exigentes",
+                                           "Necesitas una pantalla OLED de alta gama"
+                                       ],
+                      "pros":  [
+                                   "Procesador Intel Core Ultra 5 y 16 GB de RAM para buen rendimiento",
+                                   "Pantalla de 16 pulgadas WUXGA antirreflejo ideal para productividad",
+                                   "Diseño ligero y estético para su tamaño (1.7 kg)",
+                                   "Teclado retroiluminado con teclado numérico y buen recorrido",
+                                   "Amplia conectividad con USB-C, USB-A y HDMI, además de WiFi 6E",
+                                   "Cámara web 1080P FHD para videollamadas claras",
+                                   "Almacenamiento SSD de 1 TB para mayor velocidad"
+                               ],
+                      "contras":  [
+                                      "La duración de la batería puede ser menor a lo prometido (aproximadamente 4 horas)",
+                                      "Los altavoces estéreo pueden distorsionar ligeramente a volumen alto",
+                                      "El rendimiento gráfico es limitado para juegos exigentes",
+                                      "La pantalla no es OLED ni tiene alta tasa de refresco",
+                                      "La pantalla se levanta si se abre con una sola mano",
+                                      "Las letras del teclado pueden parecer pegatinas bajo cierta iluminación"
+                                  ],
+                      "fuentes_citadas":  [
+                                              {
+                                                  "tipo":  "video",
+                                                  "autor":  "Isa Marcial",
+                                                  "aporte":  "Detalles sobre el diseño, teclado, conectividad, WiFi 6E, y la experiencia de unboxing de un modelo similar (Vivobook Go 15 OLED)."
+                                              },
+                                              {
+                                                  "tipo":  "video",
+                                                  "autor":  "KALUS",
+                                                  "aporte":  "Análisis de rendimiento, pantalla, batería, puertos, teclado, audio y portabilidad de un modelo similar (Asus Vivobook 16 con Intel Core i5 1235U)."
+                                              },
+                                              {
+                                                  "tipo":  "video",
+                                                  "autor":  "GadgetsBoy",
+                                                  "aporte":  "Mención de un modelo similar (ASUS Vivobook 16) en un primer vistazo, aunque sin transcripción detallada."
+                                              }
+                                          ],
+                      "seo_title":  "Review Asus Vivobook 16 Ultra 5: ¿Vale la pena para el trabajo?",
+                      "seo_description":  "Análisis honesto de la Asus Vivobook 16 Ultra 5. Descubre si su Intel Core Ultra 5, 16GB RAM y pantalla WUXGA cumplen para tu día a día. Pros y contras.",
+                      "articulo_html":  "\u003ch2\u003eVeredicto Rápido: La Vivobook 16 Ultra 5, ¿un acierto equilibrado?\u003c/h2\u003e\u003cp\u003eLa Laptop Vivobook 16 Ultra 5 se presenta como una opción atractiva para quienes buscan un equipo versátil sin romper la alcancía. Con un procesador Intel Core Ultra 5 y 16 GB de RAM, promete solvencia para el trabajo y el estudio. Sin embargo, nuestro análisis revela que, si bien cumple en rendimiento y portabilidad, hay aspectos como la batería y el audio que no terminan de convencer. Es una herramienta funcional, pero con sus limitaciones.\u003c/p\u003e\u003ch2\u003e¿Qué es la Vivobook 16 Ultra 5 y qué esperar?\u003c/h2\u003e\u003cp\u003eLa Asus Vivobook 16 Ultra 5 es una laptop diseñada para ofrecer un balance entre rendimiento y portabilidad. El fabricante la posiciona como una herramienta capaz de manejar desde edición de video hasta gaming casual, destacando su procesador Intel Core Ultra 5, 16 GB de RAM y 1 TB de almacenamiento SSD. Su pantalla LED de 16 pulgadas con resolución WUXGA (1920 x 1200) y acabado antirreflejo busca una experiencia visual cómoda.\u003c/p\u003e\u003cp\u003eEs importante señalar que las reseñas en video disponibles corresponden a modelos similares de la línea Vivobook, pero no exactamente a esta configuración específica (Ultra 5, 16GB RAM, 1TB SSD). Por ejemplo, Isa Marcial revisa una Vivobook Go 15 OLED con procesador AMD y 8 GB de RAM, mientras que KALUS analiza una Vivobook 16 con un Intel Core i5 de 12ª generación y 12 GB de RAM. Las conclusiones de estos videos son orientativas, pero pueden variar respecto a este modelo específico en aspectos como el rendimiento puro del procesador o la calidad de la pantalla.\u003c/p\u003e\u003ch2\u003eLo bueno: Rendimiento sólido y diseño funcional\u003c/h2\u003e\u003cp\u003eLa Vivobook 16 Ultra 5 destaca por su configuración interna. El procesador Intel Core Ultra 5, combinado con 16 GB de RAM y un SSD de 1 TB, la posiciona bien para tareas exigentes y multitarea. Aunque las pruebas en modelos con procesadores anteriores (como el i5 de 12ª generación revisado por KALUS) ya mostraban un buen desempeño en programas 3D no muy pesados y juegos ligeros (entre 35 y 45 FPS en configuraciones bajas), se espera que el Ultra 5 mejore estas capacidades.\u003c/p\u003e\u003cp\u003eLa portabilidad es otro de sus puntos fuertes. Con un peso de 1.7 kg para una laptop de 16 pulgadas, es considerablemente ligera. Isa Marcial, al sostener un modelo similar, notó una “sensación de muy buena ligereza”. El diseño en Cool Silver, aunque de construcción plástica, ofrece una “estética metálica” que luce bien, según Isa Marcial.\u003c/p\u003e\u003cp\u003eEl teclado es un acierto para la productividad. Ofrece un “muy buen recorrido” y “teclas de buena altura para una escritura cómoda”, como menciona Isa Marcial. Además, incluye teclado numérico y es retroiluminado con tres niveles de brillo, una característica muy útil para trabajar en entornos con poca luz. La conectividad también es robusta, con múltiples puertos USB Type-A y Type-C, salida HDMI, y la inclusión de WiFi 6E, que garantiza una conexión inalámbrica rápida y estable.\u003c/p\u003e\u003cp\u003eLa pantalla de 16 pulgadas con resolución WUXGA y acabado antirreflejo es adecuada para largas sesiones de trabajo o estudio, reduciendo los reflejos y la fatiga visual. La cámara web 1080P FHD es un plus para videollamadas y clases en línea, ofreciendo una calidad de imagen superior a los 720p que se encuentran en muchos modelos de la competencia, como el que revisa KALUS.\u003c/p\u003e\u003ch2\u003eLo malo y a tener en cuenta: Autonomía y detalles de construcción\u003c/h2\u003e\u003cp\u003eUno de los puntos más críticos de esta laptop es la duración de su batería. Mientras el fabricante promete “hasta 6 horas de uso continuo” con su batería de 3640 mAh, la experiencia de KALUS con un modelo similar (45 Wh) arrojó una autonomía de “aproximadamente 4 horas”, que puede variar según el brillo de la pantalla. Esta diferencia es significativa y sugiere que la Vivobook 16 Ultra 5 podría quedarse corta para jornadas completas sin acceso a un enchufe.\u003c/p\u003e\u003cp\u003eEn cuanto al diseño, KALUS menciona un detalle que puede resultar molesto: al ser tan ligera, si intentas abrir la pantalla con una sola mano, “se va a levantar” la base de la laptop, requiriendo el uso de ambas manos. Además, bajo ciertas condiciones de iluminación, las letras del teclado pueden dar la impresión de ser “pegatinas”, lo que resta un poco a la percepción de calidad.\u003c/p\u003e\u003cp\u003eEl audio, aunque estéreo, no es su punto más fuerte. KALUS, al probar los altavoces de un modelo similar, notó que “distorsionan un poco en vivo” a volumen alto, lo que podría afectar la experiencia multimedia si eres exigente con el sonido.\u003c/p\u003e\u003cp\u003eFinalmente, aunque el procesador Ultra 5 es competente, las expectativas de “gaming casual” deben ser realistas. Las gráficas integradas, aunque mejoradas, seguirán limitando la experiencia a títulos poco demandantes o con configuraciones gráficas muy bajas, como se observó en las pruebas de juegos ligeros en un modelo similar.\u003c/p\u003e\u003ch2\u003e¿Para quién sí y para quién no?\u003c/h2\u003e\u003ch3\u003eCómprala si:\u003c/h3\u003e\u003cul\u003e\u003cli\u003eNecesitas una laptop potente para tareas de productividad, estudio o trabajo de oficina.\u003c/li\u003e\u003cli\u003eBuscas una pantalla grande de 16 pulgadas con resolución WUXGA y antirreflejo.\u003c/li\u003e\u003cli\u003eValorar la portabilidad y ligereza para llevarla contigo.\u003c/li\u003e\u003cli\u003eRequiere un teclado cómodo, retroiluminado y con teclado numérico.\u003c/li\u003e\u003cli\u003eNecesitas buena conectividad con puertos modernos y WiFi 6E.\u003c/li\u003e\u003cli\u003eTu presupuesto es ajustado para estas especificaciones de rendimiento.\u003c/li\u003e\u003c/ul\u003e\u003ch3\u003eEvítala si:\u003c/h3\u003e\u003cul\u003e\u003cli\u003eLa duración de la batería es tu principal prioridad para uso fuera de casa.\u003c/li\u003e\u003cli\u003eEres un gamer que busca correr títulos exigentes con fluidez.\u003c/li\u003e\u003cli\u003eBuscas una experiencia multimedia premium con audio y pantalla de alta gama (OLED, alta tasa de refresco).\u003c/li\u003e\u003cli\u003eNo te gusta tener que usar ambas manos para abrir la pantalla.\u003c/li\u003e\u003c/ul\u003e\u003ch2\u003eConclusión: Una opción equilibrada con sus matices\u003c/h2\u003e\u003cp\u003eLa Laptop Vivobook 16 Ultra 5 con Intel Core Ultra 5, 16 GB de RAM y 1 TB SSD se posiciona como una opción sólida para el segmento de productividad y estudio. Ofrece un rendimiento más que suficiente para la mayoría de las tareas, una pantalla cómoda y un diseño ligero. Sin embargo, sus puntos débiles en autonomía de batería y la calidad de audio son aspectos a considerar antes de tomar una decisión.\u003c/p\u003e\u003cp\u003eSi tus prioridades son el rendimiento para el trabajo y la portabilidad, y puedes vivir con una batería que no dura todo el día y un audio promedio, esta Vivobook podría ser una buena inversión. Para aquellos que buscan una experiencia multimedia inmersiva o una autonomía excepcional, quizás sea mejor explorar otras alternativas.\u003c/p\u003e\u003cp\u003ePuedes encontrar la Laptop Vivobook 16 Ultra 5 en Mercado Libre y evaluar si sus características se ajustan a tus necesidades.\u003c/p\u003e"
+                  },
+    "autoria":  {
+                    "nombre":  "Hito Flores",
+                    "tagline":  "Análisis independiente de productos en Mercado Libre México",
+                    "metodologia":  "Este análisis sintetiza 2 reseñas en video de creadores independientes y 0 opiniones de compradores verificados de Mercado Libre. ",
+                    "actualizado":  "2026-06-02"
+                }
+}
