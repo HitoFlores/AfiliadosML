@@ -18,6 +18,8 @@ for (const file of files) {
     patchTelegramPoll(workflow);
   }
 
+  sanitizeWorkflowForImport(workflow);
+
   // CLI execution is explicit; do not let imported schedules run as daemons.
   workflow.active = false;
 
@@ -30,6 +32,31 @@ function findNode(workflow, name) {
   const node = workflow.nodes.find((entry) => entry.name === name);
   if (!node) throw new Error(`Missing node: ${name}`);
   return node;
+}
+
+function sanitizeWorkflowForImport(workflow) {
+  for (const key of [
+    "createdAt",
+    "updatedAt",
+    "versionId",
+    "activeVersionId",
+    "versionCounter",
+    "triggerCount",
+    "shared",
+    "tags",
+    "activeVersion",
+    "meta",
+    "pinData",
+    "isArchived",
+    "staticData",
+  ]) {
+    delete workflow[key];
+  }
+
+  workflow.description = workflow.description ?? "";
+  workflow.settings = {
+    executionOrder: workflow.settings?.executionOrder ?? "v1",
+  };
 }
 
 function patchTelegramPoll(workflow) {
