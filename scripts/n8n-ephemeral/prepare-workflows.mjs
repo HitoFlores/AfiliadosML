@@ -16,6 +16,11 @@ for (const file of files) {
 
   if (workflow.name === "AfiliadosML - Telegram Poll") {
     patchTelegramPoll(workflow);
+    addExecuteTrigger(workflow, "Poll Telegram");
+  }
+
+  if (workflow.name === "AfiliadosML - Scheduler 7am") {
+    addExecuteTrigger(workflow, "Leer Sheet");
   }
 
   sanitizeWorkflowForImport(workflow);
@@ -56,6 +61,24 @@ function sanitizeWorkflowForImport(workflow) {
   workflow.description = workflow.description ?? "";
   workflow.settings = {
     executionOrder: workflow.settings?.executionOrder ?? "v1",
+  };
+}
+
+function addExecuteTrigger(workflow, targetNodeName) {
+  const triggerName = "Ephemeral Execute Trigger";
+  if (workflow.nodes.some((node) => node.name === triggerName)) return;
+
+  workflow.nodes.push({
+    id: `ephemeral-${workflow.id}`,
+    name: triggerName,
+    type: "n8n-nodes-base.executeWorkflowTrigger",
+    typeVersion: 1,
+    position: [-500, -200],
+    parameters: {},
+  });
+
+  workflow.connections[triggerName] = {
+    main: [[{ node: targetNodeName, type: "main", index: 0 }]],
   };
 }
 
