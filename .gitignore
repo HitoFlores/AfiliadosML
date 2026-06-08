@@ -18,6 +18,8 @@
 *.pem
 .env
 .env*.local
+.tmp/
+.codegraph/
 
 # debug
 npm-debug.log*

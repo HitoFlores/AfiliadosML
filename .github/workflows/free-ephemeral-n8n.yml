@@ -1,0 +1,70 @@
+name: Free ephemeral n8n
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_daily_scheduler:
+        description: "Run the 7am scheduler workflow before polling"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      run_main_safety:
+        description: "Run main workflow even if Telegram Poll did not trigger it"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+  schedule:
+    # America/Chihuahua is UTC-6 on 2026-06-08. This is 7:00 AM local.
+    - cron: "0 13 * * *"
+    # Poll/process every 5 minutes during the daily work window, 7 AM-12 PM local.
+    - cron: "5-55/5 13 * * *"
+    - cron: "*/5 14-17 * * *"
+
+concurrency:
+  group: free-ephemeral-n8n
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  cycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      RUN_DAILY_SCHEDULER: ${{ github.event_name == 'workflow_dispatch' && inputs.run_daily_scheduler == 'true' || github.event.schedule == '0 13 * * *' }}
+      RUN_MAIN_SAFETY: ${{ github.event_name == 'workflow_dispatch' && inputs.run_main_safety == 'true' }}
+      N8N_ENCRYPTION_KEY: ${{ secrets.N8N_ENCRYPTION_KEY }}
+      N8N_CREDENTIALS_JSON_B64: ${{ secrets.N8N_CREDENTIALS_JSON_B64 }}
+      YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+      SUPADATA_API_KEY: ${{ secrets.SUPADATA_API_KEY }}
+      ML_CLIENT_ID: ${{ secrets.ML_CLIENT_ID }}
+      ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      ABACUS_API_KEY: ${{ secrets.ABACUS_API_KEY }}
+      GITHUB_TOKEN: ${{ secrets.N8N_GITHUB_TOKEN || github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install web dependencies
+        run: npm ci
+
+      - name: Prepare patched n8n workflows
+        run: npm run n8n:prepare
+
+      - name: Run n8n cycle
+        run: npm run n8n:cycle

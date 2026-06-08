@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "n8n:prepare": "node scripts/n8n-ephemeral/prepare-workflows.mjs",
+    "n8n:cycle": "bash scripts/n8n-ephemeral/run-cycle.sh"
   },
   "dependencies": {
     "next": "^16.2.6",
