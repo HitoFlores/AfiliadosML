@@ -17,7 +17,7 @@ import Verdict from "@/components/Verdict";
 import TableOfContents from "@/components/TableOfContents";
 import { Byline, SourcesBlock } from "@/components/Byline";
 
-const SITE_URL = "https://catalogomx.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://catalogomx.com";
 
 export async function generateStaticParams() {
   return allSlugs();
