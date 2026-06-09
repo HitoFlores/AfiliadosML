@@ -467,7 +467,7 @@ function patchBuildFinalJsonV4(workflow) {
 
   if (!code.includes("buildEditorialSlug")) {
     code = code.replace(
-      /\/\/ [\s\S]*?SLUG LIMPIO[\s\S]*?const slug = slugParts[\s\S]*?\.slice\(0, 60\);/,
+      /\/\/[^\n]*SLUG LIMPIO[\s\S]*?const slug = slugParts[\s\S]*?\.slice\(0, 60\);/,
       `// Slug editorial limpio: marca + familia/modelo comercial + specs distintivas.
 const getAttr = (n) => (item.attributes.find(a => a.name === n) || {}).value_name || '';
 const slugify = (s) => (s || '').toLowerCase()
