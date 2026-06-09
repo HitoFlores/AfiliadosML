@@ -167,8 +167,9 @@ function patchSimilarProducts(workflow) {
 
 function patchFreeYoutubeTranscripts(workflow) {
   const node = findNode(workflow, "Transcripciones");
-  node.parameters.jsCode = `// Transcripciones v3: captions publicas gratis primero; Supadata solo fallback
+  node.parameters.jsCode = `// Transcripciones v3: captions publicas gratis primero; Supadata solo fallback opt-in
 const SUPADATA_API_KEY = $env.SUPADATA_API_KEY;
+const USE_SUPADATA_FALLBACK = String($env.SUPADATA_TRANSCRIPT_FALLBACK || '').toLowerCase() === 'true';
 const videos = $('Top videos').first().json.items || [];
 
 const partes = [];
@@ -230,7 +231,7 @@ async function getFreeYoutubeTranscript(videoId) {
 }
 
 async function getSupadataTranscript(videoId, lang) {
-  if (!SUPADATA_API_KEY) return '';
+  if (!USE_SUPADATA_FALLBACK || !SUPADATA_API_KEY) return '';
   try {
     const res = await this.helpers.httpRequest({
       method: 'GET',
