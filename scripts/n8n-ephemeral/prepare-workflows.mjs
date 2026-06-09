@@ -484,12 +484,12 @@ const linea     = getAttr('Línea') || getAttr('Linea');
 
 function buildEditorialSlug() {
   const fullName = item.name || '';
-  const appleWatchSeries = /\bapple\b/i.test(fullName) && /\bwatch\b/i.test(fullName)
-    ? fullName.match(/\bseries\s+(\d+)\b/i)?.[1]
+  const appleWatchSeries = /\\bapple\\b/i.test(fullName) && /\\bwatch\\b/i.test(fullName)
+    ? fullName.match(/\\bseries\\s+(\\d+)\\b/i)?.[1]
     : null;
   if (appleWatchSeries) {
     const watchParts = ['apple', 'watch', 'series', appleWatchSeries];
-    const watchSize = fullName.match(/\b(\d{2})\s*mm\b/i)?.[1];
+    const watchSize = fullName.match(/\\b(\\d{2})\\s*mm\\b/i)?.[1];
     if (watchSize) watchParts.push(\`\${watchSize}mm\`);
     return watchParts.join('-');
   }
