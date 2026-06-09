@@ -410,7 +410,7 @@ IMPORTANTE: este bloque ya fue filtrado para evitar videos de otra categoria. Si
     `ESTRUCTURA DEL ARTÍCULO (~800 palabras, markdown): 1) Veredicto rápido honesto, 2) Qué es y qué cambió, comparando contra modelo anterior o inferior, 3) Lo bueno con evidencia, 4) Lo malo / a tener en cuenta concreto, 5) Comparativa de compra contra mejor valor, premium y alternativa fuera del ecosistema cuando aplique, 6) Para quién sí / para quién no, 7) Conclusión con CTA para comprar en Mercado Libre.`,
   );
 
-  if (!code.includes("riesgos_compra_ml")) {
+  if (!code.includes("riesgos_compra_ml: { type")) {
     code = code.replace(
       "seo_title:       { type: \"string\" },",
       `riesgos_compra_ml: { type: "array", items: { type: "string" } },
@@ -483,16 +483,24 @@ const submodelo = getAttr('Submodelo');
 const linea     = getAttr('Línea') || getAttr('Linea');
 
 function buildEditorialSlug() {
+  const fullName = item.name || '';
+  const appleWatch = fullName.match(/\bapple\s+watch\s+series\s+(\d+)\b/i);
+  if (appleWatch) {
+    const watchParts = ['apple', 'watch', 'series', appleWatch[1]];
+    const watchSize = fullName.match(/\b(\d{2})\s*mm\b/i)?.[1];
+    if (watchSize) watchParts.push(\`\${watchSize}mm\`);
+    return watchParts.join('-');
+  }
   const noise = new Set([
-    'de','del','la','el','los','las','para','con','sin','por','una','uno','un','y',
+    'de','del','la','el','los','las','para','con','sin','por','una','uno','un','y','mexico','mx',
     'color','modelo','version','edicion','nuevo','original','distribuidor','autorizado',
     'chip','cpu','gpu','nucleos','neural','engine','pulgadas','inch','inches',
-    'caja','correa','aluminio','deportiva','generacion','gen','series',
+    'caja','correa','aluminio','deportiva','generacion','gen','mm',
     'negro','blanco','azul','rojo','dorado','plateado','plata','neon','medianoche'
   ]);
   const parts = [];
   const add = (value) => {
-    const clean = slugify(value);
+    const clean = slugify(value).replace(/^de-longhi$/, 'delonghi');
     if (!clean) return;
     for (const token of clean.split('-')) {
       if (!token || token.length < 2 || noise.has(token)) continue;
