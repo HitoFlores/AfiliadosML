@@ -16,6 +16,7 @@ for (const file of files) {
 
   if (workflow.name === "AfiliadosML - Telegram Poll") {
     patchTelegramPoll(workflow);
+    patchPollExecuteWorkflowNodes(workflow);
     addExecuteTrigger(workflow, "Poll Telegram");
   }
 
@@ -151,6 +152,15 @@ return [{
     articulo_link: confirmedFromSheet ? (waiting.articulo || '') : articulo_link,
   },
 }];`;
+}
+
+function patchPollExecuteWorkflowNodes(workflow) {
+  for (const node of workflow.nodes) {
+    if (node.name !== "Run Main" && node.name !== "Run Main New") continue;
+    node.type = "n8n-nodes-base.noOp";
+    node.typeVersion = 1;
+    node.parameters = {};
+  }
 }
 
 function patchMainReviewWorkflow(workflow) {

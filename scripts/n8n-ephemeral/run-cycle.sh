@@ -42,6 +42,6 @@ fi
 # Telegram Poll may call the main workflow through Execute Workflow nodes.
 run_workflow "wsMIARaCQQISWJtv" "Telegram Poll"
 
-if [[ "${RUN_MAIN_SAFETY:-false}" == "true" ]]; then
-  run_workflow "iSQ59pcFepjqmBvC" "AfiliadosML main"
-fi
+# The ephemeral runner cannot rely on n8n Execute Workflow activation state.
+# Run main after polling; Route Row exits cleanly when no pending/ready row exists.
+run_workflow "iSQ59pcFepjqmBvC" "AfiliadosML main"
