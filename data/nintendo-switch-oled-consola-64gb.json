@@ -3,7 +3,7 @@
     "producto_id": "MLM18537258",
     "slug": "nintendo-switch-oled-consola-64gb",
     "categoria": "MLM-GAME_CONSOLES",
-    "generado_en": "2026-06-09T17:08:05.680Z"
+    "generado_en": "2026-06-09T17:24:20.237Z"
   },
   "producto": {
     "nombre": "Consola Nintendo Switch Oled Neón 64gb Rojo & Azul",
@@ -108,29 +108,29 @@
     "calificacion_promedio": 4.9,
     "destacadas": [
       {
-        "titulo": "Versión japonesa vs. otras regiones",
-        "contenido": "Varios compradores aclaran que la versión japonesa no representa ninguna desventaja funcional: el idioma y la región se configuran desde el primer encendido, y los juegos son universales. La única diferencia visible es el texto en japonés en la caja.",
-        "sentimiento": "positivo"
-      },
-      {
-        "titulo": "Rendimiento sin cambios",
-        "contenido": "Los compradores son directos: quien espere más velocidad o mejores gráficos quedará decepcionado. El hardware interno es el mismo que el modelo base y el rendimiento en juego es idéntico.",
+        "titulo": "Compatibilidad WiFi 5GHz",
+        "contenido": "Al menos un comprador confirmó que la versión japonesa no se enlaza correctamente con bandas de 5GHz, lo cual puede ser un problema real en hogares con routers modernos.",
         "sentimiento": "negativo"
       },
       {
         "titulo": "Pantalla y soporte",
-        "contenido": "Quienes vienen del modelo original notan de inmediato la diferencia en la pantalla y valoran mucho el nuevo soporte trasero, que permite ajustar el ángulo con mucha más libertad.",
+        "contenido": "Los compradores que vienen del modelo original coinciden en que tanto la pantalla como el soporte trasero representan una diferencia perceptible y positiva en el uso diario.",
         "sentimiento": "positivo"
       },
       {
-        "titulo": "WiFi 5GHz en versión japonesa",
-        "contenido": "Al menos un comprador confirmó que la consola no se conecta correctamente a redes de 5GHz, lo cual es una limitación real para quienes tienen routers modernos configurados en esa banda.",
+        "titulo": "Rendimiento sin cambios",
+        "contenido": "Varios compradores advierten que quien espere más potencia de procesamiento o mejoras gráficas se llevará una decepción: el hardware interno es el mismo que el modelo base.",
         "sentimiento": "negativo"
       },
       {
-        "titulo": "Peso y uso portátil prolongado",
-        "contenido": "Algunos usuarios notan que la consola pesa un poco más que el modelo anterior, y que eso se hace sentir en sesiones largas jugando en modo portátil sostenido con las manos.",
+        "titulo": "Versión japonesa vs. americana",
+        "contenido": "Algunos compradores inicialmente se preocuparon por recibir versión japonesa, pero confirmaron que la configuración de idioma y región se puede cambiar sin problema desde el primer encendido.",
         "sentimiento": "mixto"
+      },
+      {
+        "titulo": "Experiencia general de uso",
+        "contenido": "Quienes la usan por varios meses reportan que la consola funciona sin problemas y que las mejoras del modelo OLED se aprecian especialmente en el uso portátil.",
+        "sentimiento": "positivo"
       }
     ]
   },
@@ -151,7 +151,7 @@
       "url": "https://www.youtube.com/watch?v=0XvUYH1rrTs",
       "thumbnail": "https://i.ytimg.com/vi/0XvUYH1rrTs/hqdefault.jpg",
       "publicado": "2022-03-16",
-      "vistas": 1429404
+      "vistas": 1429399
     },
     {
       "video_id": "Xqf7Hh_5R2E",
@@ -164,78 +164,78 @@
     }
   ],
   "editorial": {
-    "score": 8.4,
-    "score_justificacion": "La Nintendo Switch OLED ofrece mejoras reales y verificadas sobre el modelo base (pantalla, soporte, audio, puerto LAN, almacenamiento), aunque sin cambios en rendimiento; la versión japonesa funciona igual que cualquier otra región, con la única limitación confirmada en redes WiFi 5GHz.",
+    "score": 8.3,
+    "score_justificacion": "La Nintendo Switch OLED ofrece mejoras reales y verificadas sobre el modelo base (pantalla, soporte, almacenamiento, puerto LAN) sin incremento de potencia, y los compradores en ML reportan satisfacción general con la advertencia de que es versión japonesa con limitación en WiFi 5GHz.",
     "sub_scores": [
       {
         "dimension": "Pantalla",
         "score": 9,
-        "justificacion": "Compradores confirman que los milímetros extra y la calidad OLED se notan claramente; IGN también destacó la pantalla como el punto fuerte del modelo."
-      },
-      {
-        "dimension": "Audio",
-        "score": 8,
-        "justificacion": "El fabricante y los compradores coinciden en que el audio mejorado es perceptible en modos portátil y semiportátil."
+        "justificacion": "Los compradores confirman que los milímetros extra y la calidad OLED se notan claramente en colores y contraste; IGN también la reseñó positivamente."
       },
       {
         "dimension": "Construcción y ergonomía",
         "score": 7.5,
-        "justificacion": "Compradores señalan que la consola es ligeramente más pesada que el modelo original, lo que puede cansar en sesiones largas en modo portátil."
-      },
-      {
-        "dimension": "Conectividad",
-        "score": 7,
-        "justificacion": "El puerto LAN integrado en la base es una mejora real para juego competitivo, pero la versión japonesa tiene problemas confirmados con redes WiFi de 5GHz."
+        "justificacion": "Varios compradores señalan que la consola es perceptiblemente más pesada que el modelo original, lo que puede cansar en sesiones largas en modo portátil."
       },
       {
         "dimension": "Almacenamiento",
         "score": 8,
-        "justificacion": "64 GB internos duplican los 32 GB del modelo base, lo que compradores valoran positivamente para guardar más juegos sin microSD inmediata."
+        "justificacion": "Los 64 GB internos (32 GB más que el modelo base) son valorados positivamente por los compradores como una mejora sustancial."
+      },
+      {
+        "dimension": "Conectividad",
+        "score": 7,
+        "justificacion": "El puerto LAN integrado en la base es un plus real para juego competitivo, pero la versión japonesa tiene problemas documentados con redes WiFi 5GHz."
+      },
+      {
+        "dimension": "Audio",
+        "score": 8,
+        "justificacion": "Los compradores mencionan mejora notable en los altavoces en modo portátil y semiportátil respecto al modelo anterior."
       },
       {
         "dimension": "Rendimiento",
         "score": 7,
-        "justificacion": "Compradores advierten explícitamente que el procesador y la capacidad gráfica son idénticos al modelo anterior, sin mejora alguna en ese aspecto."
+        "justificacion": "Los compradores advierten explícitamente que el procesador y las capacidades gráficas son idénticos al modelo original, sin ninguna mejora de potencia."
       }
     ],
-    "veredicto_corto": "La Switch OLED es una actualización sensata para quien no tiene ninguna Switch o viene del modelo base: pantalla mejor, soporte más útil, puerto LAN y más almacenamiento. No esperes más potencia porque no la tiene. La versión japonesa funciona bien, pero tiene una limitación real con WiFi 5GHz.",
+    "veredicto_corto": "La Switch OLED es una mejora real pero incremental: mejor pantalla, más almacenamiento y soporte superior, pero sin cambios en potencia. La versión japonesa que se vende en ML funciona bien, aunque tiene una limitación concreta con WiFi 5GHz que hay que considerar.",
     "compralo_si": [
-      "Nunca has tenido una Nintendo Switch",
-      "Vienes del modelo base original",
-      "Juegas mucho en modo portátil o semiportátil",
-      "Quieres puerto LAN para juego competitivo"
+      "Quieres la mejor pantalla portátil de Nintendo",
+      "Juegas principalmente en modo portátil o semiportátil",
+      "Valoras el puerto LAN para juego competitivo",
+      "Nunca has tenido una Nintendo Switch"
     ],
     "saltatelo_si": [
-      "Ya tienes una Switch OLED funcionando",
-      "Necesitas WiFi 5GHz estable",
+      "Ya tienes una Switch OLED funcionando bien",
+      "Tu red doméstica es solo WiFi 5GHz",
       "Buscas mejora de rendimiento o gráficos"
     ],
     "pros": [
-      "Pantalla OLED de 7 pulgadas con colores y contraste notablemente mejores que el modelo base",
-      "Soporte trasero ajustable y amplio, muy superior al de la Switch original",
+      "Pantalla OLED de 7 pulgadas con colores y contraste notablemente superiores al modelo base",
+      "64 GB de almacenamiento interno, el doble que la Switch original",
+      "Soporte trasero ajustable y amplio, muy superior al de la versión original",
       "Puerto LAN integrado en la base para conexión por cable sin adaptador extra",
-      "64 GB de almacenamiento interno, el doble que el modelo base",
-      "Audio mejorado perceptible en uso portátil y semiportátil",
-      "La versión japonesa es completamente funcional: idioma, región y juegos configurables desde el inicio"
+      "Audio mejorado en modo portátil y semiportátil según compradores",
+      "Compatible con todos los juegos y accesorios Joy-Con de Nintendo Switch"
     ],
     "contras": [
-      "El procesador y la GPU son idénticos al modelo base: sin mejora de rendimiento ni gráficos",
-      "La versión japonesa no se conecta correctamente a redes WiFi de 5GHz, limitación confirmada por compradores",
-      "La consola es algo más pesada que el modelo original, lo que puede fatigar en sesiones largas en modo portátil",
-      "La pantalla OLED puede rayarse al insertar o retirar la consola del dock; se recomienda mica protectora",
+      "La versión japonesa no se conecta correctamente a redes WiFi de 5GHz, limitación documentada por compradores",
+      "El peso adicional respecto al modelo original puede cansar en sesiones largas en modo portátil",
+      "Sin mejora de procesador ni rendimiento gráfico respecto a la Switch original",
+      "La pantalla OLED puede rayarse al insertar y retirar del dock; se recomienda mica protectora",
       "Garantía de solo 30 días por defecto de fabricación, muy por debajo del estándar de mercado",
-      "No incluye juegos; hay que comprarlos por separado"
+      "El cargador incluido es de enchufe americano, no mexicano tipo B"
     ],
     "fuentes_citadas": [
       {
         "tipo": "compradores",
         "autor": "Compradores ML",
-        "aporte": "Confirmaron funcionamiento de la versión japonesa, limitación WiFi 5GHz, peso extra, mejoras en pantalla/soporte/audio, ausencia de mejora en rendimiento y riesgo de rayado de pantalla"
+        "aporte": "Confirmaron funcionamiento general, limitación WiFi 5GHz en versión japonesa, peso extra, mejoras en pantalla/soporte/audio y ausencia de mejora en rendimiento"
       },
       {
         "tipo": "video",
         "autor": "IGN",
-        "aporte": "Reseña del Nintendo Switch OLED destacando sus puntos fuertes como consola"
+        "aporte": "Reseña del Nintendo Switch OLED model confirmando las mejoras del modelo"
       },
       {
         "tipo": "video",
@@ -245,51 +245,94 @@
       {
         "tipo": "video",
         "autor": "Max Dendy",
-        "aporte": "Perspectiva de un jugador de PC migrando a Switch OLED"
+        "aporte": "Perspectiva de usuario de PC migrando a Switch OLED"
       }
     ],
     "faq": [
       {
-        "pregunta": "¿La versión japonesa tiene alguna limitación real de uso en México?",
-        "respuesta": "La limitación más concreta confirmada por compradores es la conectividad WiFi: la versión japonesa puede tener problemas para conectarse a redes de 5GHz. En todo lo demás —idioma, región, juegos, accesorios— funciona igual que cualquier otra versión regional."
+        "pregunta": "¿La versión japonesa funciona igual que la versión americana o latinoamericana?",
+        "respuesta": "En términos de juegos y software, sí: el idioma y la región se configuran desde el primer encendido. La diferencia concreta que reportan compradores es que la versión japonesa tiene problemas para conectarse a redes WiFi de 5GHz. Si tu router solo transmite en 5GHz, considera esto antes de comprar."
       },
       {
-        "pregunta": "¿Es necesario comprar una microSD desde el inicio?",
-        "respuesta": "Con 64 GB internos hay margen para empezar sin tarjeta adicional. Sin embargo, los juegos modernos de Nintendo pueden ocupar entre 4 y 16 GB cada uno, por lo que si planeas tener varios títulos descargados, una microSD será necesaria en algún momento."
+        "pregunta": "¿Esta consola es más potente que la Nintendo Switch original?",
+        "respuesta": "No. Los compradores lo dejan claro y las especificaciones lo confirman: el procesador y las capacidades gráficas son exactamente los mismos que el modelo original. Las mejoras son de pantalla, almacenamiento, soporte y audio, no de rendimiento."
       },
       {
-        "pregunta": "¿Vale la pena actualizar desde una Switch original al modelo OLED?",
-        "respuesta": "Depende del uso. Si juegas principalmente en modo portátil o semiportátil, la pantalla y el soporte mejorado hacen una diferencia real. Si juegas casi siempre en modo TV, las mejoras son menores. En ningún caso hay mejora de rendimiento o gráficos."
+        "pregunta": "¿Vale la pena si ya tengo una Nintendo Switch original?",
+        "respuesta": "Depende de cómo la uses. Si juegas principalmente en modo portátil o semiportátil, la pantalla OLED y el soporte mejorado son diferencias reales. Si juegas casi siempre en modo TV, las mejoras son menores y quizás no justifican el gasto."
       },
       {
-        "pregunta": "¿Se puede rayar la pantalla OLED con el uso normal?",
-        "respuesta": "Sí, es un riesgo real. Compradores recomiendan colocar una mica protectora desde el primer día, especialmente porque insertar y retirar la consola del dock puede generar micro-rayaduras con el tiempo."
+        "pregunta": "¿La pantalla OLED se raya fácilmente?",
+        "respuesta": "Los compradores recomiendan colocar una mica protectora desde el primer día, especialmente porque el proceso de insertar y retirar la consola del dock puede generar rayaduras con el tiempo."
       },
       {
-        "pregunta": "¿Los Joy-Con de colores neón son los mismos que en otras versiones?",
-        "respuesta": "Sí. Los Joy-Con incluidos son compatibles con todos los juegos y accesorios de Nintendo Switch, independientemente de la región de la consola. El color neón rojo y azul es simplemente una variante estética."
+        "pregunta": "¿Qué accesorios adicionales necesito comprar?",
+        "respuesta": "El cargador incluido tiene enchufe americano, por lo que en México necesitarás un adaptador o comprar un cargador local. También se recomienda una mica protectora de pantalla. Los juegos se venden por separado. El cable LAN para aprovechar el puerto de la base tampoco está incluido."
       }
     ],
-    "precio_valor": "La Switch OLED tiene un precio elevado en Mercado Libre comparado con lo que cuesta en tiendas oficiales, y hay que sumarle que no incluye juegos. Dicho eso, si se consigue a un precio razonable y se viene del modelo base o es la primera Switch, las mejoras en pantalla, soporte y almacenamiento justifican la diferencia. Si el precio está muy por encima del valor de importación, conviene comparar con opciones en tiendas físicas o distribuidores autorizados antes de comprar.",
+    "precio_valor": "La Switch OLED tiene un precio elevado para lo que ofrece en términos de rendimiento, ya que el hardware interno no cambió respecto al modelo base. Sin embargo, si se valoran las mejoras concretas —pantalla OLED, 64 GB de almacenamiento, soporte ajustable y puerto LAN— el precio puede justificarse para quien compra su primera Switch o viene del modelo original. Para quien ya tiene una Switch OLED en buen estado, el precio no se justifica en absoluto.",
     "alternativas": [
       {
         "tipo": "Opción más económica",
-        "descripcion": "La Nintendo Switch Lite es una alternativa de menor precio si el uso será exclusivamente portátil. Se sacrifica la posibilidad de conectar al televisor, los Joy-Con desmontables y la pantalla más grande, pero el precio es considerablemente menor y el hardware de juego es el mismo."
+        "descripcion": "La Nintendo Switch original (modelo HAC) o la Switch Lite se consiguen a menor precio y ofrecen la misma biblioteca de juegos y el mismo rendimiento. Se sacrifica la pantalla OLED, el almacenamiento (32 GB), el soporte mejorado y el puerto LAN en la base. Buena opción si el presupuesto es ajustado o si se juega principalmente en modo TV."
       },
       {
         "tipo": "Opción premium",
-        "descripcion": "Si el presupuesto no es limitante, vale la pena esperar o buscar la Nintendo Switch 2, que sí representa un salto generacional real en rendimiento y gráficos. Para quien quiere la mejor experiencia Nintendo disponible hoy, ese es el camino, aunque el costo es significativamente mayor."
+        "descripcion": "Si el presupuesto lo permite, vale la pena buscar una Nintendo Switch OLED de versión americana o latinoamericana con garantía oficial Nintendo de un año, lo que elimina la limitación de WiFi 5GHz y ofrece respaldo de servicio más sólido que los 30 días que cubre esta publicación."
       }
     ],
-    "riesgos_compra_ml": [],
-    "checklist_antes_de_comprar": [],
-    "comparativa_editorial": [],
-    "mejor_alternativa": null,
-    "keyword_targets": [],
-    "evidencia_limitaciones": null,
-    "seo_title": "Nintendo Switch OLED Neón Review 2026: ¿Vale la pena?",
-    "seo_description": "Análisis honesto de la Nintendo Switch OLED versión japonesa: pantalla, rendimiento, WiFi 5GHz y si conviene comprarla en Mercado Libre México.",
-    "articulo_html": "<h2>Veredicto rápido</h2>\n<p>La Nintendo Switch OLED es una actualización real pero acotada. Mejora lo que se ve y se siente —pantalla, soporte, audio, almacenamiento— sin tocar el hardware interno. Si nunca has tenido una Switch o vienes del modelo base original, tiene sentido. Si ya tienes una OLED funcionando, no hay razón para cambiar. La versión japonesa que se vende en Mercado Libre funciona bien en México, con una excepción concreta: las redes WiFi de 5GHz.</p>\n\n<h2>Qué es y qué cambió respecto al modelo base</h2>\n<p>La Nintendo Switch OLED es la tercera variante de la consola híbrida de Nintendo, lanzada después del modelo base y la Switch Lite. Los cambios respecto al modelo original son específicos y verificables:</p>\n<ul>\n<li>Pantalla OLED de 7 pulgadas, frente a la LCD de 6.2 pulgadas del modelo base</li>\n<li>Soporte trasero ajustable en múltiples ángulos, en lugar del soporte fijo y frágil original</li>\n<li>64 GB de almacenamiento interno, el doble que los 32 GB del modelo base</li>\n<li>Puerto LAN integrado en la base, sin necesidad de adaptador externo</li>\n<li>Altavoces con mejor respuesta de audio en modo portátil y semiportátil</li>\n</ul>\n<p>Lo que <strong>no</strong> cambió es igual de importante: el procesador y la GPU son exactamente los mismos. Los compradores que esperaban un salto en rendimiento o en calidad gráfica de los juegos se llevaron una decepción. El rendimiento en juego es idéntico al modelo anterior.</p>\n\n<h2>Lo bueno, con evidencia</h2>\n<h3>Pantalla que sí se nota</h3>\n<p>Los compradores que vienen del modelo base coinciden en que la diferencia de pantalla es perceptible desde el primer uso. El tamaño extra y la tecnología OLED producen colores más saturados y negros más profundos. No es un cambio marginal: para quien juega en modo portátil, es la mejora más tangible de toda la consola.</p>\n\n<h3>Soporte trasero, finalmente útil</h3>\n<p>El soporte del modelo original era uno de sus puntos más criticados: pequeño, frágil y con un solo ángulo. El de la OLED es amplio, estable y ajustable. Varios compradores lo mencionan como una de las mejoras más prácticas del día a día.</p>\n\n<h3>Puerto LAN para juego competitivo</h3>\n<p>La base incluye un puerto RJ45 que permite conectar la consola directamente al router por cable. Para quienes juegan títulos en línea como Mario Kart o Splatoon, esto reduce la latencia de forma significativa respecto a una conexión inalámbrica.</p>\n\n<h3>La versión japonesa no es un problema real</h3>\n<p>Varios compradores aclaran que la versión japonesa es funcionalmente idéntica a cualquier otra región: el idioma y la región se configuran desde el primer encendido, los juegos son universales y los accesorios son compatibles. La única diferencia visible es el texto en japonés en la caja exterior. Según IGN y otros canales que han revisado el modelo OLED, la consola es esencialmente la misma en todas las regiones.</p>\n\n<h2>Lo malo y lo que hay que tener en cuenta</h2>\n<h3>WiFi 5GHz: limitación real de la versión japonesa</h3>\n<p>Este es el punto más concreto a considerar antes de comprar. Al menos un comprador confirmó que la versión japonesa no se conecta correctamente a redes WiFi de 5GHz. Si tu router opera en esa banda —algo común en equipos modernos de doble banda— podrías tener problemas de conectividad inalámbrica. La solución es usar el puerto LAN por cable, pero no siempre es práctico.</p>\n\n<h3>Sin mejora de rendimiento</h3>\n<p>Los compradores son directos al respecto: el hardware interno no cambió. Quien compre esta consola esperando que los juegos corran mejor, carguen más rápido o se vean con mayor resolución en modo TV quedará decepcionado. El techo gráfico y de procesamiento es el mismo de siempre.</p>\n\n<h3>Peso y fatiga en modo portátil</h3>\n<p>La consola es algo más pesada que el modelo original. En sesiones cortas no se nota, pero en partidas largas sosteniendo la consola con las manos, algunos usuarios sienten más cansancio que con la Switch base.</p>\n\n<h3>La pantalla OLED se raya</h3>\n<p>Compradores recomiendan colocar una mica protectora desde el primer día. Insertar y retirar la consola del dock repetidamente puede generar micro-rayaduras en la pantalla. Es un gasto adicional pequeño pero necesario.</p>\n\n<h3>Garantía de 30 días</h3>\n<p>La garantía ofrecida por el vendedor en Mercado Libre es de solo 30 días por defecto de fabricación. Para una consola de este precio, eso es muy poco. Hay que tenerlo en cuenta antes de comprar.</p>\n\n<h2>Comparativa de compra</h2>\n<h3>Contra el modelo base (Switch original)</h3>\n<p>Si consigues una Switch original a precio reducido, el ahorro puede ser considerable. Las diferencias reales son la pantalla, el soporte y el almacenamiento. Si juegas principalmente en TV, la brecha se reduce bastante.</p>\n\n<h3>Contra la Switch Lite</h3>\n<p>La Lite es más barata y más liviana, pero no se conecta al televisor y los Joy-Con no son desmontables. Es una opción válida solo si el uso será exclusivamente portátil y el presupuesto es ajustado.</p>\n\n<h3>Contra la Nintendo Switch 2</h3>\n<p>Si el presupuesto lo permite, la Switch 2 sí representa un salto generacional real en rendimiento. Para quien quiere la mejor experiencia Nintendo disponible hoy, ese es el camino, aunque el costo es significativamente mayor.</p>\n\n<h2>¿Para quién sí y para quién no?</h2>\n<h3>Cómprala si:</h3>\n<ul>\n<li>Es tu primera Nintendo Switch</li>\n<li>Vienes del modelo base original y juegas mucho en modo portátil</li>\n<li>Quieres el puerto LAN para juego competitivo en línea</li>\n<li>El catálogo de Nintendo —Mario, Zelda, Pokémon— es lo que te interesa</li>\n</ul>\n<h3>Saltátela si:</h3>\n<ul>\n<li>Ya tienes una Switch OLED funcionando bien</li>\n<li>Dependes de WiFi 5GHz y no puedes usar cable</li>\n<li>Buscas una mejora de rendimiento o gráficos respecto al modelo anterior</li>\n<li>La garantía de 30 días te genera inseguridad para una compra de este valor</li>\n</ul>\n\n<h2>Conclusión</h2>\n<p>La Nintendo Switch OLED Neón es una buena consola con mejoras concretas y verificadas. No es un salto generacional, pero tampoco pretende serlo. Si entras con expectativas claras —mejor pantalla, mejor soporte, más almacenamiento, mismo rendimiento— la experiencia es sólida. La versión japonesa disponible en Mercado Libre funciona correctamente en México, con la salvedad del WiFi 5GHz que conviene verificar antes de comprar.</p>\n<p>Si te interesa, <strong>revisa la reputación del vendedor en Mercado Libre</strong>, confirma que el producto llega sellado y original, y considera agregar una mica protectora de pantalla desde el primer día. Con eso en mente, es una compra que difícilmente decepciona a quien no ha tenido una Switch antes.</p>"
+    "riesgos_compra_ml": [
+      " Versión japonesa confirmada: la consola es de región Japón, lo que implica limitación real con WiFi 5GHz y garantía de solo 30 días por defecto de fabricación, no la garantía oficial Nintendo de un año.",
+      "Autenticidad difícil de verificar a distancia: aunque los compradores reportan producto original, sin una referencia previa es complicado detectar una unidad no original al recibirla.",
+      "El cargador incluido es de enchufe tipo A americano, no compatible directamente con enchufes mexicanos tipo B sin adaptador.",
+      "La garantía de 30 días es extremadamente corta para una consola de este precio; fallas que aparezcan después de ese plazo quedan sin cobertura del vendedor.",
+      "Reputación del vendedor: al ser importación paralela, el soporte postventa depende completamente del vendedor en ML, no de Nintendo México."
+    ],
+    "checklist_antes_de_comprar": [
+      "Verifica que el vendedor tenga reputación alta (medalla de oro o platino) y al menos 50 ventas de este producto específico.",
+      "Confirma explícitamente con el vendedor si la unidad es versión japonesa o americana, y si el número de serie es verificable en el sitio oficial de Nintendo.",
+      "Revisa si tu red doméstica transmite en 5GHz exclusivamente; si es así, la versión japonesa puede no conectarse correctamente.",
+      "Pregunta al vendedor qué tipo de enchufe trae el cargador incluido para saber si necesitas adaptador desde el primer día.",
+      "Lee las últimas 20 opiniones del vendedor, no solo el promedio general, para detectar patrones recientes de problemas con el producto."
+    ],
+    "comparativa_editorial": [
+      {
+        "tipo": "modelo anterior o inferior",
+        "titulo": "Nintendo Switch Original (HAC)",
+        "resumen": "Mismo procesador y rendimiento gráfico, pero pantalla LCD de 6.2 pulgadas, solo 32 GB de almacenamiento, soporte trasero básico y sin puerto LAN en la base. Cuesta menos y es suficiente si se juega principalmente en TV."
+      },
+      {
+        "tipo": "mejor valor",
+        "titulo": "Nintendo Switch OLED versión americana con garantía oficial",
+        "resumen": "Mismas especificaciones de hardware, pero sin la limitación de WiFi 5GHz de la versión japonesa y con garantía Nintendo de un año en lugar de 30 días. El sobreprecio puede valer la pena solo por el respaldo."
+      },
+      {
+        "tipo": "premium",
+        "titulo": "Steam Deck (Valve)",
+        "resumen": "Consola portátil con hardware significativamente más potente, acceso a la biblioteca de Steam y pantalla de calidad comparable. Cuesta más, pero ofrece rendimiento real superior y una biblioteca de miles de títulos para PC."
+      },
+      {
+        "tipo": "alternativa fuera del ecosistema",
+        "titulo": "Xbox Cloud Gaming en tablet o teléfono",
+        "resumen": "Sin consola dedicada, con una suscripción a Game Pass Ultimate se puede jugar en modo portátil desde cualquier dispositivo con pantalla. No requiere inversión en hardware costoso, aunque depende completamente de conexión a internet estable."
+      }
+    ],
+    "mejor_alternativa": {
+      "tipo": "mejor valor",
+      "titulo": "Nintendo Switch OLED versión americana con garantía oficial",
+      "razon": "Elimina la limitación de WiFi 5GHz y ofrece garantía de un año, dos diferencias concretas y relevantes frente a la versión japonesa que se vende en esta publicación."
+    },
+    "keyword_targets": [
+      "nintendo switch oled neon precio mexico 2025",
+      "nintendo switch oled version japonesa mercado libre",
+      "nintendo switch oled vs switch original diferencias",
+      "consola nintendo switch oled 64gb donde comprar mexico",
+      "nintendo switch oled vale la pena 2025"
+    ],
+    "evidencia_limitaciones": "Este análisis cruza las especificaciones oficiales del fabricante, opiniones de compradores verificados en Mercado Libre y reseñas en video de canales independientes (IGN, Coisa de Nerd, Max Dendy); no incluye pruebas de laboratorio propias.",
+    "seo_title": "Nintendo Switch OLED Neón: Review honesta 2026",
+    "seo_description": "¿Vale la pena la Nintendo Switch OLED versión japonesa en Mercado Libre? Analizamos pantalla, rendimiento, limitaciones WiFi y si conviene sobre el modelo original.",
+    "articulo_html": "<h2>Veredicto rápido: buena consola, pero con asteriscos importantes</h2>\n<p>La Nintendo Switch OLED es una mejora real sobre el modelo original, pero incremental. La pantalla es notablemente mejor, el almacenamiento se duplica y el soporte trasero deja de ser una broma. Lo que <strong>no</strong> cambia es el procesador ni el rendimiento gráfico, y eso hay que tenerlo claro antes de pagar. Además, la unidad que se vende en esta publicación es versión japonesa, con una limitación concreta en WiFi 5GHz que puede ser un problema real dependiendo de tu red doméstica.</p>\n\n<h2>Qué es y qué cambió respecto al modelo original</h2>\n<p>La Nintendo Switch OLED llegó en 2021 como una revisión del hardware original de 2017. No es una nueva generación: comparte el mismo chip Tegra X1 y la misma resolución máxima de 1080p en modo TV. Las diferencias son periféricas pero perceptibles en el uso diario:</p>\n<ul>\n<li>Pantalla OLED de 7 pulgadas frente a la LCD de 6.2 del modelo base</li>\n<li>64 GB de almacenamiento interno, el doble que los 32 GB originales</li>\n<li>Soporte trasero ajustable y amplio en lugar del pequeño soporte fijo original</li>\n<li>Puerto LAN integrado en la base para conexión por cable</li>\n<li>Audio mejorado en modo portátil y semiportátil</li>\n</ul>\n<p>Los compradores que vienen del modelo original confirman que estas diferencias se notan, especialmente la pantalla y el soporte. Pero quienes esperan más potencia de juego se llevarán una decepción: el rendimiento es idéntico al modelo anterior.</p>\n\n<h2>Lo bueno: donde la OLED realmente justifica su nombre</h2>\n<p>La pantalla es el argumento más sólido de esta consola. Los compradores coinciden en que los colores y el contraste son perceptiblemente superiores a los del modelo LCD, y que los milímetros extra de pantalla se aprecian en el uso real. Para quien juega principalmente en modo portátil o semiportátil, esta diferencia importa.</p>\n<p>El soporte trasero es otra mejora sustancial. El del modelo original era pequeño y poco práctico; el de la OLED es amplio y ajustable, lo que hace que el modo semiportátil sobre una mesa sea genuinamente cómodo.</p>\n<p>El puerto LAN en la base es un detalle que los jugadores competitivos agradecerán: permite conectarse por cable sin necesidad de un adaptador externo, reduciendo la latencia respecto a WiFi. Varios compradores lo mencionan como un plus real para juego en línea.</p>\n<p>Según la reseña de IGN del modelo OLED, las mejoras están bien ejecutadas dentro del alcance que Nintendo se propuso con esta revisión.</p>\n\n<h2>Lo malo: limitaciones concretas que hay que conocer antes de comprar</h2>\n<p>El problema más relevante de esta publicación específica es la versión japonesa. Los compradores documentan que la consola no se conecta correctamente a redes WiFi de 5GHz. Si tu router opera en esa banda, tendrás que usar la banda de 2.4GHz o conectarte por cable. No es un defecto de fabricación, sino una diferencia de región que afecta la conectividad inalámbrica.</p>\n<p>El peso adicional respecto al modelo original también es real. Varios compradores mencionan que las sesiones largas en modo portátil pueden resultar más cansadas que con la Switch original. No es dramático, pero es perceptible.</p>\n<p>La garantía de 30 días por defecto de fabricación es alarmantemente corta para una consola de este precio. La garantía oficial de Nintendo para versiones americanas o latinoamericanas es de un año. Esa diferencia importa si aparece algún problema después del primer mes.</p>\n<p>Finalmente, el cargador incluido tiene enchufe americano tipo A, no el tipo B que se usa en México. Necesitarás un adaptador desde el primer día.</p>\n\n<h2>Comparativa de compra</h2>\n<h3>Frente al modelo original</h3>\n<p>La Switch original cuesta menos y ofrece exactamente el mismo rendimiento en juegos. Si juegas casi siempre en modo TV y el almacenamiento de 32 GB te alcanza, el modelo base es suficiente y más económico.</p>\n<h3>Frente a una Switch OLED de versión americana</h3>\n<p>La versión americana elimina la limitación de WiFi 5GHz y viene con garantía oficial de un año. Si el precio de esta publicación es similar al de una versión americana con garantía, la versión americana es la mejor compra sin discusión.</p>\n<h3>Fuera del ecosistema Nintendo</h3>\n<p>El Steam Deck de Valve ofrece hardware significativamente más potente y acceso a la biblioteca de Steam. Cuesta más, pero para quien prioriza rendimiento sobre la biblioteca exclusiva de Nintendo, es una alternativa seria a considerar.</p>\n\n<h2>¿Para quién sí y para quién no?</h2>\n<h3>Cómprala si:</h3>\n<ul>\n<li>Es tu primera Nintendo Switch y quieres la mejor versión portátil disponible</li>\n<li>Juegas principalmente en modo portátil o semiportátil</li>\n<li>Tu red doméstica tiene banda de 2.4GHz disponible o planeas usar cable LAN</li>\n<li>Valoras el puerto LAN para juego competitivo en línea</li>\n</ul>\n<h3>Evítala si:</h3>\n<ul>\n<li>Ya tienes una Switch OLED en buen estado: no hay razón para cambiar</li>\n<li>Tu red es exclusivamente de 5GHz y no puedes cambiar esa configuración</li>\n<li>Esperas mejoras de rendimiento o gráficos respecto al modelo original</li>\n<li>La garantía de 30 días te parece insuficiente para una compra de este valor</li>\n</ul>\n\n<h2>Conclusión</h2>\n<p>La Nintendo Switch OLED es una buena consola con mejoras reales y verificadas. El problema no es el producto en sí, sino las condiciones de esta publicación específica: versión japonesa con limitación WiFi, garantía mínima y cargador no compatible directamente con enchufes mexicanos. Si puedes conseguir una versión americana con garantía oficial a precio similar, esa es la mejor compra. Si la diferencia de precio es significativa y tu red soporta 2.4GHz, esta versión japonesa funciona bien según los compradores que llevan meses usándola.</p>\n<p>Antes de pagar, verifica la reputación del vendedor, confirma la versión exacta y revisa si tu red doméstica es compatible. Si todo cuadra, <strong>es una compra recomendable para quien busca su primera Switch o quiere la mejor experiencia portátil de Nintendo</strong>.</p>"
   },
   "productos_similares_ml": [],
   "autoria": {
