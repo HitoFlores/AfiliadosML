@@ -166,6 +166,7 @@ function patchPollExecuteWorkflowNodes(workflow) {
 function patchMainReviewWorkflow(workflow) {
   patchForceRegeneration(workflow);
   patchSimilarProducts(workflow);
+  patchStrictYoutubeMatching(workflow);
   patchFreeYoutubeTranscripts(workflow);
   patchBuildPromptV4(workflow);
   patchBuildFinalJsonV4(workflow);
@@ -207,6 +208,71 @@ function patchSimilarProducts(workflow) {
   const node = findNode(workflow, "Get Similar Products");
   node.parameters.url =
     "=https://api.mercadolibre.com/sites/MLM/search?q={{ encodeURIComponent([(($('Get Data ML').first().json.attributes.find(a => a.name === 'Marca') || {}).value_name || ''), (($('Get Data ML').first().json.attributes.find(a => a.name === 'Línea') || {}).value_name || ''), (($('Get Data ML').first().json.attributes.find(a => a.name === 'Modelo') || {}).value_name || ''), ($('Get Data ML').first().json.name || '').split(' ').slice(0,3).join(' ')].filter(Boolean).join(' ')) }}&price={{ Math.round((($('Get Item Sellers').first().json.results || [])[0] || {}).price * 0.65 || 0) }}-{{ Math.round((($('Get Item Sellers').first().json.results || [])[0] || {}).price * 1.6 || 0) }}&sort=relevance&limit=10";
+}
+
+function patchStrictYoutubeMatching(workflow) {
+  const node = findNode(workflow, "Top videos");
+  node.parameters.jsCode = `// Top videos v5: strict product/category matching. Bad evidence is worse than no video.
+const API_KEY = $env.YOUTUBE_API_KEY;
+const item = $('Get Data ML').first().json;
+const attrs = item.attributes || [];
+const getAttr = (n) => (attrs.find((a) => a.name === n) || {}).value_name || '';
+const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9\\s]/g, ' ').replace(/\\s+/g, ' ').trim();
+const compact = (s) => norm(s).replace(/\\s+/g, '');
+const words = (s) => norm(s).split(' ').filter(Boolean);
+const hasPhrase = (haystack, phrase) => phrase && haystack.includes(norm(phrase));
+const hasCompact = (haystackCompact, phrase) => phrase && haystackCompact.includes(compact(phrase));
+const marca = norm(getAttr('Fabricante') || getAttr('Marca'));
+const marcaMl = norm(getAttr('Marca'));
+const modelo = norm(getAttr('Modelo'));
+const submodelo = norm(getAttr('Submodelo'));
+const linea = norm(getAttr('Línea') || getAttr('Linea'));
+const productName = norm(item.name || '');
+const domain = norm(item.domain_id || '');
+const STOP = new Set(['de','del','la','el','los','las','para','con','sin','por','una','uno','un','y','color','modelo','version','edicion','nuevo','original','distribuidor','autorizado','gb','tb','ssd','ram','cpu','gpu','chip','nucleos','pulgadas','inch','inches','mx','mexico','negro','blanco','azul','rojo','plata','plateado','medianoche']);
+const tokenSet = [...new Set(words([marca, linea, modelo, submodelo, productName].join(' ')).filter((w) => w.length > 2 && !STOP.has(w)))];
+const categoryTerms = (() => {
+  const text = [domain, item.name, linea, modelo, submodelo].map(norm).join(' ');
+  if (/macbook|laptop|notebook|comput/.test(text)) return ['macbook', 'laptop', 'notebook', 'computadora'];
+  if (/watch|smartwatch|reloj/.test(text)) return ['watch', 'smartwatch', 'reloj'];
+  if (/switch|consol/.test(text)) return ['switch', 'consola', 'nintendo'];
+  if (/cafetera|espresso|coffee|cafe/.test(text)) return ['cafetera', 'espresso', 'coffee', 'cafe'];
+  return tokenSet.slice(0, 4);
+})();
+const mustHaveAny = [linea, modelo, submodelo, ...tokenSet.filter((t) => ![marca, marcaMl].includes(t)).slice(0, 5)].filter(Boolean);
+const REVIEW_TERMS = ['review', 'analisis', 'reseña', 'resena', 'vale la pena', 'hands on', 'comparativa', 'comparacion', 'opinion', 'should you buy', 'is it worth', 'first look', 'unboxing', 'vs ', ' vs', 'overview', 'prueba'];
+const NON_REVIEW_TERMS = ['gameplay', 'playthrough', "let's play", 'lets play', 'scratch test', 'drop test', 'bend test', 'durability test', 'teardown', 'tear down', 'disassembly', 'water test', 'torture test', 'relaxing', 'asmr', 'satisfying', 'walkthrough', 'longplay', 'full game', 'shorts'];
+const crossCategoryBad = ['airpods', 'iphone', 'ipad', 'studio display', 'imac', 'mac mini', 'playstation', 'xbox', 'kindle'].filter((term) => !productName.includes(term) && !linea.includes(term) && !modelo.includes(term));
+function scoreVideo(v) {
+  const title = norm(v.snippet?.title || '');
+  const desc = norm(v.snippet?.description || '');
+  const full = [title, desc].join(' ');
+  const fullCompact = compact(full);
+  if (NON_REVIEW_TERMS.some((t) => full.includes(norm(t)))) return null;
+  if (crossCategoryBad.some((t) => full.includes(norm(t)))) return null;
+  const brandOk = !marca || full.includes(marca) || (marcaMl && full.includes(marcaMl));
+  if (!brandOk) return null;
+  const categoryOk = categoryTerms.some((t) => full.includes(norm(t)));
+  if (!categoryOk) return null;
+  const tokenHits = tokenSet.filter((t) => full.includes(t) || fullCompact.includes(compact(t)));
+  const specificHits = mustHaveAny.filter((t) => hasPhrase(full, t) || hasCompact(fullCompact, t));
+  const reviewHit = REVIEW_TERMS.some((t) => full.includes(norm(t)));
+  const exactModel = [modelo, submodelo].filter(Boolean).some((t) => hasPhrase(full, t) || hasCompact(fullCompact, t));
+  const lineHit = Boolean(linea && (hasPhrase(full, linea) || hasCompact(fullCompact, linea)));
+  if (!(exactModel || lineHit || specificHits.length >= 2 || tokenHits.length >= 3)) return null;
+  const relevance = tokenHits.length + specificHits.length * 2 + (exactModel ? 4 : 0) + (lineHit ? 2 : 0);
+  return { ...v, _relevance: relevance, _reviewBonus: reviewHit ? 2 : 0, _total: relevance + (reviewHit ? 2 : 0) };
+}
+const search = $('Get Videos YT').first().json.items || [];
+const scored = search.map(scoreVideo).filter(Boolean);
+const ids = scored.map((v) => v.id && v.id.videoId).filter(Boolean);
+const stats = {};
+if (ids.length) {
+  const res = await this.helpers.httpRequest({ method: 'GET', url: 'https://www.googleapis.com/youtube/v3/videos', qs: { part: 'statistics', id: ids.join(','), key: API_KEY }, json: true });
+  for (const it of (res.items || [])) stats[it.id] = it.statistics || {};
+}
+const ranked = scored.map((v) => ({ ...v, statistics: stats[v.id.videoId] || {}, _views: parseInt((stats[v.id.videoId] || {}).viewCount || '0', 10) })).sort((a, b) => (b._total - a._total) || (b._views - a._views)).slice(0, 3);
+return [{ json: { items: ranked, youtube_filter: { source_count: search.length, accepted_count: ranked.length, marca, linea, modelo, submodelo, category_terms: categoryTerms } } }];`;
 }
 
 function patchFreeYoutubeTranscripts(workflow) {
@@ -330,6 +396,20 @@ ESTRUCTURA DEL ARTÍCULO`,
     );
   }
 
+  code = code.replace(
+    `- Genera "comparativa_editorial" con exactamente 3 objetos: "opcion mas barata", "mejor valor" y "premium". Usa datos de similaresMl si existen; si no, describe tipos de alternativa sin inventar modelos especificos.`,
+    `- Genera "comparativa_editorial" con exactamente 4 objetos: "modelo anterior o inferior", "mejor valor", "premium" y "alternativa fuera del ecosistema". Para cada uno explica diferencia concreta contra el producto analizado. Si no hay modelo exacto en similaresMl, compara por tipo/categoria sin inventar SKUs específicos.`,
+  );
+  code = code.replace(
+    `ANÁLISIS EN VIDEO DE CREADORES INDEPENDIENTES:`,
+    `ANÁLISIS EN VIDEO DE CREADORES INDEPENDIENTES:
+IMPORTANTE: este bloque ya fue filtrado para evitar videos de otra categoria. Si el bloque viene vacío o dice sin videos, NO cites videos ni canales como evidencia. Escribe con seguridad basada en specs, compradores y ML, pero no finjas pruebas externas.`,
+  );
+  code = code.replace(
+    `ESTRUCTURA DEL ARTÍCULO (~800 palabras, markdown): 1) Veredicto rápido honesto, 2) Qué es y qué cambió (compara vs. el modelo anterior si las fuentes lo mencionan), 3) Lo bueno con evidencia, 4) Lo malo / a tener en cuenta concreto, 5) Para quién sí / para quién no, 6) Conclusión con CTA para comprar en Mercado Libre.`,
+    `ESTRUCTURA DEL ARTÍCULO (~800 palabras, markdown): 1) Veredicto rápido honesto, 2) Qué es y qué cambió, comparando contra modelo anterior o inferior, 3) Lo bueno con evidencia, 4) Lo malo / a tener en cuenta concreto, 5) Comparativa de compra contra mejor valor, premium y alternativa fuera del ecosistema cuando aplique, 6) Para quién sí / para quién no, 7) Conclusión con CTA para comprar en Mercado Libre.`,
+  );
+
   if (!code.includes("riesgos_compra_ml")) {
     code = code.replace(
       "seo_title:       { type: \"string\" },",
@@ -384,6 +464,66 @@ function patchBuildFinalJsonV4(workflow) {
     .replaceAll("Rese?as", "Reseñas")
     .replaceAll("M?xico", "México")
     .replaceAll("l?nea", "línea");
+
+  if (!code.includes("buildEditorialSlug")) {
+    code = code.replace(
+      /\/\/ [\s\S]*?SLUG LIMPIO[\s\S]*?const slug = slugParts[\s\S]*?\.slice\(0, 60\);/,
+      `// Slug editorial limpio: marca + familia/modelo comercial + specs distintivas.
+const getAttr = (n) => (item.attributes.find(a => a.name === n) || {}).value_name || '';
+const slugify = (s) => (s || '').toLowerCase()
+  .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+  .replace(/[^a-z0-9\\s]/g, ' ').trim()
+  .replace(/\\s+/g, '-');
+const isCode = (s) => Boolean(s && ((/\\d/.test(s) && /-/.test(s)) || /^[A-Z0-9]{5,}$/.test(s)));
+const isMeaningful = (s) => Boolean(s && s.length > 1 && !/^\\d+$/.test(s) && !isCode(s));
+const marca     = getAttr('Marca');
+const fabricante = getAttr('Fabricante');
+const modelo    = getAttr('Modelo');
+const submodelo = getAttr('Submodelo');
+const linea     = getAttr('Línea') || getAttr('Linea');
+
+function buildEditorialSlug() {
+  const noise = new Set([
+    'de','del','la','el','los','las','para','con','sin','por','una','uno','un','y',
+    'color','modelo','version','edicion','nuevo','original','distribuidor','autorizado',
+    'chip','cpu','gpu','nucleos','neural','engine','pulgadas','inch','inches',
+    'caja','correa','aluminio','deportiva','generacion','gen','series',
+    'negro','blanco','azul','rojo','dorado','plateado','plata','neon','medianoche'
+  ]);
+  const parts = [];
+  const add = (value) => {
+    const clean = slugify(value);
+    if (!clean) return;
+    for (const token of clean.split('-')) {
+      if (!token || token.length < 2 || noise.has(token)) continue;
+      if (!parts.includes(token)) parts.push(token);
+    }
+  };
+  add(fabricante || marca);
+  add(linea);
+  add(modelo);
+  add(submodelo);
+  for (const token of slugify(item.name || '').split('-')) {
+    if (parts.length >= 5) break;
+    if (!token || token.length < 2 || noise.has(token) || /^\\d+$/.test(token)) continue;
+    if (!parts.includes(token)) parts.push(token);
+  }
+  const size = (item.name || '').match(/\\b(\\d{2}(?:\\.\\d)?)\\s*(?:\\"|pulgadas|inch|inches)\\b/i)?.[1];
+  if (size) {
+    const sizeToken = size.replace('.', '-');
+    if (!parts.includes(sizeToken)) parts.push(sizeToken);
+  }
+  const storage = (item.name || '').match(/\\b(\\d+)\\s*(gb|tb)\\b/i);
+  if (storage) {
+    const token = (storage[1] + storage[2]).toLowerCase();
+    if (!parts.includes(token)) parts.push(token);
+  }
+  return parts.join('-').replace(/-+/g, '-').slice(0, 70);
+}
+
+const slug = buildEditorialSlug();`,
+    );
+  }
 
   if (!code.includes("riesgos_compra_ml:")) {
     code = code.replace(
