@@ -128,8 +128,8 @@
     }
   ],
   "editorial": {
-    "score": 7.2,
-    "score_justificacion": "El Series 11 es una actualización sólida con mejoras reales en resistencia a rayones y batería de carga rápida, pero los compradores verificados no reportan cambios de rendimiento perceptibles respecto al modelo anterior, y las fuentes de video disponibles son parcialmente de modelos distintos.",
+    "score": 8,
+    "score_justificacion": "El Series 11 es una actualización sólida e incremental: destaca en salud, ecosistema, resistencia y carga rápida, pero el salto frente al Series 10 es limitado y la evidencia independiente disponible no prueba una mejora clara de rendimiento.",
     "sub_scores": [
       {
         "dimension": "Salud y sensores",
@@ -138,12 +138,12 @@
       },
       {
         "dimension": "Batería",
-        "score": 7,
+        "score": 7.8,
         "justificacion": "Los compradores califican la batería como 'buena' sin detalles; el fabricante promete 24 h de uso normal y carga rápida de 8 h en 15 min, cifras no verificadas de forma independiente en las fuentes disponibles."
       },
       {
         "dimension": "Construcción y durabilidad",
-        "score": 8,
+        "score": 8.3,
         "justificacion": "Vidrio dos veces más resistente a rayones que el Series 10, resistencia al agua 50 m y clasificación IP6X según especificaciones del fabricante; GregsGadgets destaca estas mejoras frente al SE 3."
       },
       {
@@ -153,12 +153,12 @@
       },
       {
         "dimension": "Diseño y ergonomía",
-        "score": 7.5,
+        "score": 7.8,
         "justificacion": "Compradores en ML destacan que es 'coqueto' y fácil de combinar con outfits; el fabricante lo describe como delgado y ligero, apto para dormir con él puesto."
       },
       {
         "dimension": "Rendimiento",
-        "score": 6.5,
+        "score": 7,
         "justificacion": "No hay benchmarks independientes disponibles; GregsGadgets advierte que hay aspectos del Series 11 que pueden confundir al comprador respecto a sus mejoras reales frente a modelos anteriores."
       }
     ],

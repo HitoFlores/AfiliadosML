@@ -154,6 +154,7 @@ return [{
 
 function patchMainReviewWorkflow(workflow) {
   patchSimilarProducts(workflow);
+  patchFreeYoutubeTranscripts(workflow);
   patchBuildPromptV4(workflow);
   patchBuildFinalJsonV4(workflow);
 }
@@ -162,6 +163,126 @@ function patchSimilarProducts(workflow) {
   const node = findNode(workflow, "Get Similar Products");
   node.parameters.url =
     "=https://api.mercadolibre.com/sites/MLM/search?q={{ encodeURIComponent([(($('Get Data ML').first().json.attributes.find(a => a.name === 'Marca') || {}).value_name || ''), (($('Get Data ML').first().json.attributes.find(a => a.name === 'Línea') || {}).value_name || ''), (($('Get Data ML').first().json.attributes.find(a => a.name === 'Modelo') || {}).value_name || ''), ($('Get Data ML').first().json.name || '').split(' ').slice(0,3).join(' ')].filter(Boolean).join(' ')) }}&price={{ Math.round((($('Get Item Sellers').first().json.results || [])[0] || {}).price * 0.65 || 0) }}-{{ Math.round((($('Get Item Sellers').first().json.results || [])[0] || {}).price * 1.6 || 0) }}&sort=relevance&limit=10";
+}
+
+function patchFreeYoutubeTranscripts(workflow) {
+  const node = findNode(workflow, "Transcripciones");
+  node.parameters.jsCode = `// Transcripciones v3: captions publicas gratis primero; Supadata solo fallback
+const SUPADATA_API_KEY = $env.SUPADATA_API_KEY;
+const videos = $('Top videos').first().json.items || [];
+
+const partes = [];
+let conTranscripcion = 0;
+let viaYoutube = 0;
+let viaSupadata = 0;
+
+function decodeHtml(value) {
+  return (value || '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&#x27;/g, "'")
+    .replace(/&#x2F;/g, '/');
+}
+
+function stripTranscriptXml(xml) {
+  return decodeHtml(String(xml || '')
+    .replace(/<text[^>]*>/g, ' ')
+    .replace(/<\\/text>/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\\s+/g, ' ')
+    .trim());
+}
+
+async function getFreeYoutubeTranscript(videoId) {
+  try {
+    const html = await this.helpers.httpRequest({
+      method: 'GET',
+      url: 'https://www.youtube.com/watch',
+      qs: { v: videoId, hl: 'es' },
+      headers: {
+        'user-agent': 'Mozilla/5.0',
+        'accept-language': 'es-MX,es;q=0.9,en;q=0.8',
+      },
+    });
+
+    const match = String(html).match(/"captionTracks":(\\[.*?\\])/);
+    if (!match) return '';
+
+    const tracks = JSON.parse(match[1].replace(/\\\\u0026/g, '&'));
+    const chosen = tracks.find(t => /^es/i.test(t.languageCode || ''))
+      || tracks.find(t => /^en/i.test(t.languageCode || ''))
+      || tracks[0];
+    if (!chosen || !chosen.baseUrl) return '';
+
+    const transcriptXml = await this.helpers.httpRequest({
+      method: 'GET',
+      url: chosen.baseUrl,
+      headers: { 'user-agent': 'Mozilla/5.0' },
+    });
+
+    return stripTranscriptXml(transcriptXml).slice(0, 6000);
+  } catch(e) {
+    return '';
+  }
+}
+
+async function getSupadataTranscript(videoId, lang) {
+  if (!SUPADATA_API_KEY) return '';
+  try {
+    const res = await this.helpers.httpRequest({
+      method: 'GET',
+      url: 'https://api.supadata.ai/v1/youtube/transcript',
+      qs: { videoId, text: 'true', lang },
+      headers: { 'x-api-key': SUPADATA_API_KEY },
+      json: true,
+    });
+    return (res.content || '').toString().slice(0, 6000);
+  } catch(e) {
+    return '';
+  }
+}
+
+for (let i = 0; i < videos.length; i++) {
+  const v = videos[i].snippet || {};
+  const id = videos[i].id.videoId;
+  let transcript = '';
+  let fuente = 'descripcion';
+
+  transcript = await getFreeYoutubeTranscript.call(this, id);
+  if (transcript) {
+    viaYoutube++;
+    fuente = 'youtube-captions';
+  }
+
+  if (!transcript) {
+    transcript = await getSupadataTranscript.call(this, id, 'es')
+      || await getSupadataTranscript.call(this, id, 'en');
+    if (transcript) {
+      viaSupadata++;
+      fuente = 'supadata';
+    }
+  }
+
+  if (transcript) conTranscripcion++;
+  const idioma = transcript && !transcript.match(/[áéíóúñ¿¡]/) ? ' [EN]' : '';
+  const cuerpo = transcript
+    ? transcript
+    : \`(sin transcripción disponible) Descripción: \${v.description || 'n/d'}\`;
+
+  partes.push(
+    \`VIDEO \${i + 1}\${idioma}\\nFUENTE_TRANSCRIPCION: \${fuente}\\nCANAL: \${v.channelTitle}\\nTÍTULO: \${v.title}\\nCONTENIDO: \${cuerpo}\`
+  );
+}
+
+return [{ json: {
+  bloque_videos: partes.join('\\n\\n---\\n\\n'),
+  num_videos_con_transcripcion: conTranscripcion,
+  transcripciones_gratis_youtube: viaYoutube,
+  transcripciones_supadata: viaSupadata,
+}}];`;
 }
 
 function patchBuildPromptV4(workflow) {
@@ -186,6 +307,7 @@ function patchBuildPromptV4(workflow) {
 - Genera "keyword_targets" con 3-5 busquedas long-tail reales para Mexico/Mercado Libre.
 - Genera "evidencia_limitaciones" explicando en una frase que no hubo prueba propia y que se sintetizaron fuentes externas, compradores y especificaciones.
 - El "seo_title" debe usar el ano \${currentYear} si incluye ano. Prohibido usar anos viejos.
+- CALIBRACION DEL SCORE: no castigues dos veces por "sin prueba propia" o por "opiniones poco detalladas". Eso debe aparecer en evidencia_limitaciones, pero el score debe reflejar el valor real del producto segun especificaciones, compradores y fuentes externas. Si el producto tiene fortalezas claras y los problemas son principalmente salto incremental o evidencia parcial, normalmente debe quedar en 7.8-8.4, no en 7.0-7.4. Reserva scores menores a 7.5 para fallas concretas, mala relacion precio/valor, quejas recurrentes, specs debiles o incompatibilidades importantes.
 
 ESTRUCTURA DEL ARTÍCULO`,
     );
