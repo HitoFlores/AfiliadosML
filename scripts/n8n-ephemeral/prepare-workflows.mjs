@@ -23,6 +23,10 @@ for (const file of files) {
     addExecuteTrigger(workflow, "Leer Sheet");
   }
 
+  if (workflow.name === "AfiliadosML") {
+    patchMainReviewWorkflow(workflow);
+  }
+
   sanitizeWorkflowForImport(workflow);
 
   // CLI execution is explicit; do not let imported schedules run as daemons.
@@ -146,4 +150,111 @@ return [{
     articulo_link: confirmedFromSheet ? (waiting.articulo || '') : articulo_link,
   },
 }];`;
+}
+
+function patchMainReviewWorkflow(workflow) {
+  patchSimilarProducts(workflow);
+  patchBuildPromptV4(workflow);
+  patchBuildFinalJsonV4(workflow);
+}
+
+function patchSimilarProducts(workflow) {
+  const node = findNode(workflow, "Get Similar Products");
+  node.parameters.url =
+    "=https://api.mercadolibre.com/sites/MLM/search?q={{ encodeURIComponent([(($('Get Data ML').first().json.attributes.find(a => a.name === 'Marca') || {}).value_name || ''), (($('Get Data ML').first().json.attributes.find(a => a.name === 'Línea') || {}).value_name || ''), (($('Get Data ML').first().json.attributes.find(a => a.name === 'Modelo') || {}).value_name || ''), ($('Get Data ML').first().json.name || '').split(' ').slice(0,3).join(' ')].filter(Boolean).join(' ')) }}&price={{ Math.round((($('Get Item Sellers').first().json.results || [])[0] || {}).price * 0.65 || 0) }}-{{ Math.round((($('Get Item Sellers').first().json.results || [])[0] || {}).price * 1.6 || 0) }}&sort=relevance&limit=10";
+}
+
+function patchBuildPromptV4(workflow) {
+  const node = findNode(workflow, "Build Abacus Prompt");
+  let code = node.parameters.jsCode;
+
+  if (!code.includes("const currentYear = new Date().getFullYear();")) {
+    code = code.replace(
+      "const lang = LANGS[idioma] || 'español';",
+      "const lang = LANGS[idioma] || 'español';\nconst currentYear = new Date().getFullYear();",
+    );
+  }
+
+  if (!code.includes("CAPA V4 DE DECISION DE COMPRA")) {
+    code = code.replace(
+      "ESTRUCTURA DEL ARTÍCULO",
+      `CAPA V4 DE DECISION DE COMPRA (obligatoria):
+- Genera "riesgos_compra_ml" con 3-5 riesgos concretos antes de comprar en Mercado Libre: garantia, version exacta, compatibilidad, reputacion del vendedor, importacion/region o accesorios incluidos. No repitas logistica generica.
+- Genera "checklist_antes_de_comprar" con 3-5 verificaciones accionables que el lector pueda hacer antes de pagar.
+- Genera "comparativa_editorial" con exactamente 3 objetos: "opcion mas barata", "mejor valor" y "premium". Usa datos de similaresMl si existen; si no, describe tipos de alternativa sin inventar modelos especificos.
+- Genera "mejor_alternativa" eligiendo una alternativa solo si hay razon clara. Si no, usa null.
+- Genera "keyword_targets" con 3-5 busquedas long-tail reales para Mexico/Mercado Libre.
+- Genera "evidencia_limitaciones" explicando en una frase que no hubo prueba propia y que se sintetizaron fuentes externas, compradores y especificaciones.
+- El "seo_title" debe usar el ano \${currentYear} si incluye ano. Prohibido usar anos viejos.
+
+ESTRUCTURA DEL ARTÍCULO`,
+    );
+  }
+
+  if (!code.includes("riesgos_compra_ml")) {
+    code = code.replace(
+      "seo_title:       { type: \"string\" },",
+      `riesgos_compra_ml: { type: "array", items: { type: "string" } },
+    checklist_antes_de_comprar: { type: "array", items: { type: "string" } },
+    comparativa_editorial: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: { tipo:{type:"string"}, titulo:{type:"string"}, resumen:{type:"string"} },
+        required: ["tipo","titulo","resumen"],
+        additionalProperties: false
+      }
+    },
+    mejor_alternativa: {
+      anyOf: [
+        {
+          type: "object",
+          properties: { tipo:{type:"string"}, titulo:{type:"string"}, razon:{type:"string"} },
+          required: ["tipo","titulo","razon"],
+          additionalProperties: false
+        },
+        { type: "null" }
+      ]
+    },
+    keyword_targets: { type: "array", items: { type: "string" } },
+    evidencia_limitaciones: { type: "string" },
+    seo_title:       { type: "string" },`,
+    );
+
+    code = code.replace(
+      "\"seo_title\",\"seo_description\",\"articulo_html\"",
+      "\"riesgos_compra_ml\",\"checklist_antes_de_comprar\",\"comparativa_editorial\",\"mejor_alternativa\",\"keyword_targets\",\"evidencia_limitaciones\",\n    \"seo_title\",\"seo_description\",\"articulo_html\"",
+    );
+    code = code.replace(
+      "\"seo_title\", \"seo_description\", \"articulo_html\"",
+      "\"riesgos_compra_ml\", \"checklist_antes_de_comprar\", \"comparativa_editorial\", \"mejor_alternativa\", \"keyword_targets\", \"evidencia_limitaciones\",\n    \"seo_title\", \"seo_description\", \"articulo_html\"",
+    );
+  }
+
+  node.parameters.jsCode = code;
+}
+
+function patchBuildFinalJsonV4(workflow) {
+  const node = findNode(workflow, "Build Final JSON");
+  let code = node.parameters.jsCode;
+
+  if (!code.includes("riesgos_compra_ml:")) {
+    code = code.replace(
+      "alternativas:  parsedAbacus.alternativas || [],",
+      `alternativas:  parsedAbacus.alternativas || [],
+    riesgos_compra_ml: parsedAbacus.riesgos_compra_ml || [],
+    checklist_antes_de_comprar: parsedAbacus.checklist_antes_de_comprar || [],
+    comparativa_editorial: parsedAbacus.comparativa_editorial || [],
+    mejor_alternativa: parsedAbacus.mejor_alternativa || null,
+    keyword_targets: parsedAbacus.keyword_targets || [],
+    evidencia_limitaciones: parsedAbacus.evidencia_limitaciones || null,`,
+    );
+  }
+
+  code = code.replace(
+    ".filter(it => it.id !== currentId && it.title && it.price)",
+    ".filter(it => it.id !== currentId && it.title && it.price && it.permalink)",
+  );
+
+  node.parameters.jsCode = code;
 }

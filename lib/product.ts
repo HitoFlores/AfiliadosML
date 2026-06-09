@@ -26,6 +26,18 @@ interface RawAlternativa {
   descripcion: string;
 }
 
+interface RawComparativaEditorial {
+  tipo: string;
+  titulo: string;
+  resumen: string;
+}
+
+interface RawMejorAlternativa {
+  tipo: string;
+  titulo: string;
+  razon: string;
+}
+
 interface RawProductoSimilarML {
   id: string;
   titulo: string;
@@ -51,6 +63,12 @@ interface RawEditorial {
   faq?: RawFaq[];
   precio_valor?: string;
   alternativas?: RawAlternativa[];
+  riesgos_compra_ml?: string[];
+  checklist_antes_de_comprar?: string[];
+  comparativa_editorial?: RawComparativaEditorial[];
+  mejor_alternativa?: RawMejorAlternativa | null;
+  keyword_targets?: string[];
+  evidencia_limitaciones?: string;
   // v1 (legacy)
   mejor_para?: string[];
   no_ideal_para?: string[];
@@ -158,6 +176,18 @@ export interface Alternativa {
   descripcion: string;
 }
 
+export interface ComparativaEditorial {
+  tipo: string;
+  titulo: string;
+  resumen: string;
+}
+
+export interface MejorAlternativa {
+  tipo: string;
+  titulo: string;
+  razon: string;
+}
+
 export interface ProductoSimilarML {
   id: string;
   titulo: string;
@@ -183,6 +213,12 @@ export interface NormalizedProduct extends Omit<RawProduct, "editorial" | "autor
     faq: FaqItem[];
     precioValor: string | null;
     alternativas: Alternativa[];
+    riesgosCompraMl: string[];
+    checklistAntesDeComprar: string[];
+    comparativaEditorial: ComparativaEditorial[];
+    mejorAlternativa: MejorAlternativa | null;
+    keywordTargets: string[];
+    evidenciaLimitaciones: string;
     seoTitle: string;
     seoDescription: string;
     articuloHtml: string;
@@ -213,6 +249,30 @@ function normalize(raw: RawProduct): NormalizedProduct {
         ];
 
   const fechaDefault = raw.meta.generado_en?.slice(0, 10) ?? "";
+  const fallbackRiesgos = [
+    raw.precio.garantia
+      ? `Revisa que la garantia publicada cubra tu caso: ${raw.precio.garantia}.`
+      : "Confirma la garantia publicada antes de pagar.",
+    raw.vendedor.reputacion
+      ? `Valida reputacion del vendedor (${raw.vendedor.reputacion}) y ventas recientes.`
+      : "Valida reputacion y ventas recientes del vendedor.",
+    "Confirma que el modelo, version y compatibilidad coincidan con lo que necesitas.",
+  ];
+  const fallbackChecklist = [
+    "Compara el precio final con envio incluido.",
+    "Revisa si el producto es nacional, importado o de otra region.",
+    "Lee preguntas y opiniones recientes, no solo la calificacion promedio.",
+  ];
+  const fallbackComparativa = (e.alternativas ?? []).map((alt) => ({
+    tipo: alt.tipo,
+    titulo: alt.tipo,
+    resumen: alt.descripcion,
+  }));
+  const fallbackKeywords = [
+    `${raw.producto.marca} ${raw.producto.modelo}`.trim(),
+    `${raw.producto.marca} opiniones Mercado Libre`.trim(),
+    `${raw.producto.marca} vale la pena Mexico`.trim(),
+  ].filter((entry, index, arr) => entry.length > 3 && arr.indexOf(entry) === index);
 
   return {
     ...raw,
@@ -230,6 +290,14 @@ function normalize(raw: RawProduct): NormalizedProduct {
       faq: e.faq ?? [],
       precioValor: e.precio_valor ?? null,
       alternativas: e.alternativas ?? [],
+      riesgosCompraMl: e.riesgos_compra_ml ?? fallbackRiesgos,
+      checklistAntesDeComprar: e.checklist_antes_de_comprar ?? fallbackChecklist,
+      comparativaEditorial: e.comparativa_editorial ?? fallbackComparativa,
+      mejorAlternativa: e.mejor_alternativa ?? null,
+      keywordTargets: e.keyword_targets ?? fallbackKeywords,
+      evidenciaLimitaciones:
+        e.evidencia_limitaciones ??
+        "No hicimos prueba propia de laboratorio; este analisis cruza especificaciones, fuentes externas y senales de compradores en Mercado Libre.",
       seoTitle: e.seo_title,
       seoDescription: e.seo_description,
       articuloHtml: e.articulo_html,

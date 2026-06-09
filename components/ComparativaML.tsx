@@ -2,10 +2,28 @@ import type { ProductoSimilarML } from "@/lib/product";
 
 export default function ComparativaML({
   productos,
+  precioActual,
 }: {
   productos: ProductoSimilarML[];
+  precioActual?: number | null;
 }) {
   if (!productos || productos.length === 0) return null;
+
+  function getPriceLabel(precio: number) {
+    if (!precioActual || precioActual <= 0) return "Alternativa ML";
+    const diff = Math.round(((precio - precioActual) / precioActual) * 100);
+    if (diff <= -12) return `${Math.abs(diff)}% mas barato`;
+    if (diff >= 12) return `${diff}% mas caro`;
+    return "Precio similar";
+  }
+
+  function getTone(precio: number) {
+    if (!precioActual || precioActual <= 0) return "bg-gray-100 text-gray-600";
+    const diff = ((precio - precioActual) / precioActual) * 100;
+    if (diff <= -12) return "bg-green-100 text-green-700";
+    if (diff >= 12) return "bg-amber-100 text-amber-700";
+    return "bg-blue-100 text-blue-700";
+  }
 
   return (
     <section className="my-10">
@@ -13,7 +31,7 @@ export default function ComparativaML({
         Comparado con la competencia en ML
       </h2>
       <p className="text-gray-500 text-sm mb-5">
-        Productos similares disponibles en Mercado Libre en rango de precio comparable
+        Productos similares detectados en Mercado Libre. Los enlaces son nofollow y pueden no ser afiliados.
       </p>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {productos.map((p) => (
@@ -35,6 +53,9 @@ export default function ComparativaML({
               </div>
             )}
             <div className="flex-1 flex flex-col gap-1">
+              <span className={`self-start text-[11px] font-bold px-2 py-0.5 rounded-full ${getTone(p.precio)}`}>
+                {getPriceLabel(p.precio)}
+              </span>
               <p className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug">
                 {p.titulo}
               </p>

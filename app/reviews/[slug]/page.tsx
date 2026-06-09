@@ -16,6 +16,7 @@ import SubScores from "@/components/SubScores";
 import Verdict from "@/components/Verdict";
 import TableOfContents from "@/components/TableOfContents";
 import { Byline, SourcesBlock } from "@/components/Byline";
+import BuyerDecisionBlock from "@/components/BuyerDecisionBlock";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://catalogomx.com";
 
@@ -183,6 +184,8 @@ export default async function ReviewPage({
         saltateloSi={editorial.saltateloSi}
       />
 
+      <BuyerDecisionBlock product={data} />
+
       {/* Sub-scores desglosados */}
       <SubScores subScores={editorial.subScores} scoreJustificacion={editorial.scoreJustificacion} />
 
@@ -284,7 +287,7 @@ export default async function ReviewPage({
       <VideoSection videos={videos_yt} />
 
       {/* Tabla comparativa con productos reales de ML */}
-      <ComparativaML productos={data.productos_similares_ml ?? []} />
+      <ComparativaML productos={data.productos_similares_ml ?? []} precioActual={precio.actual} />
 
       {/* Alternativas */}
       <AlternativasSection alternativas={alternativas} />

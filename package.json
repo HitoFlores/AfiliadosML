@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "review:backfill": "node scripts/backfill-review-quality.mjs",
+    "review:audit": "node scripts/audit-reviews.mjs",
     "n8n:prepare": "node scripts/n8n-ephemeral/prepare-workflows.mjs",
     "n8n:cycle": "bash scripts/n8n-ephemeral/run-cycle.sh"
   },
