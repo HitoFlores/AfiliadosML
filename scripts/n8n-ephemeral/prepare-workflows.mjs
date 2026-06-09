@@ -366,6 +366,14 @@ function patchBuildFinalJsonV4(workflow) {
   const node = findNode(workflow, "Build Final JSON");
   let code = node.parameters.jsCode;
 
+  code = code
+    .replaceAll("An?lisis", "Análisis")
+    .replaceAll("an?lisis", "análisis")
+    .replaceAll("rese?as", "reseñas")
+    .replaceAll("Rese?as", "Reseñas")
+    .replaceAll("M?xico", "México")
+    .replaceAll("l?nea", "línea");
+
   if (!code.includes("riesgos_compra_ml:")) {
     code = code.replace(
       "alternativas:  parsedAbacus.alternativas || [],",
