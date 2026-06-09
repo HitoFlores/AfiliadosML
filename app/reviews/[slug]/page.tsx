@@ -55,6 +55,7 @@ export default async function ReviewPage({
 
   const { producto, precio, reviews_ml, videos_yt, editorial, autoria } = data;
   const { faq, precioValor, alternativas } = editorial;
+  const displayTitle = producto.display_title ?? producto.nombre;
   const affiliateUrl = data.link_afiliado ?? "#";
   const pageUrl = `${SITE_URL}/reviews/${slug}`;
 
@@ -78,7 +79,7 @@ export default async function ReviewPage({
         <span>/</span>
         <a href="/reviews" className="hover:text-green-600">Reviews</a>
         <span>/</span>
-        <span className="text-gray-800 font-medium">{producto.nombre}</span>
+        <span className="text-gray-800 font-medium">{displayTitle}</span>
       </nav>
 
       {/* Hero */}
@@ -96,8 +97,9 @@ export default async function ReviewPage({
           </div>
 
           <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
-            {editorial.seoTitle}
+            {displayTitle}
           </h1>
+          <p className="text-base text-gray-600 mb-4">{editorial.seoTitle}</p>
 
           {/* Byline — capa de confianza */}
           <div className="mb-5">
@@ -169,12 +171,12 @@ export default async function ReviewPage({
                 <p className="text-sm text-gray-700 leading-relaxed">{precioValor}</p>
               </div>
             )}
-            <AffiliateCTA href={affiliateUrl} productName={producto.nombre} />
+            <AffiliateCTA href={affiliateUrl} productName={displayTitle} />
           </div>
         </div>
 
         {/* Galería */}
-        <ImageGallery images={producto.imagenes} altBase={producto.nombre} />
+        <ImageGallery images={producto.imagenes} altBase={displayTitle} />
       </div>
 
       {/* Veredicto TL;DR — above the fold */}
@@ -274,7 +276,7 @@ export default async function ReviewPage({
             -{precio.descuento_pct}%
           </span>
         </div>
-        <AffiliateCTA href={affiliateUrl} productName={producto.nombre} size="lg" />
+        <AffiliateCTA href={affiliateUrl} productName={displayTitle} size="lg" />
       </div>
 
       {/* Specs */}
@@ -304,9 +306,9 @@ export default async function ReviewPage({
           {editorial.score}
           <span className="text-2xl text-gray-400">/10</span>
         </div>
-        <h3 className="text-2xl font-bold mb-2">{producto.nombre}</h3>
+        <h3 className="text-2xl font-bold mb-2">{displayTitle}</h3>
         <p className="text-gray-400 mb-6 max-w-xl mx-auto">{editorial.veredictoCorto}</p>
-        <AffiliateCTA href={affiliateUrl} productName={producto.nombre} size="lg" variant="white" />
+        <AffiliateCTA href={affiliateUrl} productName={displayTitle} size="lg" variant="white" />
       </div>
     </article>
   );

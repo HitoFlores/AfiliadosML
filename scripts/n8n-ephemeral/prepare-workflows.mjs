@@ -207,11 +207,146 @@ const forceSlug = norm($env.FORCE_REGEN_SLUG || '');`,
 function patchSimilarProducts(workflow) {
   const node = findNode(workflow, "Get Similar Products");
   node.parameters.url =
+    "=https://api.mercadolibre.com/sites/MLM/search?q={{ encodeURIComponent((() => { const item = $('Get Data ML').first().json; const attrs = item.attributes || []; const get = (...names) => { for (const n of names) { const v = (attrs.find(a => a.name === n) || {}).value_name; if (v) return v; } return ''; }; const marca = get('Fabricante','Marca').replace(/\\bde\\s+m[eé]xico\\b/i, '').trim(); const linea = get('Línea','Linea','LÃ­nea','L?nea'); const modelo = get('Modelo'); const name = item.name || ''; const text = [item.domain_id, name, linea, modelo].join(' ').toLowerCase(); if (/switch|consol/.test(text)) return 'Nintendo Switch consola'; if (/macbook|laptop|notebook|comput/.test(text)) return [marca || 'Apple', linea || 'MacBook Air', 'laptop'].filter(Boolean).join(' '); if (/watch|smartwatch|reloj/.test(text)) return [marca || 'Apple', 'watch smartwatch'].filter(Boolean).join(' '); if (/cafetera|espresso|coffee|cafe/.test(text)) return [marca || 'DeLonghi', 'cafetera espresso'].filter(Boolean).join(' '); return [marca, linea, modelo].filter(Boolean).join(' ') || name.split(' ').slice(0,4).join(' '); })()) }}&price={{ Math.max(1, Math.round((($('Get Item Sellers').first().json.results || [])[0] || {}).price * 0.35 || 1)) }}-{{ Math.round((($('Get Item Sellers').first().json.results || [])[0] || {}).price * 2.8 || 999999) }}&sort=relevance&limit=30";
+  return;
+  node.parameters.url =
     "=https://api.mercadolibre.com/sites/MLM/search?q={{ encodeURIComponent([(($('Get Data ML').first().json.attributes.find(a => a.name === 'Marca') || {}).value_name || ''), (($('Get Data ML').first().json.attributes.find(a => a.name === 'Línea') || {}).value_name || ''), (($('Get Data ML').first().json.attributes.find(a => a.name === 'Modelo') || {}).value_name || ''), ($('Get Data ML').first().json.name || '').split(' ').slice(0,3).join(' ')].filter(Boolean).join(' ')) }}&price={{ Math.round((($('Get Item Sellers').first().json.results || [])[0] || {}).price * 0.65 || 0) }}-{{ Math.round((($('Get Item Sellers').first().json.results || [])[0] || {}).price * 1.6 || 0) }}&sort=relevance&limit=10";
 }
 
 function patchStrictYoutubeMatching(workflow) {
   const node = findNode(workflow, "Top videos");
+  node.parameters.jsCode = `// Top videos v6: multi-query evidence builder with explainable scoring.
+const API_KEY = $env.YOUTUBE_API_KEY;
+const item = $('Get Data ML').first().json;
+const attrs = item.attributes || [];
+const getAttr = (...names) => {
+  for (const n of names) {
+    const v = (attrs.find((a) => a.name === n) || {}).value_name;
+    if (v) return v;
+  }
+  return '';
+};
+const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9\\s]/g, ' ').replace(/\\s+/g, ' ').trim();
+const words = (s) => norm(s).split(' ').filter(Boolean);
+const uniq = (arr) => [...new Set(arr.filter(Boolean))];
+const titleCase = (s) => words(s).map((w) => w.length <= 3 ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1)).join(' ');
+const productName = item.name || '';
+const marcaRaw = getAttr('Fabricante', 'Marca');
+const marca = marcaRaw.replace(/\\bde\\s+m[eé]xico\\b/i, '').trim() || getAttr('Marca');
+const linea = getAttr('Línea', 'Linea', 'LÃ­nea', 'L?nea');
+const modelo = getAttr('Modelo');
+const submodelo = getAttr('Submodelo');
+const domain = item.domain_id || '';
+const text = norm([domain, productName, marca, linea, modelo, submodelo].join(' '));
+const profile = (() => {
+  if (/macbook|laptop|notebook|comput/.test(text)) return { kind: 'laptop', category: ['macbook','laptop','notebook','computadora'], bad: ['iphone','ipad','airpods','watch','imac','mac mini','studio display','playstation','xbox','switch'] };
+  if (/watch|smartwatch|reloj/.test(text)) return { kind: 'smartwatch', category: ['watch','smartwatch','reloj'], bad: ['iphone','ipad','airpods','macbook','laptop','playstation','xbox','switch'] };
+  if (/switch|consol/.test(text)) return { kind: 'console', category: ['switch','consola','nintendo'], bad: ['macbook','iphone','ipad','airpods','watch','kindle'] };
+  if (/cafetera|espresso|coffee|cafe/.test(text)) return { kind: 'coffee', category: ['cafetera','espresso','coffee','cafe','delonghi'], bad: ['capsulas','nespresso vertuo capsulas','molino solo','macbook','iphone','switch','playstation','xbox'] };
+  if (/celular|smartphone|phone/.test(text)) return { kind: 'phone', category: ['celular','smartphone','phone'], bad: ['macbook','laptop','watch','airpods','ipad'] };
+  return { kind: 'generic', category: words([linea, modelo, submodelo].join(' ')).slice(0, 4), bad: [] };
+})();
+const STOP = new Set(['de','del','la','el','los','las','para','con','sin','por','una','uno','un','y','color','modelo','version','edicion','nuevo','original','distribuidor','autorizado','gb','tb','ssd','ram','cpu','gpu','chip','nucleos','pulgadas','inch','inches','mx','mexico','negro','blanco','azul','rojo','plata','plateado','medianoche']);
+const identityTokens = uniq(words([marca, linea, modelo, submodelo, productName].join(' ')).filter((w) => w.length > 2 && !STOP.has(w)));
+const commercialName = (() => {
+  if (profile.kind === 'laptop' && /macbook/.test(text)) return titleCase([marca || 'Apple', linea || 'MacBook Air', /\\bm\\d\\b/i.exec(productName)?.[0] || /\\bm\\d\\b/i.exec(modelo)?.[0] || ''].join(' '));
+  if (profile.kind === 'console' && /switch/.test(text)) return titleCase([marca || 'Nintendo', 'Switch', /oled/i.test(productName + ' ' + linea + ' ' + modelo) ? 'OLED' : ''].join(' '));
+  if (profile.kind === 'smartwatch' && /watch/.test(text)) return titleCase([marca || 'Apple', 'Watch', linea || modelo].join(' '));
+  if (profile.kind === 'coffee') return titleCase([marca || 'DeLonghi', linea || modelo || 'cafetera espresso'].join(' '));
+  return titleCase([marca, linea, modelo, submodelo].filter(Boolean).join(' '));
+})();
+const querySeeds = uniq([
+  commercialName,
+  [marca, linea, modelo].filter(Boolean).join(' '),
+  [marca, linea, submodelo].filter(Boolean).join(' '),
+  productName.split(/[,:|-]/)[0],
+].map((q) => q.trim()).filter((q) => q.length > 3));
+const suffixes = ['review', 'analisis', 'reseña', 'vale la pena', 'comparativa'];
+const queries = uniq(querySeeds.flatMap((q) => suffixes.slice(0, q === commercialName ? 5 : 3).map((s) => (q + ' ' + s).trim()))).slice(0, 8);
+const REVIEW_TERMS = ['review','analisis','resena','reseña','vale la pena','hands on','comparativa','comparacion','opinion','should you buy','is it worth','first look','unboxing',' vs','vs ','overview','prueba','long term','after'];
+const NON_REVIEW_TERMS = ['gameplay','playthrough',"let's play",'lets play','scratch test','drop test','bend test','durability test','teardown','tear down','disassembly','water test','torture test','relaxing','asmr','satisfying','walkthrough','longplay','full game','shorts','music video'];
+const byId = new Map();
+const queryLog = [];
+for (const q of queries) {
+  try {
+    const res = await this.helpers.httpRequest({
+      method: 'GET',
+      url: 'https://www.googleapis.com/youtube/v3/search',
+      qs: { part: 'snippet', q, type: 'video', order: 'relevance', regionCode: 'MX', maxResults: 10, key: API_KEY },
+      json: true,
+    });
+    const items = res.items || [];
+    queryLog.push({ q, count: items.length });
+    for (const v of items) {
+      const id = v.id?.videoId;
+      if (!id) continue;
+      if (!byId.has(id)) byId.set(id, { ...v, _queries: [q] });
+      else byId.get(id)._queries.push(q);
+    }
+  } catch (e) {
+    queryLog.push({ q, error: String(e.message || e).slice(0, 160) });
+  }
+}
+const candidates = [...byId.values()];
+function scoreVideo(v) {
+  const title = norm(v.snippet?.title || '');
+  const desc = norm(v.snippet?.description || '');
+  const full = [title, desc].join(' ');
+  const reasons = [];
+  let score = 0;
+  const badTerm = profile.bad.find((t) => full.includes(norm(t)) && !text.includes(norm(t)));
+  if (badTerm) return { accepted: false, score: -20, reason: 'cross_category:' + badTerm };
+  const nonReview = NON_REVIEW_TERMS.find((t) => full.includes(norm(t)));
+  if (nonReview) score -= 6, reasons.push('non_review:' + nonReview);
+  const brandHit = marca && full.includes(norm(marca));
+  if (brandHit) score += 3, reasons.push('brand');
+  const categoryHits = profile.category.filter((t) => full.includes(norm(t)));
+  score += Math.min(4, categoryHits.length * 2);
+  if (categoryHits.length) reasons.push('category:' + categoryHits.join(','));
+  const exactHits = [linea, modelo, submodelo].filter(Boolean).filter((t) => full.includes(norm(t)) || norm(t).replace(/\\s+/g, '') && full.replace(/\\s+/g, '').includes(norm(t).replace(/\\s+/g, '')));
+  score += exactHits.length * 4;
+  if (exactHits.length) reasons.push('exact:' + exactHits.join(','));
+  const tokenHits = identityTokens.filter((t) => full.includes(t));
+  score += Math.min(6, tokenHits.length);
+  if (tokenHits.length) reasons.push('tokens:' + tokenHits.slice(0, 6).join(','));
+  const reviewHits = REVIEW_TERMS.filter((t) => full.includes(norm(t)));
+  if (reviewHits.length) score += 3, reasons.push('review:' + reviewHits[0]);
+  if (v._queries?.length > 1) score += 1;
+  let match_level = 'none';
+  if (exactHits.length >= 2 || (brandHit && exactHits.length >= 1 && categoryHits.length)) match_level = 'exact';
+  else if (brandHit && (categoryHits.length || tokenHits.length >= 2)) match_level = 'line';
+  else if (categoryHits.length && tokenHits.length >= 2) match_level = 'category';
+  const accepted = score >= 7 && match_level !== 'none';
+  return { accepted, score, match_level, reason: reasons.join('|') || 'weak_match' };
+}
+const scored = candidates.map((v) => ({ v, s: scoreVideo(v) }));
+const accepted = scored.filter((x) => x.s.accepted);
+const ids = accepted.map((x) => x.v.id.videoId).filter(Boolean);
+const stats = {};
+if (ids.length) {
+  const res = await this.helpers.httpRequest({ method: 'GET', url: 'https://www.googleapis.com/youtube/v3/videos', qs: { part: 'statistics', id: ids.join(','), key: API_KEY }, json: true });
+  for (const it of (res.items || [])) stats[it.id] = it.statistics || {};
+}
+const ranked = accepted
+  .map(({ v, s }) => ({ ...v, statistics: stats[v.id.videoId] || {}, match_level: s.match_level, evidence_score: s.score, evidence_reason: s.reason, _views: parseInt((stats[v.id.videoId] || {}).viewCount || '0', 10) }))
+  .sort((a, b) => (b.evidence_score - a.evidence_score) || (b._views - a._views))
+  .slice(0, 3);
+const rejected = scored.filter((x) => !x.s.accepted).slice(0, 12).map(({ v, s }) => ({ title: v.snippet?.title || '', score: s.score, reason: s.reason, match_level: s.match_level }));
+return [{ json: {
+  items: ranked,
+  youtube_filter: {
+    version: 'v6',
+    commercial_name: commercialName,
+    queries,
+    query_log: queryLog,
+    source_count: candidates.length,
+    accepted_count: ranked.length,
+    rejected_sample: rejected,
+    category: profile.kind,
+    identity_tokens: identityTokens.slice(0, 12),
+  }
+} }];`;
+  return;
   node.parameters.jsCode = `// Top videos v5: strict product/category matching. Bad evidence is worse than no video.
 const API_KEY = $env.YOUTUBE_API_KEY;
 const item = $('Get Data ML').first().json;
@@ -410,6 +545,63 @@ IMPORTANTE: este bloque ya fue filtrado para evitar videos de otra categoria. Si
     `ESTRUCTURA DEL ARTÍCULO (~800 palabras, markdown): 1) Veredicto rápido honesto, 2) Qué es y qué cambió, comparando contra modelo anterior o inferior, 3) Lo bueno con evidencia, 4) Lo malo / a tener en cuenta concreto, 5) Comparativa de compra contra mejor valor, premium y alternativa fuera del ecosistema cuando aplique, 6) Para quién sí / para quién no, 7) Conclusión con CTA para comprar en Mercado Libre.`,
   );
 
+  code = code.replace(
+    /- Genera "comparativa_editorial" con exactamente 4 objetos:[^\n]+/,
+    `- Genera "comparativa_editorial" con exactamente 4 objetos: "modelo anterior o inferior", "mejor valor", "premium" y "alternativa fuera del ecosistema". Usa primero ALTERNATIVAS EDITORIALES con candidatos reales de ML. El slot premium NUNCA puede ser el producto analizado; debe ser generacion/gama superior o un producto claramente mas caro con ventaja concreta. Si no hay candidato real, escribe que no se encontro alternativa confiable sin inventar SKUs.`,
+  );
+
+  if (!code.includes("alternativasReales")) {
+    code = code.replace(
+      "const idioma = ($('Route Row').first().json.idioma || 'es').toLowerCase();",
+      `let alternativasReales = '';
+try {
+  const current = $('Get Data ML').first().json;
+  const sellers = $('Get Item Sellers').first().json.results || [];
+  const currentPrice = Number((sellers[0] || {}).price || 0);
+  const normAlt = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9\\s]/g, ' ').replace(/\\s+/g, ' ').trim();
+  const currentText = normAlt([current.name, current.domain_id].join(' '));
+  const sameProduct = (it) => {
+    const t = normAlt(it.title);
+    if (it.id === current.id) return true;
+    const currentTokens = new Set(currentText.split(' ').filter(w => w.length > 3));
+    const hits = t.split(' ').filter(w => currentTokens.has(w)).length;
+    return hits >= 7 && Math.abs(Number(it.price || 0) - currentPrice) / Math.max(currentPrice, 1) < 0.12;
+  };
+  const classify = (it) => {
+    const title = normAlt(it.title);
+    const price = Number(it.price || 0);
+    const ratio = currentPrice ? price / currentPrice : 1;
+    if (/switch\\s*2|ultra|pro|max|premium|superautomatic|super automatic|dinamica|rivelia|oracle|barista/.test(title) && ratio > 1.05) return 'premium';
+    if (ratio >= 1.2) return 'premium';
+    if (ratio <= 0.78) return 'economica';
+    return 'mejor_valor';
+  };
+  const rows = ($('Get Similar Products').first().json.results || [])
+    .filter(it => it.id !== current.id && it.title && it.price && it.permalink && !sameProduct(it))
+    .map(it => ({ ...it, slot: classify(it) }))
+    .sort((a, b) => Math.abs(Number(a.price || 0) - currentPrice) - Math.abs(Number(b.price || 0) - currentPrice));
+  const pick = (slot) => rows.filter(it => it.slot === slot).slice(0, 4);
+  const fmt = (slot, label) => {
+    const items = pick(slot);
+    return items.length
+      ? label + ':\\n' + items.map(it => \`- \${it.title} | $\${Number(it.price || 0).toLocaleString('es-MX')} MXN | \${it.permalink}\`).join('\\n')
+      : label + ': (sin candidato real confiable en ML)';
+  };
+  alternativasReales = [fmt('economica', 'ECONOMICA'), fmt('mejor_valor', 'MEJOR_VALOR'), fmt('premium', 'PREMIUM')].join('\\n\\n');
+} catch(e) { alternativasReales = '(sin candidatos reales confiables)'; }
+
+const idioma = ($('Route Row').first().json.idioma || 'es').toLowerCase();`,
+    );
+
+    code = code.replace(
+      "ALTERNATIVAS EDITORIALES: los siguientes productos aparecen en ML en rango de precio similar:",
+      `ALTERNATIVAS EDITORIALES: estos candidatos fueron clasificados desde Mercado Libre. Usa modelos concretos si existen. Prohibido recomendar el mismo producto como alternativa. Si un slot dice "sin candidato real confiable", dilo sin inventar marca/modelo.
+\${alternativasReales}
+
+ALTERNATIVAS EDITORIALES: los siguientes productos aparecen en ML en rango de precio similar:`,
+    );
+  }
+
   if (!code.includes("riesgos_compra_ml: { type")) {
     code = code.replace(
       "seo_title:       { type: \"string\" },",
@@ -548,6 +740,38 @@ const slug = buildEditorialSlug();`,
     );
   }
 
+  if (!code.includes("display_title")) {
+    code = code.replace(
+      "const slug = buildEditorialSlug();",
+      `const slug = buildEditorialSlug();
+
+function buildDisplayTitle() {
+  const name = item.name || '';
+  const cleanSpec = (s) => String(s || '').replace(/\\b(distribuidor autorizado|nuevo|original)\\b/gi, '').replace(/\\s+/g, ' ').trim();
+  const chip = (name.match(/\\bM\\d\\b/i) || modelo.match?.(/\\bM\\d\\b/i) || [''])[0].toUpperCase();
+  const storage = (name.match(/\\b\\d+\\s*(?:GB|TB)\\b/i) || [''])[0].replace(/\\s+/g, ' ');
+  const sizeIn = (name.match(/\\b\\d{2}(?:\\.\\d)?\\s*(?:\\"|pulgadas|inch|inches)\\b/i) || [''])[0].replace(/pulgadas|inch|inches/ig, '"').replace(/\\s+/g, '');
+  const watchSeries = /\\bapple\\b/i.test(name) && /\\bwatch\\b/i.test(name) ? (name.match(/\\bseries\\s+\\d+\\b/i) || [''])[0] : '';
+  const watchSize = (name.match(/\\b\\d{2}\\s*mm\\b/i) || [''])[0].replace(/\\s+/g, '');
+  let title = '';
+  if (/macbook/i.test([name, linea, modelo].join(' '))) title = ['Apple', linea || 'MacBook Air', sizeIn, chip, storage].filter(Boolean).join(' ');
+  else if (watchSeries) title = ['Apple Watch', watchSeries.replace(/^apple\\s+watch\\s+/i, ''), watchSize].filter(Boolean).join(' ');
+  else if (/switch/i.test([name, linea, modelo].join(' '))) title = ['Nintendo Switch', /oled/i.test(name + ' ' + linea + ' ' + modelo) ? 'OLED' : '', storage].filter(Boolean).join(' ');
+  else if (/cafetera|espresso|coffee/i.test([name, linea, modelo].join(' '))) title = [marca || fabricante || 'DeLonghi', linea || modelo, modelo && !String(linea).includes(modelo) ? modelo : ''].filter(Boolean).join(' ');
+  else title = [fabricante || marca, linea, modelo, submodelo].filter(Boolean).join(' ');
+  title = cleanSpec(title || name).replace(/\\b(cpu|gpu|nucleos|neural engine|color|caja|correa)\\b/gi, '').replace(/\\s+/g, ' ').trim();
+  return title.length > 60 ? title.slice(0, 57).trim().replace(/[,:;-]$/, '') + '...' : title;
+}
+
+const displayTitle = buildDisplayTitle();`,
+    );
+
+    code = code.replace(
+      "nombre:   item.name,",
+      "nombre:   item.name,\n    display_title: displayTitle,\n    nombre_original: item.name,",
+    );
+  }
+
   code = code.replace(
     ".filter(it => it.id !== currentId && it.title && it.price)",
     ".filter(it => it.id !== currentId && it.title && it.price && it.permalink)",
@@ -563,6 +787,18 @@ const slug = buildEditorialSlug();`,
         .slice(0, 5);
       return similarResults.map(it => ({`,
   );
+
+  code = code.replace(
+    "vistas:    parseInt(v.statistics?.viewCount || '0', 10),",
+    "vistas:    parseInt(v.statistics?.viewCount || '0', 10),\n  match_level: v.match_level || null,\n  evidence_score: v.evidence_score || null,\n  evidence_reason: v.evidence_reason || null,",
+  );
+
+  if (!code.includes("youtube_debug:")) {
+    code = code.replace(
+      "videos_yt: videosYT,",
+      "videos_yt: videosYT,\n  youtube_debug: $('Top videos').first().json.youtube_filter || null,",
+    );
+  }
 
   node.parameters.jsCode = code;
 }

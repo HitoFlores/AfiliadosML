@@ -28,6 +28,7 @@ for (const file of files) {
   }
 
   const title = review.editorial?.seo_title ?? "";
+  const displayTitle = review.producto?.display_title ?? "";
   const staleYear = title.match(/\b(20[0-9]{2})\b/)?.[1];
   if (staleYear && Number(staleYear) < currentYear) {
     fail(label, `seo_title usa ano viejo (${staleYear})`);
@@ -35,6 +36,12 @@ for (const file of files) {
 
   if ((review.editorial?.faq ?? []).length < 3) {
     warn(label, "tiene menos de 3 FAQ");
+  }
+
+  if (!displayTitle) {
+    warn(label, "falta producto.display_title");
+  } else if (displayTitle.length > 65) {
+    fail(label, `producto.display_title demasiado largo (${displayTitle.length})`);
   }
 
   const currentProductId = review.meta?.producto_id;
@@ -62,6 +69,14 @@ for (const file of files) {
       warn(label, `falta campo v4 editorial.${field}`);
     }
   }
+
+  const currentTitle = normalize([review.producto?.display_title, review.producto?.nombre].filter(Boolean).join(" "));
+  const premium = (review.editorial?.comparativa_editorial ?? []).find((item) =>
+    normalize(item?.tipo).includes("premium"),
+  );
+  if (premium && sameProductText(currentTitle, normalize([premium.titulo, premium.resumen].join(" ")))) {
+    fail(label, "comparativa premium parece repetir el producto actual");
+  }
 }
 
 if (errors > 0) {
@@ -79,4 +94,23 @@ function fail(label, message) {
 function warn(label, message) {
   warnings += 1;
   console.warn(`WARN  ${label}: ${message}`);
+}
+
+function normalize(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function sameProductText(current, candidate) {
+  if (!current || !candidate) return false;
+  const stop = new Set(["de", "del", "la", "el", "los", "las", "para", "con", "sin", "por", "una", "uno", "un", "y", "review", "analisis", "premium", "opcion"]);
+  const tokens = current.split(" ").filter((t) => t.length > 2 && !stop.has(t));
+  if (tokens.length < 3) return false;
+  const hits = tokens.filter((t) => candidate.includes(t)).length;
+  return hits >= Math.min(tokens.length, 5);
 }

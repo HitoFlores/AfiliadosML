@@ -93,6 +93,8 @@ export interface RawProduct {
   };
   producto: {
     nombre: string;
+    display_title?: string;
+    nombre_original?: string;
     marca: string;
     modelo: string;
     descripcion: string;
@@ -139,7 +141,11 @@ export interface RawProduct {
     url: string;
     thumbnail: string;
     publicado: string;
+    match_level?: string | null;
+    evidence_score?: number | null;
+    evidence_reason?: string | null;
   }>;
+  youtube_debug?: Record<string, unknown> | null;
   editorial: RawEditorial;
   autoria?: RawAutoria;
 }
