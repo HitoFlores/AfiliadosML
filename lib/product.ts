@@ -297,7 +297,7 @@ function normalize(raw: RawProduct): NormalizedProduct {
       keywordTargets: e.keyword_targets ?? fallbackKeywords,
       evidenciaLimitaciones:
         e.evidencia_limitaciones ??
-        "No hicimos prueba propia de laboratorio; este analisis cruza especificaciones, fuentes externas y senales de compradores en Mercado Libre.",
+        "Este analisis cruza especificaciones, fuentes externas y senales de compradores en Mercado Libre.",
       seoTitle: e.seo_title,
       seoDescription: e.seo_description,
       articuloHtml: e.articulo_html,

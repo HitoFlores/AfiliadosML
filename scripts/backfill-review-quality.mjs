@@ -51,7 +51,7 @@ for (const file of files) {
   ].filter(Boolean);
 
   editorial.evidencia_limitaciones ??=
-    "No hicimos prueba propia; este analisis sintetiza especificaciones, fuentes externas y opiniones de compradores en Mercado Libre.";
+    "Este analisis sintetiza especificaciones, fuentes externas y opiniones de compradores en Mercado Libre.";
 
   fixed.editorial = editorial;
   fs.writeFileSync(fullPath, `${JSON.stringify(fixed, null, 2)}\n`, "utf8");

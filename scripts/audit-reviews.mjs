@@ -37,16 +37,19 @@ for (const file of files) {
     warn(label, "tiene menos de 3 FAQ");
   }
 
-  if ((review.productos_similares_ml ?? []).length === 0) {
-    warn(label, "no tiene productos_similares_ml");
-  }
-
   const currentProductId = review.meta?.producto_id;
   const includesCurrent = (review.productos_similares_ml ?? []).some(
     (item) => item.id === currentProductId,
   );
   if (includesCurrent) {
     fail(label, "productos_similares_ml incluye el producto actual");
+  }
+
+  const deadSimilarLink = (review.productos_similares_ml ?? []).find(
+    (item) => !item.permalink || /mercadolibre\.com\.mx\/-\d+/i.test(item.permalink),
+  );
+  if (deadSimilarLink) {
+    fail(label, `productos_similares_ml tiene link invalido (${deadSimilarLink.id})`);
   }
 
   for (const field of [

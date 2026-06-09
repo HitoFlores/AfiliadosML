@@ -40,10 +40,10 @@ export default function AlternativasSection({
   return (
     <section className="my-10">
       <h2 className="text-2xl font-bold text-gray-900 mb-2">
-        No te convencio? Considera tambien
+        Otros reviews que conviene generar
       </h2>
       <p className="text-gray-500 text-sm mb-5">
-        Alternativas segun tu presupuesto y prioridades
+        Estas alternativas salen del analisis editorial. Lo ideal es revisarlas en Mercado Libre y pasarlas por el mismo flujo antes de recomendarlas fuerte.
       </p>
       <div className="grid md:grid-cols-2 gap-4">
         {alternativas.map((alt, i) => (
@@ -64,7 +64,7 @@ export default function AlternativasSection({
               rel="nofollow noopener noreferrer"
               className="mt-4 inline-flex text-xs font-bold text-green-700 hover:text-green-800"
             >
-              Buscar esta alternativa en Mercado Libre
+              Buscar candidato en Mercado Libre
             </a>
           </div>
         ))}

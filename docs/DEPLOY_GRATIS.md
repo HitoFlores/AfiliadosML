@@ -40,7 +40,6 @@ Cada corrida:
 - `N8N_ENCRYPTION_KEY`: llave fija para n8n.
 - `N8N_CREDENTIALS_JSON_B64`: export de credenciales n8n en base64.
 - `YOUTUBE_API_KEY`
-- `SUPADATA_API_KEY`
 - `ML_CLIENT_ID`
 - `ML_CLIENT_SECRET`
 - `TELEGRAM_BOT_TOKEN`

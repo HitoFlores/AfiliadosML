@@ -167,15 +167,12 @@ function patchSimilarProducts(workflow) {
 
 function patchFreeYoutubeTranscripts(workflow) {
   const node = findNode(workflow, "Transcripciones");
-  node.parameters.jsCode = `// Transcripciones v3: captions publicas gratis primero; Supadata solo fallback opt-in
-const SUPADATA_API_KEY = $env.SUPADATA_API_KEY;
-const USE_SUPADATA_FALLBACK = String($env.SUPADATA_TRANSCRIPT_FALLBACK || '').toLowerCase() === 'true';
+  node.parameters.jsCode = `// Transcripciones v4: solo captions publicas de YouTube; sin Supadata
 const videos = $('Top videos').first().json.items || [];
 
 const partes = [];
 let conTranscripcion = 0;
 let viaYoutube = 0;
-let viaSupadata = 0;
 
 function decodeHtml(value) {
   return (value || '')
@@ -230,22 +227,6 @@ async function getFreeYoutubeTranscript(videoId) {
   }
 }
 
-async function getSupadataTranscript(videoId, lang) {
-  if (!USE_SUPADATA_FALLBACK || !SUPADATA_API_KEY) return '';
-  try {
-    const res = await this.helpers.httpRequest({
-      method: 'GET',
-      url: 'https://api.supadata.ai/v1/youtube/transcript',
-      qs: { videoId, text: 'true', lang },
-      headers: { 'x-api-key': SUPADATA_API_KEY },
-      json: true,
-    });
-    return (res.content || '').toString().slice(0, 6000);
-  } catch(e) {
-    return '';
-  }
-}
-
 for (let i = 0; i < videos.length; i++) {
   const v = videos[i].snippet || {};
   const id = videos[i].id.videoId;
@@ -256,15 +237,6 @@ for (let i = 0; i < videos.length; i++) {
   if (transcript) {
     viaYoutube++;
     fuente = 'youtube-captions';
-  }
-
-  if (!transcript) {
-    transcript = await getSupadataTranscript.call(this, id, 'es')
-      || await getSupadataTranscript.call(this, id, 'en');
-    if (transcript) {
-      viaSupadata++;
-      fuente = 'supadata';
-    }
   }
 
   if (transcript) conTranscripcion++;
@@ -282,7 +254,7 @@ return [{ json: {
   bloque_videos: partes.join('\\n\\n---\\n\\n'),
   num_videos_con_transcripcion: conTranscripcion,
   transcripciones_gratis_youtube: viaYoutube,
-  transcripciones_supadata: viaSupadata,
+  transcripciones_supadata: 0,
 }}];`;
 }
 
@@ -306,9 +278,9 @@ function patchBuildPromptV4(workflow) {
 - Genera "comparativa_editorial" con exactamente 3 objetos: "opcion mas barata", "mejor valor" y "premium". Usa datos de similaresMl si existen; si no, describe tipos de alternativa sin inventar modelos especificos.
 - Genera "mejor_alternativa" eligiendo una alternativa solo si hay razon clara. Si no, usa null.
 - Genera "keyword_targets" con 3-5 busquedas long-tail reales para Mexico/Mercado Libre.
-- Genera "evidencia_limitaciones" explicando en una frase que no hubo prueba propia y que se sintetizaron fuentes externas, compradores y especificaciones.
+- Genera "evidencia_limitaciones" explicando en una frase que el analisis cruza especificaciones, fuentes externas y compradores. No uses esta limitacion como castigo de score.
 - El "seo_title" debe usar el ano \${currentYear} si incluye ano. Prohibido usar anos viejos.
-- CALIBRACION DEL SCORE: no castigues dos veces por "sin prueba propia" o por "opiniones poco detalladas". Eso debe aparecer en evidencia_limitaciones, pero el score debe reflejar el valor real del producto segun especificaciones, compradores y fuentes externas. Si el producto tiene fortalezas claras y los problemas son principalmente salto incremental o evidencia parcial, normalmente debe quedar en 7.8-8.4, no en 7.0-7.4. Reserva scores menores a 7.5 para fallas concretas, mala relacion precio/valor, quejas recurrentes, specs debiles o incompatibilidades importantes.
+- CALIBRACION DEL SCORE: nunca bajes el score por no tener prueba propia; este sitio siempre trabaja con investigacion editorial, especificaciones, reviews externas y compradores ML. Tampoco penalices por "opiniones poco detalladas" salvo que existan quejas concretas. El score mide valor de compra estimado, no rigor de laboratorio. Reserva scores menores a 7.5 para fallas del producto, mala relacion precio/valor, quejas recurrentes, specs debiles, incompatibilidades o publicacion riesgosa. Si el producto es bueno pero incremental, normalmente queda en 7.8-8.5.
 
 ESTRUCTURA DEL ARTÍCULO`,
     );
@@ -387,20 +359,7 @@ function patchBuildFinalJsonV4(workflow) {
     `const similarResults = ($('Get Similar Products').first().json.results || [])
         .filter(it => it.id !== currentId && it.title && it.price && it.permalink)
         .slice(0, 5);
-      const sellerFallback = similarResults.length > 0 ? [] : ($('Get Item Sellers').first().json.results || [])
-        .filter(it => it.item_id !== bestSeller.item_id && it.item_id && it.price)
-        .slice(0, 5)
-        .map(it => ({
-          id:             it.item_id,
-          title:          item.name,
-          price:          it.price,
-          original_price: it.original_price || it.price,
-          thumbnail:      item.pictures?.[0]?.url || null,
-          permalink:      'https://articulo.mercadolibre.com.mx/' + it.item_id.replace(/^(ML[A-Z])/i, '$1-'),
-          shipping:       { free_shipping: it.shipping?.free_shipping || false },
-        }));
-      const sourceResults = similarResults.length > 0 ? similarResults : sellerFallback;
-      return sourceResults.map(it => ({`,
+      return similarResults.map(it => ({`,
   );
 
   node.parameters.jsCode = code;
