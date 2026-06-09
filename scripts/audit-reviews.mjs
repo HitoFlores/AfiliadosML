@@ -59,6 +59,18 @@ for (const file of files) {
     fail(label, `productos_similares_ml tiene link invalido (${deadSimilarLink.id})`);
   }
 
+  const mlSearchDebug = review.ml_search_debug;
+  if (
+    mlSearchDebug &&
+    Number(mlSearchDebug.valid_count || 0) > 0 &&
+    (review.productos_similares_ml ?? []).length === 0
+  ) {
+    fail(
+      label,
+      `ML devolvio ${mlSearchDebug.valid_count} candidatos validos pero productos_similares_ml quedo vacio`,
+    );
+  }
+
   for (const field of [
     "riesgos_compra_ml",
     "checklist_antes_de_comprar",

@@ -16,11 +16,13 @@ for (const file of files) {
 
   if (workflow.name === "AfiliadosML - Telegram Poll") {
     patchTelegramPoll(workflow);
+    patchTelegramPollReviewCandidates(workflow);
     patchPollExecuteWorkflowNodes(workflow);
     addExecuteTrigger(workflow, "Poll Telegram");
   }
 
   if (workflow.name === "AfiliadosML - Scheduler 7am") {
+    patchSchedulerReviewCandidates(workflow);
     addExecuteTrigger(workflow, "Leer Sheet");
   }
 
@@ -156,20 +158,391 @@ return [{
 
 function patchPollExecuteWorkflowNodes(workflow) {
   for (const node of workflow.nodes) {
-    if (node.name !== "Run Main" && node.name !== "Run Main New") continue;
+    if (node.name !== "Run Main" && node.name !== "Run Main New" && node.name !== "Run Main Candidate") continue;
     node.type = "n8n-nodes-base.noOp";
     node.typeVersion = 1;
     node.parameters = {};
   }
 }
 
+function reviewCandidatesSheetName() {
+  return {
+    __rl: true,
+    value: "review_candidates",
+    mode: "name",
+    cachedResultName: "review_candidates",
+  };
+}
+
+function patchSchedulerReviewCandidates(workflow) {
+  if (workflow.nodes.some((node) => node.name === "Leer Review Candidates")) return;
+
+  const leerSheet = findNode(workflow, "Leer Sheet");
+  const crearWaiting = findNode(workflow, "Crear waiting_link");
+  const pedir = findNode(workflow, "Pedir Articulo del Dia");
+
+  workflow.nodes.push(
+    {
+      id: "sched-review-candidates-read",
+      name: "Leer Review Candidates",
+      type: "n8n-nodes-base.googleSheets",
+      typeVersion: 4.5,
+      position: [1340, 420],
+      continueOnFail: true,
+      alwaysOutputData: true,
+      parameters: {
+        documentId: leerSheet.parameters.documentId,
+        sheetName: reviewCandidatesSheetName(),
+        options: {},
+      },
+      credentials: leerSheet.credentials,
+    },
+    {
+      id: "sched-review-candidates-build",
+      name: "Armar Mensaje Candidates",
+      type: "n8n-nodes-base.code",
+      typeVersion: 2,
+      position: [1560, 420],
+      parameters: {
+        jsCode: `const rows = $input.all().map(i => i.json).filter(r => !r.error);
+const pending = rows
+  .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
+  .sort((a, b) => Number(b.priority_score || 0) - Number(a.priority_score || 0))
+  .slice(0, 3);
+
+const base = 'Candidatos para el siguiente review';
+if (!pending.length) {
+  return [{ json: {
+    text: 'Buenos dias! Que articulo analizamos hoy?\\n\\nMandame el link del producto en Mercado Libre (responde a ESTE mensaje):',
+    has_candidates: false,
+  }}];
+}
+
+const shorten = (value, max = 130) => {
+  const text = String(value || '').replace(/\\s+/g, ' ').trim();
+  return text.length > max ? text.slice(0, max - 1).trim().replace(/[.,;:]$/, '') + '...' : text;
+};
+
+const lines = pending.map((c, idx) => [
+  (idx + 1) + ') ' + c.candidate_name,
+  '   Motivo: ' + shorten(c.reason || 'Candidato pendiente de review.'),
+  '   Ref: ' + c.candidate_id,
+].join('\\n'));
+
+return [{ json: {
+  text: base + '\\n\\n' + lines.join('\\n\\n') + '\\n\\nPara elegir uno, responde con una sola linea:\\n1 https://meli.la/...\\n\\nEl numero es el candidato. El link debe ser el afiliado de ML Partners.',
+  has_candidates: true,
+}}];`,
+      },
+    },
+    {
+      id: "sched-review-candidates-waiting-link",
+      name: "Needs Waiting Link",
+      type: "n8n-nodes-base.code",
+      typeVersion: 2,
+      position: [1780, 560],
+      parameters: {
+        jsCode: `const msg = $('Armar Mensaje Candidates').first().json;
+if (msg.has_candidates) return [];
+return [{ json: { create_waiting_link: true } }];`,
+      },
+    },
+  );
+
+  workflow.connections["Crear waiting_link"] = {
+    main: [],
+  };
+  workflow.connections["Leer Review Candidates"] = {
+    main: [[{ node: "Armar Mensaje Candidates", type: "main", index: 0 }]],
+  };
+  workflow.connections["Armar Mensaje Candidates"] = {
+    main: [[
+      { node: "Pedir Articulo del Dia", type: "main", index: 0 },
+      { node: "Needs Waiting Link", type: "main", index: 0 },
+    ]],
+  };
+  workflow.connections["Needs Waiting Link"] = {
+    main: [[{ node: "Crear waiting_link", type: "main", index: 0 }]],
+  };
+
+  const switchTargets = workflow.connections["Ya existe?"]?.main ?? [];
+  if (switchTargets[2]) {
+    switchTargets[2] = [{ node: "Leer Review Candidates", type: "main", index: 0 }];
+    workflow.connections["Ya existe?"].main = switchTargets;
+  }
+
+  pedir.position = [1780, 420];
+  pedir.parameters.body =
+    '={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: $(\'Armar Mensaje Candidates\').first().json.text, reply_markup: { force_reply: true, input_field_placeholder: "1 https://meli.la/..." } }) }}';
+}
+
+function patchTelegramPollReviewCandidates(workflow) {
+  if (workflow.nodes.some((node) => node.name === "Leer Candidates Poll")) return;
+
+  const getQueue = findNode(workflow, "Get Queue Poll");
+  const tipo = findNode(workflow, "Tipo Mensaje");
+  const addToQueue = findNode(workflow, "Add to Queue");
+
+  let code = findNode(workflow, "Poll Telegram").parameters.jsCode;
+  if (!code.includes("candidateAffiliate")) {
+    code = code.replace(
+      "let confirmFlag   = false;",
+      "let confirmFlag   = false;\nlet candidateAffiliate = null;",
+    );
+    code = code.replace(
+      "const isReferidoReply = (rt) =>",
+      `const extractCandidateId = (replyText, messageText) => {
+  if (!/Candidatos pendientes/i.test(replyText || '')) return null;
+  const choice = String(messageText || '').trim().match(/^(\\d+)/)?.[1];
+  const blocks = String(replyText || '').split(/\\n(?=\\d+\\.\\s)/);
+  const ids = [];
+  for (const block of blocks) {
+    const n = block.match(/^(\\d+)\\.\\s/)?.[1];
+    const id = block.match(/ID:\\s*([^\\s]+)/)?.[1];
+    if (id) ids.push({ n, id });
+  }
+  if (choice) return ids.find(x => x.n === choice)?.id || null;
+  return ids.length === 1 ? ids[0].id : null;
+};
+
+const isReferidoReply = (rt) =>`,
+    );
+    code = code.replace(
+      "// Link enviado como respuesta al mensaje de Notify Esperando (sin /referido)",
+      `// Link afiliado para candidato sugerido por Scheduler.
+  const candidateId = extractCandidateId(replyTo, text);
+  if (candidateId && looksLikeLink(text)) {
+    const link = text.split(/\\s+/).find(looksLikeLink);
+    candidateAffiliate = { candidate_id: candidateId, referido: link };
+    sd.consecutive_errors = 0;
+    continue;
+  }
+
+  // Link enviado como respuesta al mensaje de Notify Esperando (sin /referido)`,
+    );
+    code = code.replace(
+      "if (referido)      return [{ json: { tipo: 'referido',       referido } }];",
+      "if (candidateAffiliate) return [{ json: { tipo: 'candidate_affiliate', ...candidateAffiliate } }];\nif (referido)      return [{ json: { tipo: 'referido',       referido } }];",
+    );
+    findNode(workflow, "Poll Telegram").parameters.jsCode = code;
+  }
+
+  if (!code.includes("candidate_index")) {
+    code = findNode(workflow, "Poll Telegram").parameters.jsCode;
+    code = code.replace(
+      `  if (candidateId && looksLikeLink(text)) {
+    const link = text.split(/\\s+/).find(looksLikeLink);
+    candidateAffiliate = { candidate_id: candidateId, referido: link };
+    sd.consecutive_errors = 0;
+    continue;
+  }
+
+  // Link enviado como respuesta al mensaje de Notify Esperando (sin /referido)`,
+      `  if (candidateId && looksLikeLink(text)) {
+    const link = text.split(/\\s+/).find(looksLikeLink);
+    candidateAffiliate = { candidate_id: candidateId, referido: link };
+    sd.consecutive_errors = 0;
+    continue;
+  }
+
+  // Fallback: acepta "1 https://meli.la/..." aunque Telegram no lo marque como reply.
+  const candidateChoice = text.match(/^(\\d+)\\s+(\\S+)/);
+  if (candidateChoice && looksLikeLink(candidateChoice[2])) {
+    candidateAffiliate = { candidate_index: Number(candidateChoice[1]), referido: candidateChoice[2] };
+    sd.consecutive_errors = 0;
+    continue;
+  }
+
+  // Link enviado como respuesta al mensaje de Notify Esperando (sin /referido)`,
+    );
+    findNode(workflow, "Poll Telegram").parameters.jsCode = code;
+  }
+
+  code = findNode(workflow, "Poll Telegram").parameters.jsCode;
+  if (!code.includes("isCandidateReply")) {
+    code = code.replace(
+      "const replyTo = (msg.reply_to_message && msg.reply_to_message.text) || '';",
+      "const replyTo = (msg.reply_to_message && msg.reply_to_message.text) || '';\n  const isCandidateReply = /Candidatos para el siguiente review|Candidatos pendientes/i.test(replyTo);",
+    );
+    code = code.replace(
+      "if (isSchedulerReply(replyTo) || looksLikeLink(text)) {",
+      "if (!isCandidateReply && (isSchedulerReply(replyTo) || looksLikeLink(text))) {",
+    );
+    findNode(workflow, "Poll Telegram").parameters.jsCode = code;
+  }
+
+  tipo.parameters.output =
+    "={{ $json.tipo === 'nuevo_articulo' ? 0 : $json.tipo === 'confirmar_articulo' ? 2 : $json.tipo === 'candidate_affiliate' ? 3 : 1 }}";
+
+  workflow.nodes.push(
+    {
+      id: "poll-candidates-read",
+      name: "Leer Candidates Poll",
+      type: "n8n-nodes-base.googleSheets",
+      typeVersion: 4.5,
+      position: [900, 520],
+      continueOnFail: true,
+      alwaysOutputData: true,
+      parameters: {
+        documentId: getQueue.parameters.documentId,
+        sheetName: reviewCandidatesSheetName(),
+        options: {},
+      },
+      credentials: getQueue.credentials,
+    },
+    {
+      id: "poll-candidates-find",
+      name: "Find Candidate Affiliate",
+      type: "n8n-nodes-base.code",
+      typeVersion: 2,
+      position: [1120, 520],
+      parameters: {
+        jsCode: `const candidateId = $('Poll Telegram').first().json.candidate_id;
+const candidateIndex = Number($('Poll Telegram').first().json.candidate_index || 0);
+const referido = $('Poll Telegram').first().json.referido;
+const rows = $input.all().map(i => i.json).filter(r => !r.error);
+const pending = rows
+  .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
+  .sort((a, b) => Number(b.priority_score || 0) - Number(a.priority_score || 0));
+const row = candidateId
+  ? rows.find(r => r.candidate_id === candidateId)
+  : pending[candidateIndex - 1];
+
+if (!row) {
+  await this.helpers.httpRequest({
+    method: 'POST',
+    url: 'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage',
+    body: { chat_id: $env.TELEGRAM_CHAT_ID, text: 'No encontre ese candidato en review_candidates.' },
+    json: true,
+  });
+  return [];
+}
+
+if (!referido) return [];
+
+return [{ json: {
+  row_number: row.row_number,
+  candidate_id: row.candidate_id,
+  candidate_name: row.candidate_name,
+  source_slug: row.source_slug,
+  referido,
+  articulo: row.candidate_ml_url || referido,
+  target_slug: row.target_slug || '',
+}}];`,
+      },
+    },
+    {
+      id: "poll-candidates-update",
+      name: "Mark Candidate Ready",
+      type: "n8n-nodes-base.googleSheets",
+      typeVersion: 4.5,
+      position: [1340, 520],
+      parameters: {
+        operation: "update",
+        documentId: getQueue.parameters.documentId,
+        sheetName: reviewCandidatesSheetName(),
+        columns: {
+          mappingMode: "defineBelow",
+          value: {
+            row_number: "={{ $json.row_number }}",
+            affiliate_url: "={{ $json.referido }}",
+            status: "ready",
+            updated_at: "={{ new Date().toISOString() }}",
+            error_msg: "",
+          },
+          matchingColumns: ["row_number"],
+          schema: [],
+          attemptToConvertTypes: false,
+          convertFieldsToString: true,
+        },
+        options: {},
+      },
+      credentials: getQueue.credentials,
+    },
+    {
+      id: "poll-candidates-add-queue",
+      name: "Add Candidate to Queue",
+      type: "n8n-nodes-base.googleSheets",
+      typeVersion: 4.5,
+      position: [1560, 520],
+      parameters: {
+        operation: "append",
+        documentId: addToQueue.parameters.documentId,
+        sheetName: addToQueue.parameters.sheetName,
+        columns: {
+          mappingMode: "defineBelow",
+          value: {
+            articulo: "={{ $('Find Candidate Affiliate').first().json.articulo }}",
+            referido: "={{ $('Find Candidate Affiliate').first().json.referido }}",
+            idioma: "es",
+            estatus: "ready",
+            candidate_id: "={{ $('Find Candidate Affiliate').first().json.candidate_id }}",
+          },
+          matchingColumns: [],
+          schema: [],
+          attemptToConvertTypes: false,
+          convertFieldsToString: true,
+        },
+        options: {},
+      },
+      credentials: addToQueue.credentials,
+    },
+    {
+      id: "poll-candidates-notify",
+      name: "Notify Candidate Ready",
+      type: "n8n-nodes-base.httpRequest",
+      typeVersion: 4.2,
+      position: [1780, 520],
+      parameters: {
+        method: "POST",
+        url: "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+        sendBody: true,
+        contentType: "raw",
+        rawContentType: "application/json",
+        body: "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: 'Candidato listo para generar review:\\n' + $('Find Candidate Affiliate').first().json.candidate_name }) }}",
+        options: {},
+      },
+    },
+    {
+      id: "poll-candidates-run-main",
+      name: "Run Main Candidate",
+      type: "n8n-nodes-base.noOp",
+      typeVersion: 1,
+      position: [2000, 520],
+      parameters: {},
+    },
+  );
+
+  const outputs = workflow.connections["Tipo Mensaje"].main;
+  outputs[3] = [{ node: "Leer Candidates Poll", type: "main", index: 0 }];
+  workflow.connections["Tipo Mensaje"].main = outputs;
+  workflow.connections["Leer Candidates Poll"] = {
+    main: [[{ node: "Find Candidate Affiliate", type: "main", index: 0 }]],
+  };
+  workflow.connections["Find Candidate Affiliate"] = {
+    main: [[{ node: "Mark Candidate Ready", type: "main", index: 0 }]],
+  };
+  workflow.connections["Mark Candidate Ready"] = {
+    main: [[{ node: "Add Candidate to Queue", type: "main", index: 0 }]],
+  };
+  workflow.connections["Add Candidate to Queue"] = {
+    main: [[{ node: "Notify Candidate Ready", type: "main", index: 0 }]],
+  };
+  workflow.connections["Notify Candidate Ready"] = {
+    main: [[{ node: "Run Main Candidate", type: "main", index: 0 }]],
+  };
+}
+
 function patchMainReviewWorkflow(workflow) {
   patchForceRegeneration(workflow);
+  patchRouteRowCandidateId(workflow);
   patchSimilarProducts(workflow);
   patchStrictYoutubeMatching(workflow);
   patchFreeYoutubeTranscripts(workflow);
   patchBuildPromptV4(workflow);
   patchBuildFinalJsonV4(workflow);
+  patchReviewCandidates(workflow);
+  patchCandidateCompletion(workflow);
 }
 
 function patchForceRegeneration(workflow) {
@@ -201,6 +574,17 @@ const forceSlug = norm($env.FORCE_REGEN_SLUG || '');`,
     "_pass:      forceSlug ? 'pass2' : (estatus === 'ready' ? 'pass2' : 'pass1'),",
   );
 
+  node.parameters.jsCode = code;
+}
+
+function patchRouteRowCandidateId(workflow) {
+  const node = findNode(workflow, "Route Row");
+  let code = node.parameters.jsCode;
+  if (code.includes("candidate_id: (pick.candidate_id")) return;
+  code = code.replace(
+    "idioma:     ((pick.idioma || 'es').toString().trim() || 'es').toLowerCase(),",
+    "idioma:     ((pick.idioma || 'es').toString().trim() || 'es').toLowerCase(),\n    candidate_id: (pick.candidate_id || '').toString(),",
+  );
   node.parameters.jsCode = code;
 }
 
@@ -792,6 +1176,80 @@ const displayTitle = buildDisplayTitle();`,
       return similarResults.map(it => ({`,
   );
 
+  if (!code.includes("function buildSimilarProductsPayload")) {
+    code = code.replace(
+      "const numVids = $('Transcripciones').first().json.num_videos_con_transcripcion;",
+      `const numVids = $('Transcripciones').first().json.num_videos_con_transcripcion;
+
+function buildSimilarProductsPayload() {
+  const debug = {
+    source: 'Get Similar Products',
+    query: null,
+    received_count: 0,
+    valid_count: 0,
+    saved_count: 0,
+    empty_reason: null,
+    error_msg: null,
+  };
+
+  try {
+    const currentId = $('Get Data ML').first().json.id;
+    const response = $('Get Similar Products').first().json || {};
+    const results = Array.isArray(response.results) ? response.results : [];
+    debug.query = response.query || null;
+    debug.received_count = results.length;
+
+    const valid = results.filter(it => it.id !== currentId && it.title && it.price && it.permalink);
+    debug.valid_count = valid.length;
+
+    const productos = valid.slice(0, 5).map(it => ({
+      id:             it.id,
+      titulo:         it.title,
+      precio:         it.price,
+      precio_original: it.original_price || it.price,
+      thumbnail:      it.thumbnail ? it.thumbnail.replace('http://', 'https://') : null,
+      permalink:      it.permalink,
+      envio_gratis:   it.shipping?.free_shipping || false,
+    }));
+
+    debug.saved_count = productos.length;
+    if (debug.received_count === 0) debug.empty_reason = 'ml_returned_no_results';
+    else if (debug.valid_count === 0) debug.empty_reason = 'no_valid_candidates_after_filter';
+    else if (productos.length === 0) debug.empty_reason = 'valid_candidates_not_saved';
+
+    return { productos, debug };
+  } catch (e) {
+    debug.empty_reason = 'exception';
+    debug.error_msg = e.message || String(e);
+    return { productos: [], debug };
+  }
+}
+
+const similarPayload = buildSimilarProductsPayload();`,
+    );
+
+    code = code.replace(
+      "youtube_debug: $('Top videos').first().json.youtube_filter || null,",
+      "youtube_debug: $('Top videos').first().json.youtube_filter || null,\n  ml_search_debug: similarPayload.debug,",
+    );
+
+    code = code.replace(
+      /productos_similares_ml: \(\(\) => \{\n    try \{\n      const currentId = \$\('Get Data ML'\)\.first\(\)\.json\.id;\n      const similarResults = \$\('Get Similar Products'\)\.first\(\)\.json\.results \|\| \[\]\)\n        \.filter\(it => it\.id !== currentId && it\.title && it\.price && it\.permalink\)\n        \.slice\(0, 5\);\n      return similarResults\.map\(it => \(\{\n          id:             it\.id,\n          titulo:         it\.title,\n          precio:         it\.price,\n          precio_original: it\.original_price \|\| it\.price,\n          thumbnail:      it\.thumbnail \? it\.thumbnail\.replace\('http:\/\/', 'https:\/\/'\) : null,\n          permalink:      it\.permalink,\n          envio_gratis:   it\.shipping\?\.free_shipping \|\| false,\n        \}\)\);\n    \} catch\(e\) \{ return \[\]; \}\n  \}\)\(\),/,
+      "productos_similares_ml: similarPayload.productos,",
+    );
+
+    if (!code.includes("productos_similares_ml: similarPayload.productos")) {
+      const start = code.indexOf("productos_similares_ml: (() => {");
+      const end = code.indexOf("  autoria:", start);
+      if (start !== -1 && end !== -1) {
+        code =
+          code.slice(0, start) +
+          "productos_similares_ml: similarPayload.productos,\n" +
+          code.slice(end);
+      }
+    }
+  }
+
   code = code.replace(
     "vistas:    parseInt(v.statistics?.viewCount || '0', 10),",
     "vistas:    parseInt(v.statistics?.viewCount || '0', 10),\n  match_level: v.match_level || null,\n  evidence_score: v.evidence_score || null,\n  evidence_reason: v.evidence_reason || null,",
@@ -804,5 +1262,282 @@ const displayTitle = buildDisplayTitle();`,
     );
   }
 
+  if (code.includes("function buildSimilarProductsPayload") && !code.includes("ml_search_debug:")) {
+    code = code.replace(
+      "youtube_debug: $('Top videos').first().json.youtube_filter || null,",
+      "youtube_debug: $('Top videos').first().json.youtube_filter || null,\n  ml_search_debug: similarPayload.debug,",
+    );
+  }
+
   node.parameters.jsCode = code;
+}
+
+function patchReviewCandidates(workflow) {
+  if (workflow.nodes.some((node) => node.name === "Build Review Candidates")) return;
+
+  const markDone = findNode(workflow, "Mark Done");
+  const doc = markDone.parameters.documentId;
+  const credentials = markDone.credentials;
+  const sheetName = {
+    __rl: true,
+    value: "review_candidates",
+    mode: "name",
+    cachedResultName: "review_candidates",
+  };
+
+  workflow.nodes.push(
+    {
+      id: "review-candidates-read",
+      name: "Get Review Candidates",
+      type: "n8n-nodes-base.googleSheets",
+      typeVersion: 4.5,
+      position: [1696, 208],
+      continueOnFail: true,
+      alwaysOutputData: true,
+      parameters: {
+        documentId: doc,
+        sheetName,
+        options: {},
+      },
+      credentials,
+    },
+    {
+      id: "review-candidates-build",
+      name: "Build Review Candidates",
+      type: "n8n-nodes-base.code",
+      typeVersion: 2,
+      position: [1904, 208],
+      parameters: {
+        jsCode: `const review = $('Build Final JSON').first().json;
+const now = new Date().toISOString();
+const sourceSlug = review.meta?.slug || '';
+const sourceProductId = review.meta?.producto_id || '';
+const existing = new Set(
+  $input.all()
+    .map(i => i.json?.candidate_id)
+    .filter(Boolean)
+);
+
+const norm = (s) => String(s || '')
+  .toLowerCase()
+  .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+  .replace(/[^a-z0-9\\s]/g, ' ')
+  .replace(/\\s+/g, ' ')
+  .trim();
+const slugify = (s) => norm(s).replace(/\\s+/g, '-').slice(0, 80);
+const money = (n) => Number.isFinite(Number(n)) ? Number(n) : null;
+const currentPrice = money(review.precio?.actual);
+const scorePrice = (price) => {
+  const p = money(price);
+  if (!currentPrice || !p) return 50;
+  const distance = Math.abs(p - currentPrice) / Math.max(currentPrice, 1);
+  return Math.max(35, Math.round(90 - distance * 60));
+};
+
+const rows = [];
+const push = (input) => {
+  const name = String(input.candidate_name || '').trim();
+  const relation = String(input.relation_type || '').trim();
+  if (name.length > 120) return;
+  if (!name || !relation) return;
+
+  const candidateId = [
+    sourceSlug,
+    input.candidate_ml_id || slugify(name),
+  ].filter(Boolean).join(':');
+
+  if (existing.has(candidateId) || rows.some(r => r.candidate_id === candidateId)) return;
+
+  rows.push({
+    candidate_id: candidateId,
+    source_slug: sourceSlug,
+    source_product_id: sourceProductId,
+    relation_type: relation,
+    candidate_name: name,
+    candidate_query: input.candidate_query || name,
+    candidate_ml_url: input.candidate_ml_url || '',
+    candidate_ml_id: input.candidate_ml_id || '',
+    affiliate_url: '',
+    target_slug: '',
+    status: 'pending',
+    priority_score: input.priority_score ?? 50,
+    reason: input.reason || '',
+    mentioned_in: input.mentioned_in || '',
+    created_at: now,
+    updated_at: now,
+    error_msg: '',
+  });
+};
+
+for (const item of review.productos_similares_ml || []) {
+  push({
+    relation_type: 'similar_ml',
+    candidate_name: item.titulo,
+    candidate_query: item.titulo,
+    candidate_ml_url: item.permalink,
+    candidate_ml_id: item.id,
+    priority_score: scorePrice(item.precio),
+    reason: item.precio ? 'Candidato real detectado por Mercado Libre en rango comparable.' : 'Candidato real detectado por Mercado Libre.',
+    mentioned_in: 'productos_similares_ml',
+  });
+}
+
+for (const item of review.editorial?.comparativa_editorial || []) {
+  push({
+    relation_type: 'comparativa_editorial',
+    candidate_name: item.titulo,
+    candidate_query: item.titulo,
+    priority_score: 70,
+    reason: item.resumen || '',
+    mentioned_in: 'comparativa_editorial',
+  });
+}
+
+for (const item of review.editorial?.alternativas || []) {
+  if (!item.titulo) continue;
+  push({
+    relation_type: 'alternativa_editorial',
+    candidate_name: item.titulo,
+    candidate_query: item.titulo,
+    priority_score: 60,
+    reason: item.descripcion || '',
+    mentioned_in: 'alternativas',
+  });
+}
+
+if (review.editorial?.mejor_alternativa?.titulo) {
+  push({
+    relation_type: 'mejor_alternativa',
+    candidate_name: review.editorial.mejor_alternativa.titulo,
+    candidate_query: review.editorial.mejor_alternativa.titulo,
+    priority_score: 85,
+    reason: review.editorial.mejor_alternativa.razon || '',
+    mentioned_in: 'mejor_alternativa',
+  });
+}
+
+return rows.map(json => ({ json }));`,
+      },
+    },
+    {
+      id: "review-candidates-append",
+      name: "Append Review Candidates",
+      type: "n8n-nodes-base.googleSheets",
+      typeVersion: 4.5,
+      position: [2112, 208],
+      continueOnFail: true,
+      parameters: {
+        operation: "append",
+        documentId: doc,
+        sheetName,
+        columns: {
+          mappingMode: "defineBelow",
+          value: {
+            candidate_id: "={{ $json.candidate_id }}",
+            source_slug: "={{ $json.source_slug }}",
+            source_product_id: "={{ $json.source_product_id }}",
+            relation_type: "={{ $json.relation_type }}",
+            candidate_name: "={{ $json.candidate_name }}",
+            candidate_query: "={{ $json.candidate_query }}",
+            candidate_ml_url: "={{ $json.candidate_ml_url }}",
+            candidate_ml_id: "={{ $json.candidate_ml_id }}",
+            affiliate_url: "={{ $json.affiliate_url }}",
+            target_slug: "={{ $json.target_slug }}",
+            status: "={{ $json.status }}",
+            priority_score: "={{ $json.priority_score }}",
+            reason: "={{ $json.reason }}",
+            mentioned_in: "={{ $json.mentioned_in }}",
+            created_at: "={{ $json.created_at }}",
+            updated_at: "={{ $json.updated_at }}",
+            error_msg: "={{ $json.error_msg }}",
+          },
+          matchingColumns: [],
+          schema: [],
+          attemptToConvertTypes: false,
+          convertFieldsToString: true,
+        },
+        options: {},
+      },
+      credentials,
+    },
+  );
+
+  const markDoneTargets = workflow.connections["Mark Done"]?.main?.[0] ?? [];
+  if (!markDoneTargets.some((target) => target.node === "Get Review Candidates")) {
+    markDoneTargets.push({ node: "Get Review Candidates", type: "main", index: 0 });
+  }
+  workflow.connections["Mark Done"] = { main: [markDoneTargets] };
+  workflow.connections["Get Review Candidates"] = {
+    main: [[{ node: "Build Review Candidates", type: "main", index: 0 }]],
+  };
+  workflow.connections["Build Review Candidates"] = {
+    main: [[{ node: "Append Review Candidates", type: "main", index: 0 }]],
+  };
+}
+
+function patchCandidateCompletion(workflow) {
+  if (workflow.nodes.some((node) => node.name === "Find Completed Candidate")) return;
+
+  const markDone = findNode(workflow, "Mark Done");
+
+  workflow.nodes.push(
+    {
+      id: "completed-candidate-find",
+      name: "Find Completed Candidate",
+      type: "n8n-nodes-base.code",
+      typeVersion: 2,
+      position: [1904, 384],
+      parameters: {
+        jsCode: `const candidateId = $('Route Row').first().json.candidate_id || '';
+if (!candidateId) return [];
+
+const rows = $('Get Review Candidates').all().map(i => i.json).filter(r => !r.error);
+const row = rows.find(r => r.candidate_id === candidateId);
+if (!row) return [];
+
+return [{ json: {
+  row_number: row.row_number,
+  candidate_id: candidateId,
+  target_slug: $('Build Final JSON').first().json.meta.slug,
+}}];`,
+      },
+    },
+    {
+      id: "completed-candidate-update",
+      name: "Mark Completed Candidate",
+      type: "n8n-nodes-base.googleSheets",
+      typeVersion: 4.5,
+      position: [2112, 384],
+      parameters: {
+        operation: "update",
+        documentId: markDone.parameters.documentId,
+        sheetName: reviewCandidatesSheetName(),
+        columns: {
+          mappingMode: "defineBelow",
+          value: {
+            row_number: "={{ $json.row_number }}",
+            status: "done",
+            target_slug: "={{ $json.target_slug }}",
+            updated_at: "={{ new Date().toISOString() }}",
+            error_msg: "",
+          },
+          matchingColumns: ["row_number"],
+          schema: [],
+          attemptToConvertTypes: false,
+          convertFieldsToString: true,
+        },
+        options: {},
+      },
+      credentials: markDone.credentials,
+    },
+  );
+
+  const getTargets = workflow.connections["Get Review Candidates"]?.main?.[0] ?? [];
+  if (!getTargets.some((target) => target.node === "Find Completed Candidate")) {
+    getTargets.push({ node: "Find Completed Candidate", type: "main", index: 0 });
+  }
+  workflow.connections["Get Review Candidates"] = { main: [getTargets] };
+  workflow.connections["Find Completed Candidate"] = {
+    main: [[{ node: "Mark Completed Candidate", type: "main", index: 0 }]],
+  };
 }
