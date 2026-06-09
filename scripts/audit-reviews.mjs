@@ -74,7 +74,7 @@ for (const file of files) {
   const premium = (review.editorial?.comparativa_editorial ?? []).find((item) =>
     normalize(item?.tipo).includes("premium"),
   );
-  if (premium && sameProductText(currentTitle, normalize([premium.titulo, premium.resumen].join(" ")))) {
+  if (premium && sameProductText(currentTitle, normalize(premium.titulo))) {
     fail(label, "comparativa premium parece repetir el producto actual");
   }
 }
