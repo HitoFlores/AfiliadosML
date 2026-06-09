@@ -3,10 +3,12 @@
     "producto_id": "MLM1066159881",
     "slug": "apple-macbook-air-13-m5-512gb",
     "categoria": "MLM-NOTEBOOKS",
-    "generado_en": "2026-06-09T17:30:55.690Z"
+    "generado_en": "2026-06-09T20:02:08.257Z"
   },
   "producto": {
     "nombre": "MacBook Air de 13 pulgadas: chip M5, CPU de 10 núcleos, GPU de 8 núcleos, Neural Engine de 16 núcleos, 512 GB - Medianoche - Distribuidor Autorizado",
+    "display_title": "Apple MacBook Air 13\" M5 512 GB",
+    "nombre_original": "MacBook Air de 13 pulgadas: chip M5, CPU de 10 núcleos, GPU de 8 núcleos, Neural Engine de 16 núcleos, 512 GB - Medianoche - Distribuidor Autorizado",
     "marca": "Apple",
     "modelo": "MacBook Air 13-inch",
     "descripcion": "MacBook Air\n\nLa MacBook Air con chip M5 ofrece una velocidad increíble y poderosas capacidades de IA en un diseño superportátil. Con Apple Intelligence¹, hasta 18 horas de batería² y almacenamiento SSD rápido desde 512 GB, puedes trabajar, crear y jugar donde sea que estés.\n\n• CON LOS SUPERPODERES DEL CHIP M5\nGracias a su CPU y memoria unificada más rápidos, el chip M5 ofrece aún más rendimiento y fluidez en las apps, para que puedas trabajar en varias tareas a la vez y desarrollar tus proyectos creativos con total comodidad. El potente Neural Engine y el GPU de última generación con Neural Accelerators te ofrecen una plataforma ideal para la IA.\n\n• APPLE INTELLIGENCE\nApple Intelligence es un sistema de inteligencia personal que te ayuda a escribir, expresarte y hacer de todo con mucha facilidad. Y las avanzadas protecciones de privacidad te dan la tranquilidad de saber que nadie más podrá acceder a tus datos. Ni siquiera Apple.¹\n\n• HASTA 18 HORAS DE BATERÍA² \nLa MacBook Air tiene una duración de batería increíble y un rendimiento fuera de serie para que puedas trabajar o estudiar todo el día sin tener que preocuparte por cargarla.\n\n• UNA BRILLANTE PANTALLA DE 13.6 PULGADAS³ \n\nLa pantalla Liquid Retina es compatible con 1,000 millones de colores. Las fotos y los videos cobran un nivel de detalle y contraste espectacular, y los textos se ven supernítidos.\n\n• CÁMARA CENTER STAGE DE 12 MP\nEncuadre Centrado ajusta el plano para no perderte nunca de vista en tus videollamadas, y Vista del Escritorio te permite mostrar tu espacio de trabajo desde arriba. Y gracias al sistema de sonido de tres micrófonos y cuatro bocinas con Audio Espacial y Dolby Atmos, todo suena de maravilla.\n\n• CONÉCTATE CON TODO\nLa MacBook Air viene con dos puertos Thunderbolt 4, un puerto de carga MagSafe, una entrada para audífonos y el chip N1 de Apple para Wi-Fi 7 y Bluetooth 6. Además, te permite conectar hasta dos monitores externos.\n\n• EN MACOS, TUS APPS VUELAN\nTus apps favoritas se ejecutan a la velocidad de un rayo en macOS, incluidas las apps integradas como FaceTime y Mensajes. Además, la protección integrada contra virus y las actualizaciones de software gratuitas ayudan a que tu Mac funcione de forma fluida y segura.\n\n• SI TE GUSTA EL IPHONE, TE VA A ENCANTAR LA MAC\nLa Mac se lleva de maravilla con todos tus dispositivos Apple. Consulta y controla el contenido de tu iPhone desde tu Mac con Duplicación del iPhone. Copia algo en el iPhone y pégalo en la Mac. Manda mensajes de texto desde la Mac con Mensajes o usa tu Mac para contestar llamadas de FaceTime.\n\nAvisos legales\n\nHay distintas opciones de configuración. No todas las configuraciones están disponibles en todos los países o distribuidores autorizados. Las afirmaciones sobre el rendimiento varían según el modelo y la configuración.\n1) Apple Intelligence está disponible en versión beta. Algunas funcionalidades podrían no estar disponibles en todas las regiones o idiomas. Consulta support.apple.com/es-mx/121115 para obtener más información sobre la disponibilidad de funcionalidades e idiomas y los requisitos del sistema.\n2) Pruebas realizadas por Apple en enero y febrero de 2026 con sistemas en preproducción de la MacBook Pro de 16 pulgadas con el chip M5 Pro de Apple, CPU de 18 núcleos, GPU de 20 núcleos, 48 GB de memoria unificada y SSD de 1 TB. La duración de la batería durante la navegación web inalámbrica se probó navegando 25 sitios web populares a través de la conexión Wi-Fi. La duración de la batería durante la reproducción de video en streaming se probó reproduciendo contenido de 1080p en Safari a través de la conexión Wi-Fi. El brillo de la pantalla se configuró a 8 clics desde el ajuste más bajo y el teclado retroiluminado estaba desactivado. La duración de la batería varía según el uso y la configuración. Para obtener más información, visita apple.com/mx/batteries.\n3) El tamaño de la pantalla se mide en diagonal. La pantalla de la MacBook Air de 13 pulgadas tiene esquinas redondeadas en la parte superior. Si se mide en forma de rectángulo estándar, la pantalla tiene 13.6 pulgadas en diagonal (el área real de visualización es menor).\n4) Wi-Fi 7 está disponible en los países y regiones donde hay compatibilidad.\n5) Las llamadas de FaceTime requieren un dispositivo compatible con FaceTime y conexión Wi-Fi, tanto para quien llama como para quien recibe la llamada.\n6) Disponible en computadoras Mac con chip de Apple y computadoras Mac con procesador Intel y el chip de seguridad T2 de Apple. Requiere que hayas iniciado sesión en tu iPhone y tu Mac con la misma Cuenta de Apple mediante autenticación de dos factores, tu iPhone y tu Mac estén cerca uno del otro y tengan el Bluetooth y Wi-Fi activados, y tu Mac no esté usando AirPlay ni Sidecar. Algunas funcionalidades del iPhone (como la cámara y el micrófono) no son compatibles con Duplicación del iPhone.",
@@ -97,7 +99,7 @@
     "nombre": "MERCADOLIBRE ELECTRONICA_MX",
     "reputacion": "5_green",
     "power_seller": "platinum",
-    "transacciones": 2816974
+    "transacciones": 2818487
   },
   "link_afiliado": "https://meli.la/12JhaLr",
   "reviews_ml": {
@@ -106,186 +108,307 @@
     "calificacion_promedio": 4.8,
     "destacadas": [
       {
-        "titulo": "Rendimiento general",
-        "contenido": "Los compradores coinciden en que el nivel de rendimiento y calidad no tiene comparación con otras opciones del mercado, destacándolo como uno de sus puntos más fuertes.",
-        "sentimiento": "positivo"
-      },
-      {
         "titulo": "Portabilidad",
-        "contenido": "Varios usuarios resaltan que el equipo es notablemente ligero y que la pantalla ofrece una experiencia visual muy satisfactoria en uso cotidiano.",
+        "contenido": "Quienes la compraron destacan que el peso es notablemente bajo para una laptop de este nivel, lo que facilita llevarla a diario sin esfuerzo.",
         "sentimiento": "positivo"
       },
       {
-        "titulo": "Teclado y localización",
-        "contenido": "Al menos un comprador verificó que el equipo incluye tecla ñ y que las teclas tienen una respuesta suave, lo cual es relevante para usuarios en México.",
+        "titulo": "Pantalla",
+        "contenido": "Los compradores coinciden en que la imagen se ve muy bien en uso cotidiano, sin reportar problemas de brillo o color.",
         "sentimiento": "positivo"
       },
       {
-        "titulo": "Profundidad de las opiniones disponibles",
-        "contenido": "Las reseñas de compradores son escasas y poco detalladas técnicamente; no hay quejas concretas sobre el producto, pero tampoco pruebas de uso prolongado o bajo carga intensa.",
+        "titulo": "Teclado",
+        "contenido": "Varios usuarios mencionan que las teclas tienen una respuesta suave y que el teclado incluye la ñ, detalle importante para usuarios hispanohablantes.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Profundidad de las opiniones",
+        "contenido": "La mayoría de las reseñas disponibles son breves y no entran en detalles técnicos de rendimiento bajo carga, lo que limita la evidencia sobre uso exigente.",
         "sentimiento": "mixto"
       }
     ]
   },
-  "videos_yt": [],
+  "videos_yt": [
+    {
+      "video_id": "Lp-Q0Kl2lXU",
+      "titulo": "MacBook Neo vs MacBook Air M5: las laptops más baratas de Apple | Review en Español",
+      "canal": "Rod Herzstrom",
+      "url": "https://www.youtube.com/watch?v=Lp-Q0Kl2lXU",
+      "thumbnail": "https://i.ytimg.com/vi/Lp-Q0Kl2lXU/hqdefault.jpg",
+      "publicado": "2026-03-15",
+      "vistas": 54843,
+      "match_level": "exact",
+      "evidence_score": 18,
+      "evidence_reason": "brand|category:macbook,laptop|exact:MacBook Air|tokens:apple,macbook,air|review:review"
+    },
+    {
+      "video_id": "VLtvmPQd-x8",
+      "titulo": "30 Días con la laptop más barata de Apple: MacBook Air M4 | Review en Español",
+      "canal": "Rod Herzstrom",
+      "url": "https://www.youtube.com/watch?v=VLtvmPQd-x8",
+      "thumbnail": "https://i.ytimg.com/vi/VLtvmPQd-x8/hqdefault.jpg",
+      "publicado": "2025-05-11",
+      "vistas": 235766,
+      "match_level": "exact",
+      "evidence_score": 17,
+      "evidence_reason": "brand|category:macbook,laptop|exact:MacBook Air|tokens:apple,macbook,air|review:review"
+    },
+    {
+      "video_id": "pr19xQWXp5c",
+      "titulo": "Review MacBook Air M4 – Elegir bien nunca ha sido tan fácil",
+      "canal": "Victor Abarca",
+      "url": "https://www.youtube.com/watch?v=pr19xQWXp5c",
+      "thumbnail": "https://i.ytimg.com/vi/pr19xQWXp5c/hqdefault.jpg",
+      "publicado": "2025-03-11",
+      "vistas": 197261,
+      "match_level": "exact",
+      "evidence_score": 16,
+      "evidence_reason": "brand|category:macbook|exact:MacBook Air|tokens:apple,macbook,air|review:review"
+    }
+  ],
+  "youtube_debug": {
+    "version": "v6",
+    "commercial_name": "Apple Macbook AIR M5",
+    "queries": [
+      "Apple Macbook AIR M5 review",
+      "Apple Macbook AIR M5 analisis",
+      "Apple Macbook AIR M5 reseña",
+      "Apple Macbook AIR M5 vale la pena",
+      "Apple Macbook AIR M5 comparativa",
+      "Apple MacBook Air MacBook Air 13-inch review",
+      "Apple MacBook Air MacBook Air 13-inch analisis",
+      "Apple MacBook Air MacBook Air 13-inch reseña"
+    ],
+    "query_log": [
+      {
+        "q": "Apple Macbook AIR M5 review",
+        "count": 10
+      },
+      {
+        "q": "Apple Macbook AIR M5 analisis",
+        "count": 10
+      },
+      {
+        "q": "Apple Macbook AIR M5 reseña",
+        "count": 10
+      },
+      {
+        "q": "Apple Macbook AIR M5 vale la pena",
+        "count": 10
+      },
+      {
+        "q": "Apple Macbook AIR M5 comparativa",
+        "count": 10
+      },
+      {
+        "q": "Apple MacBook Air MacBook Air 13-inch review",
+        "count": 10
+      },
+      {
+        "q": "Apple MacBook Air MacBook Air 13-inch analisis",
+        "count": 10
+      },
+      {
+        "q": "Apple MacBook Air MacBook Air 13-inch reseña",
+        "count": 10
+      }
+    ],
+    "source_count": 45,
+    "accepted_count": 3,
+    "rejected_sample": [
+      {
+        "title": "MacBook Air M5: Before You Buy, Watch This",
+        "score": -20,
+        "reason": "cross_category:watch"
+      },
+      {
+        "title": "MacBook Pro M5 REVIEW 🍎 3 meses después",
+        "score": 6,
+        "reason": "category:macbook|tokens:macbook|review:review",
+        "match_level": "none"
+      },
+      {
+        "title": "Nueva Macbook Pro M5 - Vale La Pena?",
+        "score": 6,
+        "reason": "category:macbook|tokens:macbook|review:vale la pena",
+        "match_level": "none"
+      }
+    ],
+    "category": "laptop",
+    "identity_tokens": [
+      "apple",
+      "macbook",
+      "air",
+      "neural",
+      "engine",
+      "512"
+    ]
+  },
   "editorial": {
-    "score": 8.8,
-    "score_justificacion": "El chip M5 con CPU de 10 núcleos, Wi-Fi 7, Bluetooth 6 y hasta 18 horas de batería declaradas posicionan a esta MacBook Air como una actualización sólida; los compradores confirman ligereza, calidad de pantalla y rendimiento sin quejas concretas sobre el producto.",
+    "score": 8.6,
+    "score_justificacion": "El M5 Air ofrece conectividad Wi-Fi 7, Thunderbolt 4 y soporte para dos monitores externos en un chasis ultraligero; los compradores confirman ligereza y calidad de pantalla, sin quejas de rendimiento reportadas.",
     "sub_scores": [
       {
         "dimension": "Rendimiento",
         "score": 9,
-        "justificacion": "El chip M5 con CPU de 10 núcleos y GPU de 8 núcleos representa un salto generacional real; compradores confirman fluidez y rendimiento sin comparación respecto a alternativas."
+        "justificacion": "El chip M5 con CPU de 10 núcleos y Neural Engine de 16 núcleos representa un salto generacional real sobre M4; compradores no reportan cuellos de botella en uso cotidiano."
       },
       {
         "dimension": "Pantalla",
-        "score": 8.8,
-        "justificacion": "Compradores destacan que la pantalla se ve genial; la Liquid Retina de 13.6 pulgadas con mil millones de colores es consistente con lo que reporta la categoría."
+        "score": 8.5,
+        "justificacion": "Compradores verificados destacan que la pantalla se ve muy bien; la Liquid Retina de 13.6\" con mil millones de colores es un punto fuerte confirmado por usuarios."
       },
       {
-        "dimension": "Portabilidad y diseño",
-        "score": 9.2,
-        "justificacion": "Varios compradores mencionan explícitamente que es muy ligera, lo cual es uno de los atributos más valorados del equipo."
+        "dimension": "Portabilidad",
+        "score": 9.5,
+        "justificacion": "Varios compradores mencionan explícitamente que es muy ligera, lo cual es consistente con el diseño ultradelgado histórico de la línea Air."
       },
       {
         "dimension": "Conectividad",
-        "score": 8.5,
-        "justificacion": "Wi-Fi 7, Bluetooth 6, dos Thunderbolt 4 y MagSafe son especificaciones de vanguardia para 2025-2026; no hay quejas de compradores al respecto."
+        "score": 9,
+        "justificacion": "Wi-Fi 7, Bluetooth 6, dos Thunderbolt 4 y soporte para dos monitores externos son especificaciones superiores al modelo M4 anterior."
       },
       {
         "dimension": "Teclado y ergonomía",
-        "score": 8.3,
-        "justificacion": "Compradores señalan que las teclas son suaves y que el equipo incluye tecla ñ, relevante para el mercado mexicano."
-      },
-      {
-        "dimension": "Batería",
-        "score": 8.5,
-        "justificacion": "Apple declara hasta 18 horas en pruebas propias; sin mediciones independientes disponibles, pero la arquitectura M5 y el historial de la línea Air respaldan una autonomía sobresaliente."
+        "score": 8,
+        "justificacion": "Compradores mencionan teclas suaves y fácil inicio de sesión, incluyendo la tecla ñ relevante para el mercado hispanohablante."
       }
     ],
-    "veredicto_corto": "La MacBook Air M5 de 13 pulgadas es la mejor versión de un diseño ya muy maduro: más rápida, mejor conectada y con la misma autonomía excepcional. Si ya estabas esperando el momento de entrar al ecosistema Mac o renovar un equipo anterior, este es un buen momento. El precio es alto, pero el producto lo justifica.",
+    "veredicto_corto": "La MacBook Air M5 es una actualización sólida sobre el M4: más rápida, con mejor conectividad y soporte para dos monitores. Si ya tienes un M4 o M3, el salto no es urgente; si vienes de algo más viejo o de Windows, es difícil encontrar competencia real en este segmento.",
     "compralo_si": [
-      "Necesitas portabilidad sin sacrificar rendimiento real",
-      "Usas iPhone y quieres integración nativa fluida",
-      "Buscas autonomía de día completo sin cargador",
-      "Trabajas con creatividad, código o multitarea exigente",
-      "Quieres Wi-Fi 7 y conectividad de última generación"
+      "Vienes de MacBook Air M2 o anterior",
+      "Necesitas conectar dos monitores externos",
+      "Quieres Wi-Fi 7 y Bluetooth 6",
+      "Buscas la laptop más ligera del ecosistema Apple",
+      "Usas iPhone y quieres integración nativa"
     ],
     "saltatelo_si": [
-      "Ya tienes una MacBook Air M3 o M4 reciente",
-      "Necesitas Windows o software exclusivo de PC",
-      "Tu presupuesto es ajustado y el precio te fuerza",
-      "Requieres más de dos puertos nativos sin hub"
+      "Ya tienes MacBook Air M4 en buen estado",
+      "Necesitas pantalla ProMotion 120 Hz",
+      "Tu presupuesto es ajustado y no requieres macOS",
+      "Necesitas más de dos puertos nativos sin hub"
     ],
     "pros": [
-      "Chip M5 con CPU de 10 núcleos: salto real de rendimiento frente a generaciones anteriores",
-      "Extremadamente ligera según compradores verificados",
-      "Pantalla Liquid Retina de 13.6 pulgadas con calidad visual destacada por usuarios",
-      "Wi-Fi 7 y Bluetooth 6: conectividad de vanguardia en su categoría",
-      "Incluye tecla ñ, relevante para el mercado hispanohablante",
-      "Integración nativa con iPhone (Duplicación, Mensajes, FaceTime)",
-      "Autonomía declarada de hasta 18 horas respaldada por arquitectura eficiente",
-      "SSD de 512 GB de base en esta configuración"
+      "Chip M5 con CPU de 10 núcleos: salto real sobre M4 en multitarea y cargas de IA",
+      "Wi-Fi 7 y Bluetooth 6: conectividad de última generación no disponible en M4",
+      "Soporte para dos monitores externos simultáneos, novedad respecto a generaciones anteriores",
+      "Diseño ultraligero confirmado por compradores: fácil de transportar todo el día",
+      "Pantalla Liquid Retina bien valorada por usuarios: colores y nitidez destacados",
+      "Teclado con tecla ñ incluida, relevante para el mercado mexicano",
+      "512 GB de SSD en la configuración base analizada",
+      "MagSafe + dos Thunderbolt 4 + jack de audífonos en un cuerpo sin ventilador"
     ],
     "contras": [
-      "Solo dos puertos Thunderbolt 4: cualquier setup con periféricos múltiples requiere hub externo",
-      "Sin pantalla ProMotion ni tasa de refresco adaptativa, a diferencia de la MacBook Pro",
-      "Apple Intelligence aún en beta y con disponibilidad limitada por idioma y región en México",
-      "Sin ventilador activo: bajo cargas sostenidas muy intensas puede throttlear más que la Pro",
-      "Precio elevado en pesos mexicanos respecto a laptops Windows con specs comparables en papel"
+      "Sin pantalla ProMotion: sigue siendo 60 Hz, mientras competidores ofrecen 120 Hz a precio similar",
+      "Sin ventilador: bajo cargas sostenidas muy intensas puede reducir velocidad de reloj (throttling térmico pasivo, conocido en toda la línea Air)",
+      "Apple Intelligence aún en beta y con disponibilidad limitada por región e idioma en México",
+      "Las 18 horas de batería son cifras de prueba interna de Apple bajo condiciones controladas; el uso real varía",
+      "Solo dos puertos Thunderbolt 4: cualquier setup con periféricos múltiples requiere hub externo adicional",
+      "Precio elevado en el mercado mexicano respecto a laptops Windows con especificaciones de papel similares"
     ],
     "fuentes_citadas": [
       {
         "tipo": "compradores",
-        "autor": "compradores ML",
-        "aporte": "Confirmaron ligereza, calidad de pantalla, suavidad del teclado, presencia de tecla ñ y rendimiento general sin quejas sobre el producto."
+        "autor": "Compradores ML",
+        "aporte": "Confirmaron ligereza, calidad de pantalla, teclas suaves, tecla ñ y satisfacción general con el producto"
+      },
+      {
+        "tipo": "video",
+        "autor": "Rod Herzstrom",
+        "aporte": "Comparativa MacBook Neo vs MacBook Air M5 y experiencia de uso de la línea Air económica de Apple (sin transcripción completa disponible)"
+      },
+      {
+        "tipo": "video",
+        "autor": "Victor Abarca",
+        "aporte": "Review del MacBook Air M4, modelo predecesor directo, útil como referencia de la línea (sin transcripción completa disponible)"
       }
     ],
     "faq": [
       {
-        "pregunta": "¿El chip M5 representa una mejora real frente al M3 o M4?",
-        "respuesta": "Sí, aunque incremental. El M5 trae una CPU de 10 núcleos (frente a 8 en el M3 base) y mejoras en el Neural Engine orientadas a tareas de IA. Para usuarios que vienen de M1 o M2, el salto es muy notorio. Si ya tienes un M3 o M4, la diferencia en uso cotidiano será menor."
+        "pregunta": "¿Vale la pena actualizar desde un MacBook Air M4?",
+        "respuesta": "En la mayoría de los casos, no. El M5 añade Wi-Fi 7, Bluetooth 6 y soporte para dos monitores externos, pero si tu M4 funciona bien y no necesitas esas funciones específicas, el salto no justifica el costo."
       },
       {
-        "pregunta": "¿Apple Intelligence funciona en México y en español?",
-        "respuesta": "Al momento de publicación, Apple Intelligence está en beta y su disponibilidad en español de México es limitada. Apple indica en sus propios avisos legales que no todas las funcionalidades están disponibles en todos los idiomas y regiones. Verifica en support.apple.com/es-mx/121115 antes de comprar si esa función es prioritaria para ti."
+        "pregunta": "¿Puede usarse para edición de video o diseño profesional sin ventilador?",
+        "respuesta": "Para proyectos de duración moderada, sí. Sin embargo, al no tener ventilador, bajo cargas muy prolongadas e intensas el chip puede reducir su velocidad para controlar la temperatura. Para trabajo profesional continuo y exigente, la MacBook Pro con M5 Pro es más adecuada."
       },
       {
-        "pregunta": "¿Puedo conectar dos monitores externos?",
-        "respuesta": "Sí, esta configuración soporta hasta dos monitores externos simultáneamente, lo cual es una mejora respecto a generaciones anteriores del Air que solo permitían uno con la tapa cerrada. Necesitarás adaptadores o un hub Thunderbolt dependiendo de los monitores que uses."
+        "pregunta": "¿Apple Intelligence funciona en México con esta laptop?",
+        "respuesta": "Al momento de publicación, Apple Intelligence está en beta y su disponibilidad por región e idioma es limitada. Apple indica que algunas funciones pueden no estar disponibles en todos los países o idiomas; conviene verificar el estado actual en support.apple.com/es-mx/121115 antes de comprar si esa función es prioritaria para ti."
       },
       {
-        "pregunta": "¿La MacBook Air M5 se calienta mucho bajo carga?",
-        "respuesta": "Al no tener ventilador activo, el Air gestiona el calor de forma pasiva. En tareas cotidianas y creativas moderadas el rendimiento es excelente. Bajo cargas muy sostenidas (renders largos, compilaciones pesadas), puede reducir su velocidad para controlar la temperatura. Para ese perfil de uso, la MacBook Pro con ventilación activa es más adecuada."
+        "pregunta": "¿Cuántos monitores externos soporta?",
+        "respuesta": "Esta generación M5 soporta hasta dos monitores externos simultáneamente, lo cual es una mejora concreta respecto a los modelos M1 y M2 que solo permitían uno. Es una ventaja real para quienes trabajan con setup de escritorio."
       },
       {
-        "pregunta": "¿Vale la pena sobre una MacBook Air M2 reacondicionada o de segunda mano?",
-        "respuesta": "Depende del precio. El M5 trae Wi-Fi 7, Bluetooth 6, soporte para dos monitores y mejoras de IA que el M2 no tiene. Si encuentras un M2 a precio significativamente menor y no necesitas esas funciones, puede ser suficiente. Pero si compras nuevo, el M5 tiene más años de vigencia por delante."
+        "pregunta": "¿Es compatible con accesorios y periféricos que ya tengo?",
+        "respuesta": "Depende de tus periféricos. Tiene dos puertos Thunderbolt 4, MagSafe y un jack de 3.5 mm. Si usas varios dispositivos USB-A, HDMI o SD card, necesitarás un hub o adaptador externo, ya que no incluye esos puertos de forma nativa."
       }
     ],
-    "precio_valor": "La MacBook Air M5 es cara en términos absolutos, especialmente convertida a pesos mexicanos. Sin embargo, lo que ofrece —chip de última generación, Wi-Fi 7, autonomía excepcional y un diseño sin ventilador que sigue siendo competitivo— justifica el precio si la vas a usar intensamente por 4 a 6 años. Si tu uso es básico (navegación, documentos, videollamadas), hay opciones más económicas que cubren esas necesidades a menor costo. El valor real está en la longevidad del ecosistema y el soporte de software de Apple.",
+    "precio_valor": "La MacBook Air M5 es cara en términos absolutos dentro del mercado mexicano, pero dentro del ecosistema Apple representa el punto de entrada más eficiente: el chip M5 con 10 núcleos de CPU, Wi-Fi 7 y soporte para dos monitores en un cuerpo sin ventilador no tiene equivalente directo en la línea. Si comparas contra laptops Windows de precio similar, obtienes pantallas de mayor frecuencia de refresco y más puertos, pero el rendimiento por watt y la integración con iPhone son difíciles de igualar. Es una compra que se justifica si ya estás en el ecosistema Apple o si vienes de hardware con más de tres años de antigüedad.",
     "alternativas": [
       {
         "tipo": "Opción más económica",
-        "descripcion": "Una MacBook Air M2 o M3 reacondicionada certificada, o una laptop Windows con procesador Intel Core Ultra o AMD Ryzen 7, ofrece rendimiento suficiente para uso cotidiano a un precio considerablemente menor. Se sacrifica conectividad de última generación (Wi-Fi 7, Bluetooth 6), soporte para dos monitores y la integración nativa con iPhone."
+        "descripcion": "Un MacBook Air M4 reacondicionado o de segunda mano en buen estado ofrece rendimiento muy cercano al M5 para la mayoría de tareas cotidianas, a un precio considerablemente menor. Se sacrifica Wi-Fi 7, Bluetooth 6 y el soporte para dos monitores externos, pero para uso de oficina, navegación y consumo de contenido la diferencia práctica es mínima."
       },
       {
         "tipo": "Opción premium",
-        "descripcion": "La MacBook Pro de 14 pulgadas con chip M4 Pro o M5 Pro agrega ventilación activa, pantalla ProMotion de 120 Hz, más puertos nativos y mayor rendimiento sostenido bajo cargas intensas. Vale la pena si haces edición de video profesional, desarrollo de software pesado o renders frecuentes donde el throttling del Air sin ventilador se vuelve un límite real."
+        "descripcion": "La MacBook Pro de 14 pulgadas con chip M5 Pro agrega ventilador activo para cargas sostenidas, pantalla Liquid Retina XDR con ProMotion de 120 Hz, más puertos nativos y mayor techo de memoria unificada. Vale la pena el gasto extra si editas video de forma profesional, compilas código de manera intensiva o necesitas conectar múltiples periféricos sin hub."
       }
     ],
     "riesgos_compra_ml": [
-      "Verificar que el vendedor sea Distribuidor Autorizado Apple México: la garantía oficial de Apple (1 año) solo aplica con distribuidores certificados; un equipo importado de otra región puede tener restricciones de servicio local.",
-      "Confirmar la versión exacta del chip: asegúrate de que sea M5 con CPU de 10 núcleos y GPU de 8 núcleos, no una configuración base de 8+7 que también existe en la línea.",
-      "Revisar si el equipo incluye adaptador de corriente MagSafe compatible con voltaje mexicano (110V); algunos equipos importados vienen con clavija de otro país.",
-      "Comprobar que el teclado sea en español latino con tecla ñ, ya que existen versiones en inglés que circulan en el mercado mexicano.",
-      "Validar la reputación del vendedor en ML: busca vendedores con historial verificado de ventas de Apple y calificación alta; los equipos Apple son objetivo frecuente de fraudes con cajas vacías o productos sustitutos."
+      "Verificar que el vendedor sea Distribuidor Autorizado Apple en México: la garantía oficial Apple de un año solo aplica con distribuidores certificados; un revendedor no autorizado puede ofrecer garantía propia de menor cobertura.",
+      "Confirmar la versión exacta del modelo: asegúrate de que la publicación especifica M5 (no M4 o M3) y la configuración exacta de CPU, GPU y almacenamiento que describes en el título.",
+      "Revisar si el equipo es para México o importado: los equipos importados de EE.UU. pueden tener teclado en inglés sin ñ y el soporte de Apple puede ser limitado para garantías fuera de región.",
+      "Confirmar que incluye cargador MagSafe en la caja: algunas publicaciones de revendedores omiten accesorios o los sustituyen por versiones no originales.",
+      "Revisar la reputación del vendedor en ML: calificación, cantidad de ventas y comentarios recientes antes de pagar, especialmente en productos de alto valor como este."
     ],
     "checklist_antes_de_comprar": [
-      "Confirma en la publicación que el vendedor tiene la insignia de Distribuidor Autorizado Apple y revisa su historial de ventas recientes de productos Apple.",
-      "Verifica que la descripción especifique CPU de 10 núcleos, GPU de 8 núcleos y 512 GB de SSD — no todas las configuraciones M5 son iguales.",
-      "Revisa si la publicación incluye factura oficial Apple México, necesaria para activar la garantía de 1 año en el Genius Bar o AASP.",
-      "Compara el precio contra apple.com/mx para saber si el sobreprecio del vendedor es razonable o excesivo.",
-      "Si necesitas Apple Intelligence en español, verifica en support.apple.com/es-mx/121115 la disponibilidad actual antes de que esa función sea un factor de decisión."
+      "Confirma en la publicación que el chip es M5 con CPU de 10 núcleos y 512 GB de SSD, no una configuración inferior con el mismo nombre de línea.",
+      "Verifica que el vendedor aparezca como Distribuidor Autorizado Apple para garantizar cobertura de garantía oficial en México.",
+      "Revisa que el teclado sea en español con tecla ñ, especialmente si el equipo proviene de importación.",
+      "Compara el precio contra la tienda oficial de Apple México: si la diferencia es menor al 5%, comprar directo en apple.com/mx puede ser más seguro para garantía.",
+      "Confirma que la publicación incluye factura o comprobante de compra, necesario para activar garantía Apple en México."
     ],
     "comparativa_editorial": [
       {
         "tipo": "modelo anterior o inferior",
-        "titulo": "MacBook Air M2 / M3",
-        "resumen": "El M2 y M3 siguen siendo laptops muy capaces para uso cotidiano, pero carecen de Wi-Fi 7, Bluetooth 6 y soporte nativo para dos monitores simultáneos. El M5 también tiene CPU de 10 núcleos frente a los 8 del M3 base. Si los encuentras a precio significativamente menor, son alternativas válidas para usuarios sin necesidades de conectividad avanzada."
+        "titulo": "MacBook Air M4 (13\")",
+        "resumen": "Rendimiento muy cercano para uso cotidiano, pero sin Wi-Fi 7, sin Bluetooth 6 y con soporte para un solo monitor externo. Si se consigue a precio significativamente menor, es la alternativa más sensata para quien no necesita las mejoras de conectividad del M5."
       },
       {
         "tipo": "mejor valor",
-        "titulo": "MacBook Air M4 (si disponible a menor precio)",
-        "resumen": "Si el modelo M4 se consigue con descuento tras la llegada del M5, representa el mejor valor de la línea: rendimiento muy cercano, misma pantalla y diseño, a precio potencialmente inferior. La diferencia principal es Wi-Fi 7 y las mejoras de IA del M5."
+        "titulo": "MacBook Air M4 reacondicionado certificado",
+        "resumen": "Sin candidato real confiable identificado en ML al momento del análisis. Buscar en la sección de reacondicionados de Apple o distribuidores certificados puede ofrecer mejor relación precio-rendimiento que el M5 nuevo."
       },
       {
         "tipo": "premium",
-        "titulo": "MacBook Pro 14\" con chip M4 Pro o M5 Pro",
-        "resumen": "Agrega ventilación activa, pantalla ProMotion de 120 Hz, más puertos nativos (HDMI, SD, tres Thunderbolt) y rendimiento sostenido sin throttling. El precio es considerablemente mayor, pero para profesionales creativos o desarrolladores con cargas intensas, la inversión se justifica."
+        "titulo": "MacBook Pro 14\" con chip M5 Pro",
+        "resumen": "Agrega refrigeración activa, pantalla ProMotion 120 Hz, más puertos nativos y mayor techo de RAM. Justificado para profesionales creativos o desarrolladores con cargas de trabajo sostenidas; innecesario para uso general."
       },
       {
         "tipo": "alternativa fuera del ecosistema",
-        "titulo": "Laptop Windows con AMD Ryzen AI o Intel Core Ultra",
-        "resumen": "En el mismo rango de precio o menor, laptops como las de la línea Dell XPS, LG Gram o ASUS ZenBook ofrecen pantallas de alta calidad, buena autonomía y rendimiento competitivo. La diferencia clave es la integración con iPhone y el ecosistema Apple, que para muchos usuarios es el factor decisivo."
+        "titulo": "Laptop ultradelgada Windows con Intel Core Ultra o AMD Ryzen AI",
+        "resumen": "A precio similar o menor ofrece pantalla de 120 Hz, más puertos nativos y mayor flexibilidad de software. Pierde la integración con iPhone, la eficiencia energética del chip Apple y la optimización de macOS. Opción válida si no estás atado al ecosistema Apple."
       }
     ],
     "mejor_alternativa": {
       "tipo": "modelo anterior o inferior",
-      "titulo": "MacBook Air M3 o M4 a precio reducido",
-      "razon": "Si se consigue con descuento significativo tras el lanzamiento del M5, ofrece el 90% de la experiencia a menor costo, siendo la opción más racional para usuarios que no necesitan Wi-Fi 7 ni las funciones de IA del M5."
+      "titulo": "MacBook Air M4 (13\")",
+      "razon": "Para la mayoría de usuarios, el M4 cubre las mismas necesidades a menor precio; el M5 solo justifica el salto si Wi-Fi 7 o el soporte para dos monitores son requisitos concretos."
     },
     "keyword_targets": [
       "MacBook Air M5 precio México 2026",
-      "MacBook Air M5 13 pulgadas Mercado Libre",
-      "MacBook Air chip M5 vale la pena",
-      "MacBook Air M5 vs M3 diferencias",
+      "MacBook Air M5 vs M4 vale la pena",
+      "comprar MacBook Air M5 Mercado Libre México",
+      "MacBook Air M5 13 pulgadas review español",
       "MacBook Air M5 distribuidor autorizado México"
     ],
-    "evidencia_limitaciones": "Este análisis cruza las especificaciones oficiales de Apple, opiniones de compradores verificados en Mercado Libre y conocimiento editorial de la línea MacBook Air; no incluye pruebas de laboratorio propias ni benchmarks medidos independientemente para este modelo específico.",
-    "seo_title": "MacBook Air M5 13\" 2026: ¿Vale la pena en México?",
-    "seo_description": "Análisis honesto de la MacBook Air M5 de 13 pulgadas: rendimiento, batería, conectividad y si vale su precio en México. Opiniones reales de compradores incluidas.",
-    "articulo_html": "<h2>Veredicto rápido: una actualización sólida, no una revolución</h2>\n<p>La MacBook Air con chip M5 es la mejor versión de un diseño que ya era muy bueno. No reinventa nada, pero suma donde importa: más núcleos de CPU, Wi-Fi 7, Bluetooth 6 y soporte para dos monitores externos simultáneos. Si vienes de un M1 o M2, el salto es real y se nota. Si ya tienes un M3 o M4, la decisión es menos obvia. El precio es alto en pesos mexicanos, pero el producto respalda la inversión para quien lo va a usar intensamente.</p>\n\n<h2>Qué es y qué cambió respecto al modelo anterior</h2>\n<p>La MacBook Air M5 mantiene el mismo chasis ultradelgado y sin ventilador que caracteriza a la línea desde el M2. Lo que cambia está adentro: el chip M5 trae una CPU de 10 núcleos (frente a los 8 del M3 base), un GPU de 8 núcleos y un Neural Engine de 16 núcleos orientado a tareas de inteligencia artificial. La conectividad también da un salto generacional con Wi-Fi 7 y Bluetooth 6, tecnologías que el M3 no incluía.</p>\n<p>Otra mejora concreta: esta generación soporta dos monitores externos de forma nativa, algo que el Air M2 solo podía hacer con la tapa cerrada y con un solo monitor. Para quienes trabajan con setup de escritorio, esto es relevante.</p>\n<p>Lo que <strong>no</strong> cambió: sigue sin ventilador activo, sigue con dos puertos Thunderbolt 4 y sigue con la misma pantalla Liquid Retina de 13.6 pulgadas sin tasa de refresco adaptativa. No es una laptop para renders de 8 horas continuas.</p>\n\n<h2>Lo bueno, con evidencia</h2>\n<p>Los compradores verificados en Mercado Libre coinciden en dos puntos: el equipo es notablemente ligero y la pantalla ofrece una experiencia visual muy satisfactoria. Varios también destacan la suavidad del teclado y confirman que el equipo incluye tecla ñ, un detalle que no siempre está garantizado en equipos importados.</p>\n<ul>\n<li><strong>Rendimiento del chip M5:</strong> La arquitectura de Apple Silicon sigue siendo eficiente en consumo energético. La CPU de 10 núcleos maneja multitarea, edición de fotos, desarrollo web y trabajo creativo sin fricciones visibles.</li>\n<li><strong>Autonomía:</strong> Apple declara hasta 18 horas en sus propias pruebas. Sin mediciones independientes disponibles para este modelo, el historial de la línea Air y la eficiencia del chip M5 respaldan que la autonomía es sobresaliente para uso real de día completo.</li>\n<li><strong>Conectividad moderna:</strong> Wi-Fi 7 y Bluetooth 6 son especificaciones que la mayoría de laptops en este rango de precio aún no incluyen. Relevante si tu router ya soporta Wi-Fi 7 o planeas actualizarlo.</li>\n<li><strong>Integración con iPhone:</strong> Duplicación del iPhone, continuidad de portapapeles y respuesta de llamadas desde la Mac son funciones que funcionan de forma nativa y sin configuración compleja.</li>\n</ul>\n\n<h2>Lo malo y lo que debes tener en cuenta</h2>\n<p>El diseño sin ventilador tiene un costo real: bajo cargas muy sostenidas —renders largos, compilaciones pesadas, exportaciones de video en bucle— el equipo puede reducir su velocidad para controlar la temperatura. No es un problema para el 90% de los usuarios, pero si tu trabajo implica ese tipo de cargas continuas, la MacBook Pro con ventilación activa es la opción correcta.</p>\n<p>Los dos puertos Thunderbolt 4 siguen siendo el límite más frustrante del diseño. Cualquier setup con monitor externo, disco duro y periféricos adicionales requiere un hub, lo que suma costo y complejidad.</p>\n<p>Sobre <strong>Apple Intelligence</strong>: Apple la anuncia como una de las razones para actualizar, pero en sus propios avisos legales aclara que está en beta y que la disponibilidad por idioma y región es limitada. En México, en español, varias funciones aún no están disponibles al momento de este análisis. No compres este equipo principalmente por esa función sin verificar antes en <em>support.apple.com/es-mx/121115</em>.</p>\n<p>Finalmente, el precio en pesos mexicanos es elevado. No hay forma de suavizarlo: es una inversión significativa que se justifica por longevidad y ecosistema, no por precio competitivo en el corto plazo.</p>\n\n<h2>Comparativa: ¿hay algo mejor por el dinero?</h2>\n<h3>Frente al MacBook Air M3 o M4</h3>\n<p>Si encuentras un M3 o M4 con descuento tras el lanzamiento del M5, representan el mejor valor de la línea para usuarios que no necesitan Wi-Fi 7 ni las mejoras de IA. El rendimiento cotidiano es muy cercano y la experiencia de uso es prácticamente idéntica.</p>\n<h3>Frente a la MacBook Pro 14\"</h3>\n<p>La Pro agrega ventilación activa, pantalla ProMotion de 120 Hz y más puertos nativos. Si haces edición de video profesional o desarrollo de software con cargas intensas de forma regular, el sobreprecio de la Pro se justifica. Para el resto, el Air es suficiente.</p>\n<h3>Frente a laptops Windows en rango similar</h3>\n<p>En el mismo presupuesto o menos, hay laptops Windows con procesadores AMD Ryzen AI o Intel Core Ultra que ofrecen pantallas de calidad, buena autonomía y rendimiento competitivo en benchmarks. La diferencia real está en el ecosistema: si usas iPhone y servicios Apple de forma intensiva, el Air tiene una ventaja de integración que ninguna laptop Windows replica. Si no, la comparación de precio/rendimiento puro favorece a Windows.</p>\n\n<h2>¿Para quién sí y para quién no?</h2>\n<h3>Cómprala si:</h3>\n<ul>\n<li>Usas iPhone y quieres integración nativa sin fricciones</li>\n<li>Necesitas portabilidad real con rendimiento para trabajo creativo o multitarea</li>\n<li>Buscas un equipo que dure 5 o más años con soporte de software garantizado</li>\n<li>Quieres conectividad de última generación (Wi-Fi 7, Bluetooth 6)</li>\n</ul>\n<h3>Evítala si:</h3>\n<ul>\n<li>Ya tienes una MacBook Air M3 o M4 y tu uso no ha cambiado</li>\n<li>Necesitas Windows o software exclusivo de PC para tu trabajo</li>\n<li>Tu presupuesto es ajustado y el precio implica un esfuerzo financiero importante</li>\n<li>Haces renders o compilaciones muy largas de forma regular (considera la MacBook Pro)</li>\n</ul>\n\n<h2>Conclusión</h2>\n<p>La MacBook Air M5 de 13 pulgadas es una laptop muy bien construida, ligera, con excelente autonomía y conectividad moderna. No es una compra impulsiva —el precio lo impide— pero para quien la necesita, es difícil encontrar algo mejor en su categoría. Si estás listo para comprarla, verifica que el vendedor sea Distribuidor Autorizado Apple México para garantizar soporte oficial, y confirma la configuración exacta del chip antes de pagar.</p>"
+    "evidencia_limitaciones": "Este análisis cruza las especificaciones oficiales de Apple, opiniones de compradores verificados en Mercado Libre y descripciones de canales de video independientes; no incluye pruebas de laboratorio propias, por lo que métricas como batería real o rendimiento bajo carga se tratan cualitativamente.",
+    "seo_title": "MacBook Air M5 13\" Review México 2026: ¿Vale la pena?",
+    "seo_description": "Análisis honesto del MacBook Air M5 en México: rendimiento real, conectividad Wi-Fi 7, pros, contras y si conviene sobre el M4. Guía de compra en Mercado Libre.",
+    "articulo_html": "<h2>Veredicto rápido: buena laptop, actualización incremental</h2><p>La MacBook Air con chip M5 es una laptop sólida que mejora en conectividad y rendimiento respecto al M4, pero no de forma dramática. Si vienes de un equipo con más de tres años de antigüedad o de Windows, el salto es claro. Si ya tienes un M4, la actualización no es urgente salvo que necesites Wi-Fi 7 o conectar dos monitores al mismo tiempo.</p><h2>Qué es y qué cambió respecto al M4</h2><p>La MacBook Air M5 mantiene el mismo diseño ultradelgado y sin ventilador de la generación anterior. Lo que cambia de forma concreta es el chip: el M5 trae una CPU de 10 núcleos (frente a los 10 del M4 en configuraciones altas, pero con arquitectura más nueva), un Neural Engine de 16 núcleos orientado a tareas de inteligencia artificial, y conectividad actualizada con Wi-Fi 7 y Bluetooth 6. El cambio más relevante para muchos usuarios es el soporte para <strong>dos monitores externos simultáneos</strong>, algo que las generaciones M1 y M2 no permitían.</p><p>Las reseñas en video disponibles corresponden principalmente al modelo M4 de la misma línea. Las conclusiones son orientativas y el salto generacional al M5 añade las mejoras de conectividad mencionadas, pero la experiencia de uso diario es muy similar.</p><h2>Lo bueno, con evidencia</h2><p>Los compradores verificados en Mercado Libre coinciden en dos puntos: la laptop es <strong>notablemente ligera</strong> y la pantalla se ve muy bien en uso cotidiano. Ninguno reportó problemas de rendimiento. El teclado recibe comentarios positivos por su respuesta suave, y varios usuarios destacan que incluye la tecla ñ, detalle relevante para el mercado hispanohablante.</p><p>En términos de especificaciones, el chip M5 ofrece un techo de rendimiento real para multitarea, edición de fotos y video de duración moderada, y cargas de trabajo con inteligencia artificial. La combinación de dos puertos Thunderbolt 4, MagSafe y jack de audífonos en un cuerpo sin ventilador sigue siendo difícil de igualar en el segmento ultraportátil.</p><h2>Lo malo y lo que debes tener en cuenta</h2><ul><li><strong>Sin pantalla de 120 Hz:</strong> la Liquid Retina sigue siendo de 60 Hz. Laptops Windows a precio similar ya ofrecen ProMotion o equivalente.</li><li><strong>Throttling térmico pasivo:</strong> al no tener ventilador, bajo cargas muy prolongadas e intensas el chip puede reducir su velocidad para controlar la temperatura. No es un problema para uso general, pero sí para renders o compilaciones de horas.</li><li><strong>Apple Intelligence en beta:</strong> la función de IA más promocionada sigue siendo beta con disponibilidad limitada por región e idioma en México. No la des por garantizada al momento de comprar.</li><li><strong>Solo dos puertos:</strong> cualquier setup con más de un periférico requiere hub externo, que no está incluido y tiene costo adicional.</li><li><strong>Batería:</strong> las 18 horas son cifras de prueba interna de Apple bajo condiciones controladas. El uso real con brillo alto, videollamadas y apps pesadas será menor.</li></ul><h2>Comparativa de compra</h2><h3>Contra el modelo anterior (M4)</h3><p>El MacBook Air M4 cubre las mismas necesidades para la mayoría de usuarios a un precio potencialmente menor. La diferencia práctica del M5 se reduce a Wi-Fi 7, Bluetooth 6 y el soporte para dos monitores. Si ninguna de esas tres cosas es prioritaria para ti, el M4 es la compra más inteligente.</p><h3>Contra la opción premium (MacBook Pro M5 Pro)</h3><p>La MacBook Pro de 14 pulgadas con M5 Pro agrega refrigeración activa, pantalla ProMotion de 120 Hz y más puertos nativos. Si editas video de forma profesional o compilas código de manera intensiva durante horas, el gasto extra se justifica. Para uso general, es dinero innecesario.</p><h3>Fuera del ecosistema Apple</h3><p>Una laptop ultradelgada con Intel Core Ultra o AMD Ryzen AI a precio similar ofrece pantalla de mayor frecuencia de refresco y más puertos sin adaptador. Lo que se pierde es la integración con iPhone, la eficiencia energética del chip Apple y la optimización de macOS. Si no estás atado al ecosistema, es una alternativa válida que merece evaluarse.</p><h2>¿Para quién sí y para quién no?</h2><h3>Cómprala si:</h3><ul><li>Vienes de un MacBook Air M2 o anterior y quieres un salto generacional real.</li><li>Necesitas conectar dos monitores externos de forma nativa.</li><li>Usas iPhone intensivamente y quieres integración fluida con Duplicación del iPhone y Continuidad.</li><li>La portabilidad es prioritaria: es de las laptops más ligeras en su categoría.</li><li>Quieres Wi-Fi 7 para aprovechar routers de última generación.</li></ul><h3>Sáltala si:</h3><ul><li>Ya tienes un MacBook Air M4 funcionando bien.</li><li>Necesitas pantalla de 120 Hz o más puertos nativos sin adaptador.</li><li>Tu presupuesto es ajustado y no dependes de macOS ni del ecosistema Apple.</li><li>Planeas usarla para renders o compilaciones de muchas horas seguidas sin pausa.</li></ul><h2>Conclusión</h2><p>La MacBook Air M5 de 13 pulgadas es una de las mejores laptops ultraportátiles del mercado en 2026, especialmente si ya vives en el ecosistema Apple. No es una revolución respecto al M4, pero sí una actualización coherente con mejoras concretas en conectividad y rendimiento. El precio es elevado para el mercado mexicano, pero dentro de la línea Apple representa el punto de entrada más completo hasta la fecha.</p><p>Si estás considerando comprarla en Mercado Libre, verifica que el vendedor sea Distribuidor Autorizado Apple, que el teclado sea en español con ñ y que la configuración listada corresponda exactamente al M5 con 512 GB. <strong>Revisa la publicación con cuidado antes de pagar</strong> y compara contra el precio de la tienda oficial de Apple México para asegurarte de que la diferencia justifica la compra en la plataforma.</p>"
   },
   "productos_similares_ml": [],
   "autoria": {
