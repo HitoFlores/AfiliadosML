@@ -19,6 +19,11 @@ on:
         options:
           - "false"
           - "true"
+      force_regen_slug:
+        description: "Optional slug to regenerate even if its Sheet row is done"
+        required: false
+        default: ""
+        type: string
   schedule:
     # America/Chihuahua is UTC-6 on 2026-06-08. This is 7:00 AM local.
     - cron: "0 13 * * *"
@@ -40,6 +45,7 @@ jobs:
     env:
       RUN_DAILY_SCHEDULER: ${{ github.event_name == 'workflow_dispatch' && inputs.run_daily_scheduler == 'true' || github.event.schedule == '0 13 * * *' }}
       RUN_MAIN_SAFETY: ${{ github.event_name == 'workflow_dispatch' && inputs.run_main_safety == 'true' }}
+      FORCE_REGEN_SLUG: ${{ github.event_name == 'workflow_dispatch' && inputs.force_regen_slug || '' }}
       N8N_ENCRYPTION_KEY: ${{ secrets.N8N_ENCRYPTION_KEY }}
       N8N_CREDENTIALS_JSON_B64: ${{ secrets.N8N_CREDENTIALS_JSON_B64 }}
       YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}

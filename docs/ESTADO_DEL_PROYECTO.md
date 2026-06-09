@@ -4,7 +4,7 @@
 > de un link de producto → genera una reseña editorial honesta (estilo Wirecutter/RTINGS)
 > → la publica como JSON en este repo → una web Next.js la renderiza.
 
-Última actualización: 2026-06-09 (sesión 6 — completada).
+Última actualización: 2026-06-09 (sesión 7 — producción en Cloudflare + n8n efímero activo).
 
 ---
 
@@ -15,16 +15,18 @@ Google Sheet "Reviews ML"
   ├── pestaña "timerrs" (gid 0)           -> tokens OAuth de Mercado Libre
   └── pestaña "articulos" (gid 1072849850) -> COLA de productos a procesar
 
-n8n (local, http://localhost:5678) — 6 workflows:
-  1. AfiliadosML                    (id iSQ59pcFepjqmBvC) — PIPELINE PRINCIPAL (activo)
-  2. AfiliadosML - Telegram Poll    (id wsMIARaCQQISWJtv) — Poll cada 2min (activo)
+n8n — 6 workflows:
+  1. AfiliadosML                    (id iSQ59pcFepjqmBvC) — PIPELINE PRINCIPAL
+  2. AfiliadosML - Telegram Poll    (id wsMIARaCQQISWJtv) — Poll ejecutado por GitHub Actions
   3. AfiliadosML - Error Handler    (id WNQIZP0Tu3hQGODn) — marca errores en Sheet
   4. AfiliadosML - Token Refresh    (id PhRg6OJo47YcvsDo) — refresca token ML (5h)
-  5. AfiliadosML - Scheduler 7am    (id wG6XApFxO6SyCgIY) — cron 7:00 AM (INACTIVO — activar al hostear)
-  6. AfiliadosML - Recordatorios    (id 7uVW6atEBK8fuoHV) — recordatorios cada 2h (INACTIVO — activar al hostear)
+  5. AfiliadosML - Scheduler 7am    (id wG6XApFxO6SyCgIY) — disponible en runner efímero
+  6. AfiliadosML - Recordatorios    (id 7uVW6atEBK8fuoHV) — disponible para activar si hace falta
 
 Telegram bot @catalogomx_bot
 GitHub HitoFlores/AfiliadosML — n8n commitea data/{slug}.json
+Cloudflare Pages — despliegue sincronizado con GitHub
+GitHub Actions "Free ephemeral n8n" — ejecuta Scheduler/Poll/Main sin VPS 24/7
 Web Next.js (App Router) — "Catalogo MX" — homepage dinámica + /reviews/[slug]
 ```
 
@@ -95,15 +97,15 @@ waiting_link → (link recibido) → waiting_confirm → (/articulo_correcto) �
 |---|---|---|---|---|
 | Calidad editorial del review | 82 | 90 | 93 | **78** |
 | Cobertura (cantidad de productos) | 95 | 85 | 90 | **3 ← crítico** |
-| Descubribilidad (Google, SEO en vivo) | 95 | 98 | 90 | **0 ← no hosteado** |
+| Descubribilidad (Google, SEO en vivo) | 95 | 98 | 90 | **25 ← recién hosteado, falta escala/SEO** |
 | Navegación / categorías / guías | 90 | 95 | 88 | **15** |
 | Comparador de productos | 60 | 75 | 99 | **20** |
 | Actualización / freshness | 80 | 90 | 85 | **0 ← reviews estáticos** |
 | Contexto local MX | 10 | 5 | 0 | **100 ← ventaja única** |
 | Velocidad de publicación | 40 | 20 | 30 | **99 ← < 10 min** |
-| **Promedio del servicio** | **79** | **82** | **86** | **~40** |
+| **Promedio del servicio** | **79** | **82** | **86** | **~45** |
 
-**Conclusión:** el review individual ya está en 78. El servicio está en 40 porque no estamos hosteados y tenemos 3 productos activos. El hosting + 50 reviews nos lleva a ~75 sin tocar más código.
+**Conclusión:** el review individual ya está en 78. El sitio ya está hosteado; el cuello de botella principal ahora es cobertura. Pasar de 3 a 50 reviews debería llevar el servicio cerca de ~75 sin tocar mucho código.
 
 ### Score por producto vs los dioses
 | Producto | Nuestro score | The Verge/IGN | Tom's Coffee/Wirecutter |
@@ -125,10 +127,12 @@ waiting_link → (link recibido) → waiting_confirm → (/articulo_correcto) �
 - `/reviews` → redirige a `/#reviews`
 - Correr local: `npm run dev` → http://localhost:3000
 
-### ✅ Verificación UI antes de hostear (sesión 6)
+### ✅ Verificación UI / producción
 - Build estático confirmado con los 3 artículos activos.
 - La sección de base editorial ya no deja huecos visuales cuando solo hay un panel.
 - La comparativa ML se oculta si no hay productos similares con permalink válido.
+- Cloudflare Pages está conectado a GitHub para deploy automático.
+- GitHub Actions `Free ephemeral n8n` está activo y con secrets configurados.
 
 ---
 
@@ -141,6 +145,15 @@ waiting_link → (link recibido) → waiting_confirm → (/articulo_correcto) �
 - **Apple Watch actualizado**: score ajustado a **8.2** y copy sin castigo por “sin prueba propia”.
 - **Alternativas como cola editorial**: la sección ahora sugiere “Otros reviews que conviene generar” para pasar Apple Watch SE/Ultra u otros candidatos por el mismo flujo antes de recomendarlos fuerte.
 - **Build estable en Windows**: `experimental.cpus: 1` evita que Next lance demasiados workers y reviente por memoria/pagefile.
+
+---
+
+## ✅ Hecho en sesión 7
+
+- **Cloudflare Pages activo**: la web ya no está pendiente de hosting.
+- **n8n efímero en GitHub Actions activo**: workflow `Free ephemeral n8n` disponible con dispatch manual y crons.
+- **Secrets GitHub configurados**: credenciales n8n, ML, Telegram, YouTube, Abacus y token GitHub ya existen como secrets.
+- **Revisión de estado**: build local OK y `review:audit` OK con 3 reviews activos.
 
 ---
 
@@ -184,21 +197,18 @@ waiting_link → (link recibido) → waiting_confirm → (/articulo_correcto) �
 
 ## 📋 Pendientes (en orden de prioridad)
 
-### 1. 🚀 Hostear
-- Web en **Vercel** (conectar repo GitHub → auto-deploy en cada push)
-- n8n en **VPS** (Railway, Render, o DigitalOcean)
-- Al hostear: activar Scheduler 7am + Recordatorios, cambiar crons:
-  - Scheduler: `*/1 * * * *` → `0 7 * * *`
-  - Recordatorios: `*/1 * * * *` → `0 */2 * * *`
-  - Poll: cambiar de polling a Telegram webhook
-
-### 2. 📈 Escalar a 50-100 reviews
+### 1. 📈 Escalar a 50-100 reviews
 - El pipeline ya está listo — solo agregar productos al Sheet
-- Esto sube el servicio de ~40 a ~75 sin más cambios de código
+- Esto sube el servicio de ~45 a ~75 sin más cambios grandes de código
+- Cadencia recomendada: 5-10 productos por día hasta confirmar calidad estable
 
-### 3. 🔁 Automatizar reviews de alternativas
+### 2. 🔁 Automatizar reviews de alternativas
 - Cuando un review sugiera alternativas claras (ej. Apple Watch SE/Ultra), agregarlas como candidatos a la cola del Sheet y generar review completo con el flujo normal.
 - Mantener revisión manual del candidato para asegurar publicación disponible y link afiliado válido.
+
+### 3. 🧹 Limpiar CI viejo de Cloudflare
+- Existe un run fallido de `Deploy Cloudflare Pages` por `CLOUDFLARE_API_TOKEN` vacío.
+- Si Cloudflare Pages ya despliega directo desde GitHub, ese workflow puede eliminarse o dejarse deshabilitado para evitar ruido.
 
 ---
 
@@ -213,8 +223,7 @@ Después de arrancar n8n, aplicar el workflow actualizado:
 python scripts/push-to-n8n.py
 ```
 
-Workflows activos: **AfiliadosML** (principal) + **Telegram Poll** (2min).
-Scheduler 7am y Recordatorios: **INACTIVOS** — activar al hostear.
+Uso local opcional. En producción, GitHub Actions ejecuta `Free ephemeral n8n`.
 
 ---
 

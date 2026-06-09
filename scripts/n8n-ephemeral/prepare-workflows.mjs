@@ -153,10 +153,43 @@ return [{
 }
 
 function patchMainReviewWorkflow(workflow) {
+  patchForceRegeneration(workflow);
   patchSimilarProducts(workflow);
   patchFreeYoutubeTranscripts(workflow);
   patchBuildPromptV4(workflow);
   patchBuildFinalJsonV4(workflow);
+}
+
+function patchForceRegeneration(workflow) {
+  const node = findNode(workflow, "Route Row");
+  let code = node.parameters.jsCode;
+
+  if (code.includes("FORCE_REGEN_SLUG")) return;
+
+  code = code.replace(
+    "const norm = (s) => (s || '').toString().trim().toLowerCase();",
+    `const norm = (s) => (s || '').toString().trim().toLowerCase();
+const forceSlug = norm($env.FORCE_REGEN_SLUG || '');`,
+  );
+
+  code = code.replace(
+    `const pick =
+  rows.find((r) => norm(r.estatus) === 'ready') ||
+  rows.find((r) => norm(r.estatus) === 'pending');`,
+    `const pick = forceSlug
+  ? rows.find((r) => norm(r.slug) === forceSlug)
+  : (
+    rows.find((r) => norm(r.estatus) === 'ready') ||
+    rows.find((r) => norm(r.estatus) === 'pending')
+  );`,
+  );
+
+  code = code.replace(
+    "_pass:      estatus === 'ready' ? 'pass2' : 'pass1',",
+    "_pass:      forceSlug ? 'pass2' : (estatus === 'ready' ? 'pass2' : 'pass1'),",
+  );
+
+  node.parameters.jsCode = code;
 }
 
 function patchSimilarProducts(workflow) {
