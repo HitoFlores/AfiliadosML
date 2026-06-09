@@ -43,7 +43,7 @@ for (const file of files) {
 
   const currentProductId = review.meta?.producto_id;
   const includesCurrent = (review.productos_similares_ml ?? []).some(
-    (item) => item.id === currentProductId || item.titulo === review.producto?.nombre,
+    (item) => item.id === currentProductId,
   );
   if (includesCurrent) {
     fail(label, "productos_similares_ml incluye el producto actual");

@@ -28,10 +28,10 @@ export default function ComparativaML({
   return (
     <section className="my-10">
       <h2 className="text-2xl font-bold text-gray-900 mb-2">
-        Comparado con la competencia en ML
+        Opciones comparables en ML
       </h2>
       <p className="text-gray-500 text-sm mb-5">
-        Productos similares detectados en Mercado Libre. Los enlaces son nofollow y pueden no ser afiliados.
+        Productos similares o publicaciones del mismo catalogo detectadas en Mercado Libre. Los enlaces son nofollow y pueden no ser afiliados.
       </p>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {productos.map((p) => (

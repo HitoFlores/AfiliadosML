@@ -256,5 +256,29 @@ function patchBuildFinalJsonV4(workflow) {
     ".filter(it => it.id !== currentId && it.title && it.price && it.permalink)",
   );
 
+  code = code.replace(
+    `return ($('Get Similar Products').first().json.results || [])
+        .filter(it => it.id !== currentId && it.title && it.price && it.permalink)
+        .slice(0, 5)
+        .map(it => ({`,
+    `const similarResults = ($('Get Similar Products').first().json.results || [])
+        .filter(it => it.id !== currentId && it.title && it.price && it.permalink)
+        .slice(0, 5);
+      const sellerFallback = similarResults.length > 0 ? [] : ($('Get Item Sellers').first().json.results || [])
+        .filter(it => it.item_id !== bestSeller.item_id && it.item_id && it.price)
+        .slice(0, 5)
+        .map(it => ({
+          id:             it.item_id,
+          title:          item.name,
+          price:          it.price,
+          original_price: it.original_price || it.price,
+          thumbnail:      item.pictures?.[0]?.url || null,
+          permalink:      'https://articulo.mercadolibre.com.mx/' + it.item_id.replace(/^(ML[A-Z])/i, '$1-'),
+          shipping:       { free_shipping: it.shipping?.free_shipping || false },
+        }));
+      const sourceResults = similarResults.length > 0 ? similarResults : sellerFallback;
+      return sourceResults.map(it => ({`,
+  );
+
   node.parameters.jsCode = code;
 }
