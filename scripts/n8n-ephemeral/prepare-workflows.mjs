@@ -248,6 +248,7 @@ const profile = (() => {
 })();
 const STOP = new Set(['de','del','la','el','los','las','para','con','sin','por','una','uno','un','y','color','modelo','version','edicion','nuevo','original','distribuidor','autorizado','gb','tb','ssd','ram','cpu','gpu','chip','nucleos','pulgadas','inch','inches','mx','mexico','negro','blanco','azul','rojo','plata','plateado','medianoche']);
 const identityTokens = uniq(words([marca, linea, modelo, submodelo, productName].join(' ')).filter((w) => w.length > 2 && !STOP.has(w)));
+const productChips = uniq(text.match(/\\bm\\d\\b/g) || []);
 const commercialName = (() => {
   if (profile.kind === 'laptop' && /macbook/.test(text)) return titleCase([marca || 'Apple', linea || 'MacBook Air', /\\bm\\d\\b/i.exec(productName)?.[0] || /\\bm\\d\\b/i.exec(modelo)?.[0] || ''].join(' '));
   if (profile.kind === 'console' && /switch/.test(text)) return titleCase([marca || 'Nintendo', 'Switch', /oled/i.test(productName + ' ' + linea + ' ' + modelo) ? 'OLED' : ''].join(' '));
@@ -294,6 +295,9 @@ function scoreVideo(v) {
   const full = [title, desc].join(' ');
   const reasons = [];
   let score = 0;
+  const videoChips = uniq(full.match(/\\bm\\d\\b/g) || []);
+  const wrongChipOnly = productChips.length && videoChips.some((t) => !productChips.includes(t)) && !productChips.some((t) => full.includes(t));
+  if (wrongChipOnly) return { accepted: false, score: -12, reason: 'generation_mismatch:' + videoChips.join(',') };
   const badTerm = profile.bad.find((t) => full.includes(norm(t)) && !text.includes(norm(t)));
   if (badTerm) return { accepted: false, score: -20, reason: 'cross_category:' + badTerm };
   const nonReview = NON_REVIEW_TERMS.find((t) => full.includes(norm(t)));
