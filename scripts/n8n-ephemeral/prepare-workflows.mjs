@@ -29,8 +29,9 @@ for (const file of files) {
 
   sanitizeWorkflowForImport(workflow);
 
-  // CLI execution is explicit; do not let imported schedules run as daemons.
-  workflow.active = false;
+  // Keep the main workflow active so Telegram Poll can call it through Execute Workflow.
+  // Schedule-based workflows stay inactive; the GitHub Action calls them explicitly.
+  workflow.active = workflow.name === "AfiliadosML";
 
   fs.writeFileSync(path.join(outDir, file), JSON.stringify(workflow, null, 2));
 }
