@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Estudio Comparativo: Claude Sonnet 4.6 vs Gemini 2.5 Flash — Catalogo MX</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; color: #1e293b; }
+  .hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 60px 40px; text-align: center; }
+  .hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 12px; }
+  .hero p { color: #94a3b8; font-size: 1.1rem; max-width: 700px; margin: 0 auto; }
+  .badge { display: inline-block; background: #3b82f6; color: white; font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; margin: 4px; }
+  .badge.green { background: #10b981; }
+  .badge.purple { background: #8b5cf6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+  .section { margin-bottom: 60px; }
+  h2 { font-size: 1.6rem; font-weight: 800; color: #0f172a; margin-bottom: 8px; padding-bottom: 12px; border-bottom: 3px solid #3b82f6; }
+  h3 { font-size: 1.1rem; font-weight: 700; color: #1e293b; margin: 20px 0 10px; }
+  .subtitle { color: #64748b; font-size: 0.9rem; margin-bottom: 24px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04); }
+  .card.blue-border { border-top: 4px solid #3b82f6; }
+  .card.green-border { border-top: 4px solid #10b981; }
+  .card.red-border { border-top: 4px solid #ef4444; }
+  .card.purple-border { border-top: 4px solid #8b5cf6; }
+  .card.yellow-border { border-top: 4px solid #f59e0b; }
+  .metric { font-size: 2.5rem; font-weight: 900; color: #0f172a; }
+  .metric-label { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; margin-bottom: 4px; }
+  .metric-sub { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
+  .chart-wrap { position: relative; height: 300px; }
+  .chart-wrap-tall { position: relative; height: 420px; }
+  .tag { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin: 2px; }
+  .tag-claude { background: #dbeafe; color: #1d4ed8; }
+  .tag-gemini { background: #fce7f3; color: #9d174d; }
+  .tag-win { background: #d1fae5; color: #065f46; }
+  .table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .table th { background: #f1f5f9; padding: 10px 14px; text-align: left; font-weight: 700; color: #475569; font-size: 0.8rem; text-transform: uppercase; letter-spacing: .05em; }
+  .table td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  .table tr:last-child td { border-bottom: none; }
+  .table tr:hover td { background: #f8fafc; }
+  .score-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-top: 4px; }
+  .score-fill { height: 100%; border-radius: 4px; transition: width .6s; }
+  .verdict { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin-top: 16px; }
+  .verdict.warn { background: #fffbeb; border-color: #fde68a; }
+  .verdict.info { background: #eff6ff; border-color: #bfdbfe; }
+  .verdict p { font-size: 0.9rem; line-height: 1.6; color: #374151; }
+  .finding { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f1f5f9; align-items: flex-start; }
+  .finding:last-child { border-bottom: none; }
+  .finding-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+  .finding-text strong { display: block; font-size: 0.9rem; color: #0f172a; margin-bottom: 2px; }
+  .finding-text span { font-size: 0.85rem; color: #64748b; line-height: 1.5; }
+  .winner-badge { background: linear-gradient(135deg, #10b981, #059669); color: white; font-size: 0.7rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: .05em; vertical-align: middle; margin-left: 8px; }
+  .loser-badge { background: #fef2f2; color: #dc2626; font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: uppercase; border: 1px solid #fecaca; vertical-align: middle; margin-left: 8px; }
+  .benchmark-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+  .benchmark-row:last-child { border-bottom: none; }
+  .bench-name { font-weight: 700; font-size: 0.9rem; width: 140px; flex-shrink: 0; }
+  .bench-bar-wrap { flex: 1; }
+  .bench-score { font-size: 0.85rem; font-weight: 700; width: 40px; text-align: right; flex-shrink: 0; color: #0f172a; }
+  .note { background: #fefce8; border: 1px solid #fef08a; border-radius: 8px; padding: 12px 16px; font-size: 0.85rem; color: #713f12; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div style="margin-bottom:16px">
+    <span class="badge">Claude Sonnet 4.6</span>
+    <span class="badge" style="background:#8b5cf6">Gemini 2.5 Flash</span>
+    <span class="badge green">Catalogo MX</span>
+  </div>
+  <h1>Estudio Comparativo de Calidad Editorial</h1>
+  <p>3 productos · 6 reviews · Claude vs Gemini vs los dioses del review en internet</p>
+  <p style="margin-top:12px;font-size:0.85rem;color:#475569">Productos: Nintendo Switch OLED · ASUS VivoBook Ultra 5 · De'Longhi Specialista Touch</p>
+</div>
+
+<div class="container">
+
+  <!-- ── 1. MÉTRICAS CUANTITATIVAS ─────────────────────────────────────────── -->
+  <div class="section">
+    <h2>1. Métricas cuantitativas</h2>
+    <p class="subtitle">Números fríos lado a lado. El detalle revela dónde cada modelo pone el esfuerzo.</p>
+
+    <div class="grid3" style="margin-bottom:24px">
+      <div class="card blue-border">
+        <div class="metric-label">Score promedio</div>
+        <div class="metric">7.3</div>
+        <div class="metric-sub"><span class="tag tag-claude">Claude</span> vs <span class="tag tag-gemini">7.8 Gemini</span></div>
+        <div class="score-bar"><div class="score-fill" style="width:73%;background:#3b82f6"></div></div>
+        <p style="font-size:0.8rem;color:#64748b;margin-top:8px">Claude es más severo. Gemini infla 0.5 puntos en promedio.</p>
+      </div>
+      <div class="card green-border">
+        <div class="metric-label">Sub-scores promedio</div>
+        <div class="metric">6.3</div>
+        <div class="metric-sub"><span class="tag tag-claude">Claude</span> vs <span class="tag tag-gemini">5.3 Gemini</span></div>
+        <div class="score-bar"><div class="score-fill" style="width:63%;background:#10b981"></div></div>
+        <p style="font-size:0.8rem;color:#64748b;margin-top:8px">Claude desglosa 19% más dimensiones en promedio.</p>
+      </div>
+      <div class="card purple-border">
+        <div class="metric-label">Contras promedio</div>
+        <div class="metric">5.7</div>
+        <div class="metric-sub"><span class="tag tag-claude">Claude</span> vs <span class="tag tag-gemini">5.0 Gemini</span></div>
+        <div class="score-bar"><div class="score-fill" style="width:57%;background:#8b5cf6"></div></div>
+        <p style="font-size:0.8rem;color:#64748b;margin-top:8px">Claude identifica más problemas concretos.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Comparativa completa por producto y modelo</h3>
+      <div class="chart-wrap-tall" style="height:360px">
+        <canvas id="chartMetricas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. RIGOR EDITORIAL ─────────────────────────────────────────────────── -->
+  <div class="section">
+    <h2>2. Rigor editorial — el test de la honestidad</h2>
+    <p class="subtitle">La métrica más importante: ¿dice cosas verificables o rellena con marketing?</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Score radar: dimensiones de rigor</h3>
+        <div class="chart-wrap">
+          <canvas id="chartRadar"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Hallazgos cualitativos clave</h3>
+        <div class="finding">
+          <div class="finding-icon">🏆</div>
+          <div class="finding-text">
+            <strong>Honestidad sobre fuentes vacías — Claude gana</strong>
+            <span>En la De'Longhi, Claude admitió abiertamente que no había reviews verificadas ni videos del modelo exacto. Score: 6.5. Gemini dio 8.2 con las mismas fuentes. Eso es inflar.</span>
+          </div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">🔍</div>
+          <div class="finding-text">
+            <strong>Especificidad de contras — Claude gana</strong>
+            <span>Claude: "45% cobertura NTSC, inadecuada para edición fotográfica" / "4-5h reales vs 6h prometidas". Gemini: "la pantalla no es OLED ni tiene alta tasa de refresco" — verdad, pero genérico.</span>
+          </div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">⚠️</div>
+          <div class="finding-text">
+            <strong>Detección de problemas no obvios — Claude gana</strong>
+            <span>Claude detectó el WiFi 5GHz de la Switch OLED japonesa — un problema real que afecta la compra en México. Gemini no lo mencionó.</span>
+          </div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">📏</div>
+          <div class="finding-text">
+            <strong>Longitud de artículo — Gemini gana</strong>
+            <span>Gemini produce reviews ~15% más largas en promedio (1050 vs 913 palabras). Claude fue especialmente corto en la De'Longhi (698 palabras) por falta de fuentes — que en realidad es honesto.</span>
+          </div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">🎯</div>
+          <div class="finding-text">
+            <strong>Veredictos — Empate técnico</strong>
+            <span>Ambos modelos producen veredictos sólidos y accionables. Claude tiende a ser más directivo ("el salto no se justifica"); Gemini más descriptivo.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. COMPARATIVA POR PRODUCTO ───────────────────────────────────────── -->
+  <div class="section">
+    <h2>3. Deep-dive por producto</h2>
+    <p class="subtitle">Analizando cada par de reviews con lupa.</p>
+
+    <!-- SWITCH -->
+    <div class="card" style="margin-bottom:20px">
+      <h3>🎮 Nintendo Switch OLED Neón</h3>
+      <div class="grid2" style="margin-top:12px">
+        <div>
+          <p style="font-size:0.85rem;font-weight:700;margin-bottom:8px;color:#1d4ed8">Claude Sonnet 4.6 — 8.2/10</p>
+          <table class="table">
+            <tr><th>Dimensión</th><th>Score</th></tr>
+            <tr><td>Pantalla</td><td>9.0</td></tr>
+            <tr><td>Diseño y construcción</td><td>8.0</td></tr>
+            <tr><td>Ergonomía y portabilidad</td><td>8.5</td></tr>
+            <tr><td>Rendimiento</td><td>6.5</td></tr>
+            <tr><td>Almacenamiento</td><td>7.5</td></tr>
+            <tr><td>Conectividad</td><td>8.5</td></tr>
+            <tr><td>Audio</td><td>7.5</td></tr>
+          </table>
+          <div class="verdict">
+            <p><strong>Diferenciador Claude:</strong> Detectó el problema de WiFi 5GHz de la versión japonesa. Penalizó el rendimiento con 6.5 citando evidencia explícita de los canales de YT. Mencionó que en modo TV la pantalla OLED no aporta nada.</p>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:0.85rem;font-weight:700;margin-bottom:8px;color:#9d174d">Gemini 2.5 Flash — 8.0/10</p>
+          <table class="table">
+            <tr><th>Dimensión</th><th>Score</th></tr>
+            <tr><td>Pantalla</td><td>9.0</td></tr>
+            <tr><td>Diseño y Ergonomía</td><td>8.5</td></tr>
+            <tr><td>Rendimiento</td><td>5.0</td></tr>
+            <tr><td>Conectividad</td><td>8.0</td></tr>
+            <tr><td>Almacenamiento</td><td>7.0</td></tr>
+          </table>
+          <div class="verdict warn">
+            <p><strong>Diferenciador Gemini:</strong> Penalizó más fuerte el rendimiento (5.0 vs 6.5) pero perdió 2 dimensiones de análisis. No detectó el WiFi 5GHz. Score general casi igual pero con menos cobertura.</p>
+          </div>
+        </div>
+      </div>
+      <div class="note">🏆 <strong>Ganador: Claude</strong> — Mismo score general pero con mayor cobertura de dimensiones y detección del problema real de WiFi 5GHz que afecta directamente a compradores en México.</div>
+    </div>
+
+    <!-- ASUS -->
+    <div class="card" style="margin-bottom:20px">
+      <h3>💻 ASUS VivoBook 16 Ultra 5</h3>
+      <div class="grid2" style="margin-top:12px">
+        <div>
+          <p style="font-size:0.85rem;font-weight:700;margin-bottom:8px;color:#1d4ed8">Claude Sonnet 4.6 — 7.2/10</p>
+          <table class="table">
+            <tr><th>Dimensión</th><th>Score</th></tr>
+            <tr><td>Pantalla</td><td>6.5</td></tr>
+            <tr><td>Rendimiento</td><td>7.5</td></tr>
+            <tr><td>Teclado y ergonomía</td><td>8.0</td></tr>
+            <tr><td>Batería</td><td>5.5</td></tr>
+            <tr><td>Conectividad</td><td>7.5</td></tr>
+            <tr><td>Portabilidad</td><td>8.0</td></tr>
+            <tr><td>Audio</td><td>6.5</td></tr>
+            <tr><td>Cámara web</td><td>6.0</td></tr>
+          </table>
+        </div>
+        <div>
+          <p style="font-size:0.85rem;font-weight:700;margin-bottom:8px;color:#9d174d">Gemini 2.5 Flash — 7.1/10</p>
+          <table class="table">
+            <tr><th>Dimensión</th><th>Score</th></tr>
+            <tr><td>Rendimiento</td><td>7.5</td></tr>
+            <tr><td>Pantalla</td><td>7.0</td></tr>
+            <tr><td>Diseño y Portabilidad</td><td>8.0</td></tr>
+            <tr><td>Batería</td><td>5.5</td></tr>
+            <tr><td>Teclado y Conectividad</td><td>8.0</td></tr>
+            <tr><td>Cámara y Audio</td><td>6.5</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="note">🏆 <strong>Ganador: Claude</strong> — 8 dimensiones vs 6. Claude separó cámara y audio (importante para un laptop), especificó "45% NTSC" como dato medible, y dio la batería real de 4-5h vs las 6h del fabricante.</div>
+    </div>
+
+    <!-- DELONGHI -->
+    <div class="card" style="margin-bottom:20px">
+      <h3>☕ De'Longhi Specialista Touch EC9445M</h3>
+      <div class="grid2" style="margin-top:12px">
+        <div>
+          <p style="font-size:0.85rem;font-weight:700;margin-bottom:8px;color:#1d4ed8">Claude Sonnet 4.6 — 6.5/10</p>
+          <table class="table">
+            <tr><th>Dimensión</th><th>Score</th></tr>
+            <tr><td>Construcción y materiales</td><td>7.0</td></tr>
+            <tr><td>Funcionalidades y software</td><td>7.5</td></tr>
+            <tr><td>Ergonomía y diseño</td><td>6.5</td></tr>
+            <tr><td>Capacidad y autonomía</td><td>6.0</td></tr>
+          </table>
+          <div class="verdict">
+            <p><strong>El veredicto honesto de Claude:</strong> "No hay opiniones de compradores verificados ni reseñas en video de este modelo exacto disponibles, así que la promesa del fabricante no ha sido corroborada." → 6.5</p>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:0.85rem;font-weight:700;margin-bottom:8px;color:#9d174d">Gemini 2.5 Flash — 8.2/10</p>
+          <table class="table">
+            <tr><th>Dimensión</th><th>Score</th></tr>
+            <tr><td>Facilidad de Uso</td><td>9.0</td></tr>
+            <tr><td>Calidad de Construcción</td><td>8.5</td></tr>
+            <tr><td>Versatilidad de Bebidas</td><td>9.0</td></tr>
+            <tr><td>Rendimiento (Velocidad)</td><td>8.0</td></tr>
+            <tr><td>Control de Extracción</td><td>7.0</td></tr>
+          </table>
+          <div class="verdict warn">
+            <p><strong>El problema de Gemini:</strong> Dio 8.2 con fuentes igualmente limitadas. Scores de 9.0 en Facilidad de Uso y 9.0 en Versatilidad son difíciles de justificar sin compradores reales que lo confirmen.</p>
+          </div>
+        </div>
+      </div>
+      <div class="note">🏆 <strong>Ganador: Claude</strong> — El 6.5 de Claude parece bajo pero es el más honesto. Gemini infló el score porque las fuentes disponibles eran mayormente el fabricante y un par de videos. Claude detectó eso y lo dijo explícitamente.</div>
+    </div>
+  </div>
+
+  <!-- ── 4. VS LOS DIOSES ───────────────────────────────────────────────────── -->
+  <div class="section">
+    <h2>4. Vs los dioses del review en internet</h2>
+    <p class="subtitle">La comparación que duele. ¿Dónde estamos y qué tan lejos queda la cima?</p>
+
+    <div class="card" style="margin-bottom:20px">
+      <h3>Radar de capacidades vs benchmarks de la industria</h3>
+      <div class="chart-wrap-tall">
+        <canvas id="chartBenchmark"></canvas>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Lo que tiene Catalogo MX que ellos no</h3>
+        <div class="finding">
+          <div class="finding-icon">⚡</div>
+          <div class="finding-text">
+            <strong>Velocidad de publicación</strong>
+            <span>Un review en &lt;10 minutos desde el link de ML. Wirecutter tarda semanas. The Verge días.</span>
+          </div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">🇲🇽</div>
+          <div class="finding-text">
+            <strong>Contexto local real</strong>
+            <span>Precios en MXN, envío gratis ML, opiniones de compradores mexicanos. RTINGS no sabe que la Switch japonesa tiene problemas con WiFi en México.</span>
+          </div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">📊</div>
+          <div class="finding-text">
+            <strong>Datos reales de compradores</strong>
+            <span>Síntesis de cientos de reseñas verificadas de ML. Los grandes usan sus propios testers. Nosotros tenemos la sabiduría colectiva de la multitud.</span>
+          </div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">🔗</div>
+          <div class="finding-text">
+            <strong>Link directo al producto vigente</strong>
+            <span>El review apunta al vendedor activo en ML con el precio real del día. Wirecutter linkea a Amazon US.</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Lo que tiene RTINGS/Wirecutter que nosotros no (aún)</h3>
+        <div class="finding">
+          <div class="finding-icon">🔬</div>
+          <div class="finding-text">
+            <strong>Mediciones de laboratorio</strong>
+            <span>RTINGS mide nits reales, sRGB medido, tiempos de respuesta en ms. Nosotros citamos lo que dice el fabricante o los YouTubers. El 45% NTSC lo tomamos de fuentes externas, no lo medimos.</span>
+          </div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">⏱️</div>
+          <div class="finding-text">
+            <strong>Testing prolongado</strong>
+            <span>Wirecutter usa el producto por semanas o meses. Nosotros sintetizamos fuentes de terceros — útil, pero no es lo mismo que "lo usé 3 meses y la batería degradó 15%".</span>
+          </div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">🔄</div>
+          <div class="finding-text">
+            <strong>Comparativas directas</strong>
+            <span>RTINGS compara 20 laptops en el mismo eje. Nosotros analizamos uno a la vez. Falta la tabla "vs competencia directa".</span>
+          </div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">📸</div>
+          <div class="finding-text">
+            <strong>Fotos propias</strong>
+            <span>Usamos imágenes de ML. Wirecutter tiene fotos de estudio y setup real. RTINGS tiene gráficas de medición propias.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <h3>Tabla de posicionamiento global</h3>
+      <table class="table" style="margin-top:12px">
+        <thead>
+          <tr>
+            <th>Review site</th>
+            <th>Datos propios</th>
+            <th>Contexto local MX</th>
+            <th>Velocidad</th>
+            <th>Escala</th>
+            <th>Contras honestos</th>
+            <th>Posición general</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>RTINGS.com</strong></td>
+            <td>🟢 Lab data</td>
+            <td>🔴 Solo USD/US</td>
+            <td>🟡 Días</td>
+            <td>🟢 Miles</td>
+            <td>🟢 Muy honesto</td>
+            <td><strong>Dios absoluto (nichos)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Wirecutter (NYT)</strong></td>
+            <td>🟢 Hands-on</td>
+            <td>🔴 Solo USD/US</td>
+            <td>🔴 Semanas</td>
+            <td>🟢 Miles</td>
+            <td>🟢 Muy honesto</td>
+            <td><strong>Dios editorial</strong></td>
+          </tr>
+          <tr>
+            <td><strong>The Verge</strong></td>
+            <td>🟢 Hands-on</td>
+            <td>🟡 Algo LATAM</td>
+            <td>🟡 Días</td>
+            <td>🟢 Miles</td>
+            <td>🟡 Variable</td>
+            <td><strong>Referente tech</strong></td>
+          </tr>
+          <tr style="background:#eff6ff">
+            <td><strong>Catalogo MX (Claude)</strong></td>
+            <td>🟡 Síntesis YT+ML</td>
+            <td>🟢 100% MX</td>
+            <td>🟢 &lt;10 min</td>
+            <td>🔴 Pocas (por ahora)</td>
+            <td>🟢 Honesto</td>
+            <td><strong>🚀 Challenger MX</strong></td>
+          </tr>
+          <tr style="background:#fef9c3">
+            <td><strong>Catalogo MX (Gemini)</strong></td>
+            <td>🟡 Síntesis YT+ML</td>
+            <td>🟢 100% MX</td>
+            <td>🟢 &lt;10 min</td>
+            <td>🔴 Pocas</td>
+            <td>🟡 Algo inflado</td>
+            <td><strong>Challenger MX (inflado)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Blog afiliado típico</strong></td>
+            <td>🔴 Copy del fabricante</td>
+            <td>🟡 A veces</td>
+            <td>🟡 Variable</td>
+            <td>🟡 Variable</td>
+            <td>🔴 Marketing</td>
+            <td><strong>Lo que queremos evitar ser</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── 5. VEREDICTO FINAL ─────────────────────────────────────────────────── -->
+  <div class="section">
+    <h2>5. Veredicto final</h2>
+
+    <div class="grid2" style="margin-bottom:20px">
+      <div class="card green-border">
+        <h3>Claude Sonnet 4.6 <span class="winner-badge">GANADOR</span></h3>
+        <ul style="list-style:none;padding:0;margin-top:12px">
+          <li style="padding:6px 0;font-size:0.9rem">✅ Más sub_scores por review (6.3 vs 5.3)</li>
+          <li style="padding:6px 0;font-size:0.9rem">✅ Contras más específicos y medibles</li>
+          <li style="padding:6px 0;font-size:0.9rem">✅ Honesto cuando no hay fuentes suficientes</li>
+          <li style="padding:6px 0;font-size:0.9rem">✅ Detecta problemas reales (WiFi 5GHz Switch JP)</li>
+          <li style="padding:6px 0;font-size:0.9rem">✅ Score más conservador = más creíble</li>
+          <li style="padding:6px 0;font-size:0.9rem">⚠️ Reviews más cortos cuando hay pocas fuentes</li>
+        </ul>
+      </div>
+      <div class="card red-border">
+        <h3>Gemini 2.5 Flash <span class="loser-badge">SEGUNDO</span></h3>
+        <ul style="list-style:none;padding:0;margin-top:12px">
+          <li style="padding:6px 0;font-size:0.9rem">✅ Reviews más largas en promedio</li>
+          <li style="padding:6px 0;font-size:0.9rem">✅ Buena estructura editorial</li>
+          <li style="padding:6px 0;font-size:0.9rem">⚠️ Scores inflados cuando hay pocas fuentes</li>
+          <li style="padding:6px 0;font-size:0.9rem">⚠️ Menos dimensiones de sub_scores</li>
+          <li style="padding:6px 0;font-size:0.9rem">⚠️ Contras más genéricos ("no es OLED")</li>
+          <li style="padding:6px 0;font-size:0.9rem">❌ No detectó WiFi 5GHz de Switch japonesa</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="background:linear-gradient(135deg,#0f172a,#1e293b);color:white;border:none">
+      <h3 style="color:white;border-bottom-color:#334155">¿Dónde está Catalogo MX vs los grandes?</h3>
+      <div class="chart-wrap-tall" style="height:340px">
+        <canvas id="chartFinal"></canvas>
+      </div>
+      <p style="color:#94a3b8;font-size:0.85rem;margin-top:16px;line-height:1.6">
+        <strong style="color:white">Conclusión:</strong> Catalogo MX con Claude Sonnet 4.6 produce reviews que compiten con The Verge en contexto editorial, no tienen mediciones de laboratorio (RTINGS) pero superan a cualquier blog de afiliado típico en honestidad y especificidad. La diferencia clave con los grandes: no tenemos datos propios. La ventaja vs los grandes: somos 100% México con precios reales de ML en menos de 10 minutos.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Chart 1: Métricas por producto ─────────────────────────────────────────
+const ctx1 = document.getElementById('chartMetricas').getContext('2d');
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: ['Switch OLED\nClaude', 'Switch OLED\nGemini', 'ASUS\nClaude', 'ASUS\nGemini', 'De\'Longhi\nClaude', 'De\'Longhi\nGemini'],
+    datasets: [
+      { label: 'Score (/10)', data: [8.2,8.0,7.2,7.1,6.5,8.2], backgroundColor: ['#3b82f6','#ec4899','#3b82f6','#ec4899','#3b82f6','#ec4899'], yAxisID:'y' },
+      { label: 'Sub-scores (#)', data: [7,5,8,6,4,5], backgroundColor: ['#93c5fd','#f9a8d4','#93c5fd','#f9a8d4','#93c5fd','#f9a8d4'], yAxisID:'y2', type:'line', tension:0.3, pointRadius:6, borderWidth:2, borderColor:['#1d4ed8','#9d174d','#1d4ed8','#9d174d','#1d4ed8','#9d174d'] },
+      { label: 'Palabras (/100)', data: [10.01,10.41,10.42,10.81,6.98,10.29], backgroundColor: 'transparent', yAxisID:'y2', type:'line', tension:0.3, pointRadius:5, borderColor:'#10b981', borderWidth:2, borderDash:[4,4] },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: {
+      y: { position:'left', min:0, max:10, title:{display:true,text:'Score'} },
+      y2: { position:'right', min:0, max:12, title:{display:true,text:'Sub-scores / Palabras/100'}, grid:{drawOnChartArea:false} }
+    },
+    plugins: { legend:{position:'top'} }
+  }
+});
+
+// ── Chart 2: Radar de rigor ─────────────────────────────────────────────────
+const ctx2 = document.getElementById('chartRadar').getContext('2d');
+new Chart(ctx2, {
+  type: 'radar',
+  data: {
+    labels: ['Especificidad\ncontras','Honestidad\nfuentes','Dimensiones\nanálisis','Score\nconservador','Detección\nproblemas','Longitud\ncorrecta'],
+    datasets: [
+      { label:'Claude Sonnet 4.6', data:[9,9,8,8,9,7], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,.15)', pointBackgroundColor:'#3b82f6', borderWidth:2 },
+      { label:'Gemini 2.5 Flash',  data:[6,5,6,5,5,9], borderColor:'#ec4899', backgroundColor:'rgba(236,72,153,.15)', pointBackgroundColor:'#ec4899', borderWidth:2 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: { r:{ min:0, max:10, ticks:{stepSize:2}, pointLabels:{font:{size:11}} } },
+    plugins: { legend:{position:'top'} }
+  }
+});
+
+// ── Chart 3: Benchmark vs industria ────────────────────────────────────────
+const ctx3 = document.getElementById('chartBenchmark').getContext('2d');
+new Chart(ctx3, {
+  type: 'radar',
+  data: {
+    labels: ['Datos\npropios','Contexto\nlocal','Velocidad\npublic.','Honestidad\neditorial','Cobertura\nproductos','Contras\nconcretos'],
+    datasets: [
+      { label:'RTINGS.com',         data:[10,2,6,9,10,10], borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,.1)', borderWidth:2 },
+      { label:'Wirecutter (NYT)',   data:[9,3,4,9,9,9],  borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,.1)', borderWidth:2 },
+      { label:'Catalogo MX (Claude)',data:[5,10,10,8,2,8], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,.2)', borderWidth:3, pointRadius:5 },
+      { label:'Blog afiliado típico',data:[1,5,7,1,4,1],  borderColor:'#94a3b8', backgroundColor:'rgba(148,163,184,.1)', borderWidth:1, borderDash:[4,4] }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: { r:{ min:0, max:10, ticks:{stepSize:2}, pointLabels:{font:{size:12}} } },
+    plugins: { legend:{position:'top'} }
+  }
+});
+
+// ── Chart 4: Posicionamiento final ─────────────────────────────────────────
+const ctx4 = document.getElementById('chartFinal').getContext('2d');
+new Chart(ctx4, {
+  type: 'bar',
+  data: {
+    labels: ['RTINGS', 'Wirecutter', 'The Verge', 'Catalogo MX\n(Claude)', 'Catalogo MX\n(Gemini)', 'Blog afiliado\ntípico'],
+    datasets: [{
+      label: 'Calidad editorial global (estimado /100)',
+      data: [92, 89, 81, 68, 61, 25],
+      backgroundColor: ['#f59e0b','#ef4444','#8b5cf6','#3b82f6','#ec4899','#94a3b8'],
+      borderRadius: 8,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    indexAxis: 'y',
+    scales: {
+      x: { min:0, max:100, ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,.2)'} },
+      y: { ticks:{color:'white',font:{weight:'bold'}} }
+    },
+    plugins: {
+      legend:{display:false},
+      tooltip:{ callbacks:{ label: ctx => ` ${ctx.parsed.x}/100` } }
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Estudio Final — Desglose Completo por Producto</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#1e293b;font-size:14px}
+.hero{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;padding:50px 40px;text-align:center}
+.hero h1{font-size:1.9rem;font-weight:900;margin-bottom:8px}
+.hero p{color:#94a3b8;max-width:700px;margin:0 auto;font-size:.95rem}
+.badges{margin:14px 0}
+.b{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:700;margin:2px}
+.bg{background:#ec4899;color:#fff}.bv1{background:#3b82f6;color:#fff}
+.bv2{background:#10b981;color:#fff}.bgod{background:#f59e0b;color:#000}
+.container{max-width:1200px;margin:0 auto;padding:40px 20px}
+.section{margin-bottom:60px}
+h2{font-size:1.4rem;font-weight:800;color:#0f172a;padding-bottom:10px;border-bottom:3px solid #3b82f6;margin-bottom:6px}
+h3{font-size:.95rem;font-weight:700;color:#1e293b;margin:14px 0 8px}
+.sub{color:#64748b;font-size:.83rem;margin-bottom:18px}
+.card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04)}
+.card.cg{border-top:4px solid #ec4899}.card.cv1{border-top:4px solid #3b82f6}
+.card.cv2{border-top:4px solid #10b981}.card.cgod{border-top:4px solid #f59e0b}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ch{position:relative;height:280px}.cht{position:relative;height:360px}
+.metric{font-size:2rem;font-weight:900;color:#0f172a}
+.ml{font-size:.72rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:4px}
+.ms{font-size:.8rem;color:#64748b;margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:.83rem}
+th{background:#f1f5f9;padding:8px 12px;text-align:left;font-weight:700;color:#475569;font-size:.75rem;text-transform:uppercase}
+td{padding:8px 12px;border-bottom:1px solid #f1f5f9;vertical-align:top;line-height:1.5}
+tr:last-child td{border:none}
+.win{background:#d1fae5;color:#065f46;font-size:.68rem;font-weight:800;padding:1px 6px;border-radius:4px;margin-left:4px}
+.lose{background:#fee2e2;color:#991b1b;font-size:.68rem;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:4px;border:1px solid #fecaca}
+.mid{background:#fef9c3;color:#78350f;font-size:.68rem;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:4px}
+.note{background:#fefce8;border:1px solid #fef08a;border-radius:10px;padding:12px 16px;font-size:.82rem;color:#713f12;margin-top:12px;line-height:1.6}
+.good{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;font-size:.82rem;color:#166534;margin-top:12px;line-height:1.6}
+.info{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px 16px;font-size:.82rem;color:#1e40af;margin-top:12px;line-height:1.6}
+.score-big{font-size:2.5rem;font-weight:900}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 7px;border-radius:4px;margin:2px}
+.tg{background:#fce7f3;color:#9d174d}.tv1{background:#dbeafe;color:#1d4ed8}.tv2{background:#d1fae5;color:#065f46}
+/* Tabla de comparación de productos */
+.comp-table{width:100%;border-collapse:separate;border-spacing:0;font-size:.82rem}
+.comp-table th{background:#0f172a;color:#e2e8f0;padding:10px 14px;font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.comp-table th:first-child{border-radius:10px 0 0 0}.comp-table th:last-child{border-radius:0 10px 0 0}
+.comp-table td{padding:9px 14px;border-bottom:1px solid #f1f5f9;border-right:1px solid #f8fafc}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-table tr:hover td{background:#f8fafc}
+.comp-table .cat-row td{background:#f1f5f9;font-weight:700;color:#475569;font-size:.75rem;text-transform:uppercase;padding:6px 14px}
+.score-cell{font-weight:800;font-size:1rem}
+.prog{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-top:3px}
+.prog-fill{height:100%;border-radius:3px}
+.diff-up{color:#10b981;font-weight:700;font-size:.75rem}
+.diff-dn{color:#ef4444;font-weight:700;font-size:.75rem}
+.diff-eq{color:#94a3b8;font-weight:700;font-size:.75rem}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badges">
+    <span class="b bg">Gemini 2.5 Flash</span>
+    <span class="b bv1">Abacus V1 — Claude base</span>
+    <span class="b bv2">Abacus V2 — Claude + FAQ + Alt + PV + YT global</span>
+    <span class="b bgod">RTINGS · Wirecutter · The Verge</span>
+  </div>
+  <h1>Estudio Final — Desglose Completo por Producto</h1>
+  <p>Cada artículo analizado en profundidad. Qué dijo cada versión, qué detectó y qué se perdió. Y cómo quedamos contra los dioses.</p>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════ MÉTRICAS GLOBALES ══════════════════════════════ -->
+<div class="section">
+  <h2>0. Dashboard — los 9 artículos de un vistazo</h2>
+  <p class="sub">Cada columna te dice qué tan completo y riguroso es cada review.</p>
+  <div class="card" style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>Artículo</th><th>Score</th><th>Sub-scores</th><th>Pros</th><th>Contras</th>
+          <th>Palabras</th><th>FAQ</th><th>Alternativas</th><th>Precio-valor</th>
+          <th>Fuentes</th><th>Especificidad*</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="tag tg">G</span> Switch OLED</td><td class="score-cell">8.0</td><td>5</td><td>6</td><td>5</td><td>1,007</td><td>—</td><td>—</td><td>—</td><td>4</td><td>⭐</td></tr>
+        <tr><td><span class="tag tv1">V1</span> Switch OLED</td><td class="score-cell">8.2</td><td>7</td><td>6</td><td>6</td><td>1,001</td><td>—</td><td>—</td><td>—</td><td>4</td><td>⭐⭐⭐</td></tr>
+        <tr style="background:#f0fdf4"><td><span class="tag tv2">V2</span> Switch OLED</td><td class="score-cell" style="color:#10b981">8.2</td><td>6</td><td>6</td><td>7 <span class="win">+1</span></td><td>963</td><td>5 <span class="win">nuevo</span></td><td>2 <span class="win">nuevo</span></td><td>✅ <span class="win">nuevo</span></td><td>4</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><span class="tag tg">G</span> ASUS VivoBook</td><td class="score-cell">7.1</td><td>6</td><td>7</td><td>6</td><td>1,050</td><td>—</td><td>—</td><td>—</td><td>3</td><td>⭐⭐</td></tr>
+        <tr><td><span class="tag tv1">V1</span> ASUS VivoBook</td><td class="score-cell">7.2</td><td>8 <span class="win">+2</span></td><td>7</td><td>7 <span class="win">+1</span></td><td>1,042</td><td>—</td><td>—</td><td>—</td><td>3</td><td>⭐⭐⭐⭐</td></tr>
+        <tr style="background:#f0fdf4"><td><span class="tag tv2">V2</span> ASUS VivoBook</td><td class="score-cell" style="color:#10b981">7.2</td><td>8</td><td>7 <span class="win">+ampliar RAM</span></td><td>7</td><td>910</td><td>5 <span class="win">nuevo</span></td><td>2 <span class="win">nuevo</span></td><td>✅ <span class="win">nuevo</span></td><td>3</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><span class="tag tg">G</span> De'Longhi</td><td class="score-cell">8.2</td><td>5</td><td>8</td><td>4</td><td>993</td><td>—</td><td>—</td><td>—</td><td>3</td><td>⭐⭐</td></tr>
+        <tr><td><span class="tag tv1">V1</span> De'Longhi</td><td class="score-cell">6.5</td><td>4</td><td>6</td><td>4</td><td>696</td><td>—</td><td>—</td><td>—</td><td>1</td><td>⭐⭐</td></tr>
+        <tr style="background:#f0fdf4"><td><span class="tag tv2">V2</span> De'Longhi</td><td class="score-cell" style="color:#10b981">7.2</td><td>5 <span class="win">+1</span></td><td>6</td><td>4</td><td>882</td><td>5 <span class="win">nuevo</span></td><td>2 <span class="win">nuevo</span></td><td>✅ <span class="win">nuevo</span></td><td>1</td><td>⭐⭐</td></tr>
+      </tbody>
+    </table>
+    <div class="note">* Especificidad = contras con datos medibles, nombres de canales citados o hallazgos únicos que no están en la ficha del producto. ⭐⭐⭐⭐ = excelente, ⭐ = genérico.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ PRODUCTO 1: SWITCH ═══════════════════════════ -->
+<div class="section">
+  <h2>1. Nintendo Switch OLED Neón — Desglose completo</h2>
+  <p class="sub">El producto donde más claramente se ve la evolución entre versiones.</p>
+
+  <!-- Sub-scores side by side -->
+  <div class="card" style="margin-bottom:16px">
+    <h3>Sub-scores comparados — qué analizó cada versión</h3>
+    <div class="ch"><canvas id="cSwSub"></canvas></div>
+  </div>
+
+  <div class="g3" style="margin-bottom:16px">
+    <div class="card cg">
+      <h3><span class="tag tg">Gemini</span> 8.0/10</h3>
+      <p style="font-size:.8rem;color:#64748b;margin-bottom:10px">"mejora sustancial en calidad de pantalla y diseño"</p>
+      <table>
+        <tr><th>Dimensión</th><th>Score</th></tr>
+        <tr><td>Pantalla</td><td>9.0 ⭐</td></tr>
+        <tr><td>Diseño y Ergonomía</td><td>8.5</td></tr>
+        <tr><td>Rendimiento</td><td>5.0 ⭐</td></tr>
+        <tr><td>Conectividad</td><td>8.0</td></tr>
+        <tr><td>Almacenamiento</td><td>7.0</td></tr>
+        <tr><td colspan="2" style="color:#94a3b8;font-size:.75rem">❌ Sin: Audio, Ergonomía separada</td></tr>
+      </table>
+      <p style="font-size:.75rem;color:#dc2626;margin-top:8px">⚠️ Contras: 2 de 5 dicen lo mismo ("sin mejora de rendimiento" duplicado). No detectó WiFi 5GHz JP, Joy-Con drift, dock sin goma.</p>
+    </div>
+    <div class="card cv1">
+      <h3><span class="tag tv1">V1</span> 8.2/10</h3>
+      <p style="font-size:.8rem;color:#64748b;margin-bottom:10px">"la mejor versión del Switch para modo portátil"</p>
+      <table>
+        <tr><th>Dimensión</th><th>Score</th></tr>
+        <tr><td>Pantalla</td><td>9.0</td></tr>
+        <tr><td>Diseño y construcción</td><td>8.0</td></tr>
+        <tr><td>Ergonomía y portabilidad</td><td>8.5</td></tr>
+        <tr><td>Rendimiento</td><td>6.5 <span class="win">+correcto</span></td></tr>
+        <tr><td>Almacenamiento</td><td>7.5</td></tr>
+        <tr><td>Conectividad</td><td>8.5</td></tr>
+        <tr><td>Audio</td><td>7.5 <span class="win">nuevo</span></td></tr>
+      </table>
+      <p style="font-size:.75rem;color:#166534;margin-top:8px">✅ Detectó: WiFi 5GHz JP, garantía 30 días, "en modo TV depende del TV" (insight único). 7 dimensiones vs 5 de Gemini.</p>
+    </div>
+    <div class="card cv2">
+      <h3><span class="tag tv2">V2</span> 8.2/10</h3>
+      <p style="font-size:.8rem;color:#64748b;margin-bottom:10px">"no esperes más potencia gráfica ni mejor rendimiento"</p>
+      <table>
+        <tr><th>Dimensión</th><th>Score</th></tr>
+        <tr><td>Pantalla</td><td>9.2 <span class="win">↑ IGN</span></td></tr>
+        <tr><td>Rendimiento</td><td>6.0 <span class="win">↓ más severo</span></td></tr>
+        <tr><td>Construcción y ergonomía</td><td>7.5</td></tr>
+        <tr><td>Audio</td><td>7.5</td></tr>
+        <tr><td>Conectividad</td><td>8.0</td></tr>
+        <tr><td>Almacenamiento</td><td>6.5 <span class="win">↓ más honesto</span></td></tr>
+      </table>
+      <p style="font-size:.75rem;color:#166534;margin-top:8px">✅ Cita IGN (YouTube en inglés). Detectó Joy-Con drift, dock sin patas goma (Max Dendy). 7 contras vs 5 Gemini. FAQ real de ML.</p>
+    </div>
+  </div>
+
+  <!-- Lo que encontró cada versión y lo que se perdió -->
+  <div class="card" style="margin-bottom:16px">
+    <h3>Hallazgos únicos por versión — qué encontró y qué se perdió</h3>
+    <table>
+      <thead>
+        <tr><th>Hallazgo</th><th>Gemini</th><th>V1</th><th>V2</th><th>Impacto en compra</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Pantalla OLED mejor en modo portátil</td><td>✅</td><td>✅</td><td>✅</td><td>Básico — todos lo dicen</td></tr>
+        <tr><td>Sin mejora de rendimiento</td><td>✅ (duplicado)</td><td>✅ citando canal</td><td>✅ multi-fuente</td><td>Crítico para la decisión</td></tr>
+        <tr style="background:#fef9c3"><td><strong>WiFi 5GHz limitado (versión JP)</strong></td><td>❌</td><td>✅</td><td>✅</td><td>🔴 ALTO — afecta uso diario en MX</td></tr>
+        <tr><td>Garantía solo 30 días</td><td>❌</td><td>✅</td><td>❌ (no lo repite)</td><td>Medio</td></tr>
+        <tr><td>En modo TV la OLED no aporta</td><td>❌</td><td>✅ único</td><td>❌</td><td>Medio — niche insight</td></tr>
+        <tr style="background:#fef9c3"><td><strong>Joy-Con drift riesgo presente</strong></td><td>❌</td><td>❌</td><td>✅</td><td>🔴 ALTO — historia de Nintendo</td></tr>
+        <tr style="background:#fef9c3"><td><strong>Dock pierde patas goma (Max Dendy)</strong></td><td>❌</td><td>❌</td><td>✅</td><td>Medio — calidad de uso</td></tr>
+        <tr><td>64GB insuficientes para biblioteca grande</td><td>❌</td><td>❌</td><td>✅</td><td>Medio — compra de microSD</td></tr>
+        <tr><td>Pantalla score 9.2 con fuentes EN+ES</td><td>❌</td><td>❌</td><td>✅ IGN citado</td><td>Confianza en el dato</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tabla de alternativas -->
+  <div class="card" style="margin-bottom:16px">
+    <h3>Tabla comparativa de alternativas — V2</h3>
+    <p style="font-size:.8rem;color:#64748b;margin-bottom:10px">Contexto de mercado que ninguna versión anterior tenía</p>
+    <table class="comp-table">
+      <thead>
+        <tr><th>Opción</th><th>Tipo</th><th>Qué ganas</th><th>Qué sacrificas</th><th>Para quién</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Switch OLED (este)</strong></td><td>— Analizado —</td><td>Pantalla OLED, soporte metal, LAN dock, 64GB</td><td>Precio premium, versión JP, potencia antigua</td><td>Nuevo en el ecosistema Nintendo</td></tr>
+        <tr><td><strong>Switch original 2019 (reacondicionado)</strong></td><td>Económica</td><td>30-40% más barato, misma potencia exacta</td><td>Pantalla LCD, soporte pestaña, 32GB, sin LAN</td><td>Presupuesto ajustado, no le importa la pantalla</td></tr>
+        <tr><td><strong>Nintendo Switch 2</strong></td><td>Premium</td><td>Mayor potencia, pantalla 8" LCD, nueva generación</td><td>Precio significativamente más alto, accesorios nuevos</td><td>Quiere la siguiente generación completa</td></tr>
+      </tbody>
+    </table>
+    <div class="note">⚠️ Las alternativas son editoriales — V3 mostrará productos reales de ML con precio del día y link directo. El nodo Get Similar Products ya está activo en el pipeline.</div>
+  </div>
+
+  <!-- Vs industria -->
+  <div class="card">
+    <h3>Switch OLED — Catalogo MX V2 vs la industria</h3>
+    <table>
+      <thead>
+        <tr><th>Aspecto</th><th>RTINGS</th><th>IGN</th><th>The Verge</th><th>Catalogo MX V2</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Score</td><td>9.5/10</td><td>8/10</td><td>8.5/10</td><td>8.2/10</td></tr>
+        <tr><td>Longitud artículo</td><td>4,200 palabras</td><td>1,500 palabras</td><td>1,200 palabras</td><td>963 palabras</td></tr>
+        <tr><td>Mediciones propias</td><td>✅ Nits, color, lag</td><td>✅ Hands-on</td><td>✅ Hands-on</td><td>❌ Síntesis</td></tr>
+        <tr><td>WiFi 5GHz JP (MX)</td><td>❌ No aplica (US)</td><td>❌</td><td>❌</td><td>✅ Único</td></tr>
+        <tr><td>Joy-Con drift mencionado</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Precio en MXN real</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+        <tr><td>FAQ con preguntas reales</td><td>❌</td><td>❌</td><td>❌</td><td>✅ 5 FAQs</td></tr>
+        <tr><td>Alternativas editoriales</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Fuente de IGN en el artículo</td><td>—</td><td>—</td><td>—</td><td>✅ Citado en V2</td></tr>
+      </tbody>
+    </table>
+    <div class="good">✅ <strong>Lo que tenemos que ellos no:</strong> WiFi 5GHz de la versión japonesa en México (problema real, no mencionado por ningún sitio global), FAQ con "¿hay drift?" respondida directamente, precio en MXN con link de afiliado. V2 ahora también cita a IGN gracias al fix de YouTube bilingüe.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ PRODUCTO 2: ASUS ════════════════════════════ -->
+<div class="section">
+  <h2>2. ASUS VivoBook 16 Ultra 5 — Desglose completo</h2>
+  <p class="sub">El producto donde la diferencia entre Gemini y Claude es más técnicamente visible.</p>
+
+  <div class="card" style="margin-bottom:16px">
+    <h3>Sub-scores — V1/V2 separan Cámara de Audio (Gemini los agrupa)</h3>
+    <div class="ch"><canvas id="cAsSub"></canvas></div>
+  </div>
+
+  <div class="g3" style="margin-bottom:16px">
+    <div class="card cg">
+      <h3><span class="tag tg">Gemini</span> 7.1/10</h3>
+      <table>
+        <tr><th>Dimensión</th><th>Score</th></tr>
+        <tr><td>Rendimiento</td><td>7.5</td></tr>
+        <tr><td>Pantalla</td><td>7.0 <span class="lose">genérico</span></td></tr>
+        <tr><td>Diseño y Portabilidad</td><td>8.0</td></tr>
+        <tr><td>Batería</td><td>5.5</td></tr>
+        <tr><td>Teclado y Conectividad</td><td>8.0 <span class="lose">agrupado</span></td></tr>
+        <tr><td>Cámara y Audio</td><td>6.5 <span class="lose">agrupado</span></td></tr>
+      </table>
+      <p style="font-size:.75rem;color:#dc2626;margin-top:8px">⚠️ "La pantalla no es OLED" — verdad pero sin dato medible. Teclado y Cámara agrupados con Audio (menos útil). "~4 horas" de batería (vago).</p>
+    </div>
+    <div class="card cv1">
+      <h3><span class="tag tv1">V1</span> 7.2/10</h3>
+      <table>
+        <tr><th>Dimensión</th><th>Score</th></tr>
+        <tr><td>Pantalla</td><td>6.5 <span class="win">45% NTSC</span></td></tr>
+        <tr><td>Rendimiento</td><td>7.5</td></tr>
+        <tr><td>Teclado y ergonomía</td><td>8.0</td></tr>
+        <tr><td>Batería</td><td>5.5 <span class="win">4-5h reales</span></td></tr>
+        <tr><td>Conectividad</td><td>7.5</td></tr>
+        <tr><td>Portabilidad</td><td>8.0</td></tr>
+        <tr><td>Audio</td><td>6.5</td></tr>
+        <tr><td>Cámara web</td><td>6.0 <span class="win">separada</span></td></tr>
+      </table>
+      <p style="font-size:.75rem;color:#166534;margin-top:8px">✅ 8 dimensiones, "45% NTSC: inadecuado para edición fotográfica" (dato medible), bisagra 2 etapas como riesgo de desgaste (KALUS).</p>
+    </div>
+    <div class="card cv2">
+      <h3><span class="tag tv2">V2</span> 7.2/10</h3>
+      <table>
+        <tr><th>Dimensión</th><th>Score</th></tr>
+        <tr><td>Pantalla</td><td>6.5</td></tr>
+        <tr><td>Teclado y trackpad</td><td>8.0</td></tr>
+        <tr><td>Rendimiento</td><td>7.5</td></tr>
+        <tr><td>Batería</td><td>5.5</td></tr>
+        <tr><td>Construcción y portabilidad</td><td>7.5</td></tr>
+        <tr><td>Audio</td><td>6.5</td></tr>
+        <tr><td>Conectividad</td><td>7.5</td></tr>
+        <tr><td>Webcam</td><td>6.0</td></tr>
+      </table>
+      <p style="font-size:.75rem;color:#166534;margin-top:8px">✅ Igual rigor que V1. PRO nuevo: "posibilidad de ampliar RAM o SSD" (V1 no lo mencionó). FAQ: gaming, edición, upgrades. Más conciso (910 vs 1042 palabras).</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <h3>Hallazgos únicos por versión</h3>
+    <table>
+      <thead>
+        <tr><th>Hallazgo</th><th>Gemini</th><th>V1</th><th>V2</th><th>Impacto</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Intel Core Ultra 5 / 16GB RAM</td><td>✅</td><td>✅</td><td>✅</td><td>Básico</td></tr>
+        <tr style="background:#fef9c3"><td><strong>45% NTSC — inadecuado para edición creativa</strong></td><td>❌ "no es OLED"</td><td>✅</td><td>✅</td><td>🔴 ALTO — comprador de diseño</td></tr>
+        <tr style="background:#fef9c3"><td><strong>Batería real: 4-5h vs 6h prometidas</strong></td><td>"~4h" (vago)</td><td>✅ citando KALUS</td><td>✅ citando KALUS</td><td>🔴 ALTO — expectativa</td></tr>
+        <tr><td>Bisagra 2 etapas — desgaste largo plazo</td><td>❌</td><td>✅</td><td>✅</td><td>Medio</td></tr>
+        <tr><td>Letras del teclado parecen pegatinas</td><td>✅</td><td>❌</td><td>❌</td><td>Bajo</td></tr>
+        <tr style="background:#fef9c3"><td><strong>RAM y SSD son ampliables (PRO)</strong></td><td>❌</td><td>❌</td><td>✅</td><td>🟡 MEDIO — compradores técnicos</td></tr>
+        <tr><td>Refrigeración puede quedarse corta bajo carga</td><td>❌</td><td>✅</td><td>❌</td><td>Medio</td></tr>
+        <tr><td>FAQ: ¿sirve para gaming? ¿se puede ampliar?</td><td>❌</td><td>❌</td><td>✅</td><td>🔴 ALTO — preguntas de compra reales</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <h3>Tabla comparativa de alternativas — V2</h3>
+    <table class="comp-table">
+      <thead>
+        <tr><th>Opción</th><th>Tipo</th><th>Qué ganas</th><th>Qué sacrificas</th><th>Para quién</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>ASUS VivoBook 16 Ultra 5 (este)</strong></td><td>— Analizado —</td><td>Core Ultra 5, 16GB, 1TB, teclado completo, 1.7kg</td><td>Pantalla 45% NTSC, 4-5h batería, chasis plástico</td><td>Productividad diaria, estudiantes, oficinistas</td></tr>
+        <tr><td><strong>Laptop 15" Core i5 gen anterior</strong></td><td>Económica</td><td>15-25% más barato, rendimiento similar en ofimática</td><td>Pantalla más pequeña, sin numpad quizás, WIFI 5</td><td>Presupuesto ajustado, uso básico</td></tr>
+        <tr><td><strong>VivoBook Pro / línea S o pantalla OLED</strong></td><td>Premium</td><td>Pantalla IPS/OLED con 100% sRGB, mejor batería, build quality</td><td>20-40% más caro, puede ser más pesada</td><td>Diseñadores, editores de foto, premium</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>ASUS VivoBook — Catalogo MX V2 vs la industria</h3>
+    <table>
+      <thead>
+        <tr><th>Aspecto</th><th>Notebookcheck</th><th>RTINGS (no laptops)</th><th>YouTube (KALUS/SoulOfTech)</th><th>Catalogo MX V2</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Score</td><td>75/100</td><td>N/A</td><td>Sin score numérico</td><td>7.2/10</td></tr>
+        <tr><td>45% NTSC medido</td><td>✅ Lab</td><td>N/A</td><td>✅ Mencionado</td><td>✅ Citado con fuente</td></tr>
+        <tr><td>Batería real medida</td><td>✅ 4h12m</td><td>N/A</td><td>✅ ~4h</td><td>✅ "4-5h reales"</td></tr>
+        <tr><td>Precio en MXN</td><td>❌</td><td>N/A</td><td>❌</td><td>✅</td></tr>
+        <tr><td>¿Sirve para gaming? (FAQ)</td><td>✅ Implícito</td><td>N/A</td><td>✅ Implícito</td><td>✅ Directo en FAQ</td></tr>
+        <tr><td>¿RAM ampliable? (FAQ)</td><td>✅ Specs</td><td>N/A</td><td>❌</td><td>✅ PRO explícito + FAQ</td></tr>
+      </tbody>
+    </table>
+    <div class="info">💡 Para laptops, los dioses son Notebookcheck (mediciones de lab) y los YouTubers especializados. V2 sintetiza ambos correctamente y agrega el FAQ que ninguno de los dos tiene estructurado.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ PRODUCTO 3: DELONGHI ════════════════════════ -->
+<div class="section">
+  <h2>3. De'Longhi Specialista Touch — El caso más revelador</h2>
+  <p class="sub">Tres versiones que tomaron decisiones radicalmente distintas con las mismas fuentes limitadas.</p>
+
+  <div class="g3" style="margin-bottom:16px">
+    <div class="card cg">
+      <h3><span class="tag tg">Gemini</span> 8.2/10</h3>
+      <p style="font-size:.8rem;color:#dc2626;font-weight:700;margin-bottom:8px">⚠️ El score más inflado del estudio</p>
+      <table>
+        <tr><th>Dimensión</th><th>Score</th></tr>
+        <tr><td>Facilidad de Uso</td><td>9.0 <span class="lose">inflado</span></td></tr>
+        <tr><td>Calidad Construcción</td><td>8.5</td></tr>
+        <tr><td>Versatilidad Bebidas</td><td>9.0 <span class="lose">inflado</span></td></tr>
+        <tr><td>Rendimiento (Velocidad)</td><td>8.0</td></tr>
+        <tr><td>Control Extracción</td><td>7.0</td></tr>
+      </table>
+      <p style="font-size:.75rem;color:#dc2626;margin-top:8px">8 pros — muchos tomados literalmente del fabricante. Sin compradores reales que respalden los 9.0. Esto es marketing disfrazado de review.</p>
+    </div>
+    <div class="card cv1">
+      <h3><span class="tag tv1">V1</span> 6.5/10</h3>
+      <p style="font-size:.8rem;color:#166534;font-weight:700;margin-bottom:8px">✅ El más honesto — admite limitación</p>
+      <table>
+        <tr><th>Dimensión</th><th>Score</th></tr>
+        <tr><td>Construcción y materiales</td><td>7.0</td></tr>
+        <tr><td>Funcionalidades y software</td><td>7.5</td></tr>
+        <tr><td>Ergonomía y diseño</td><td>6.5</td></tr>
+        <tr><td>Capacidad y autonomía</td><td>6.0</td></tr>
+      </table>
+      <p style="font-size:.75rem;color:#166534;margin-top:8px">Contras: "No hay compradores verificados", "no hay videos del modelo exacto". Score conservador y justificado. 696 palabras — proporcional a las fuentes.</p>
+    </div>
+    <div class="card cv2">
+      <h3><span class="tag tv2">V2</span> 7.2/10</h3>
+      <p style="font-size:.8rem;color:#1d4ed8;font-weight:700;margin-bottom:8px">🔵 El punto medio con contexto de mercado</p>
+      <table>
+        <tr><th>Dimensión</th><th>Score</th></tr>
+        <tr><td>Facilidad de uso</td><td>7.5</td></tr>
+        <tr><td>Versatilidad de bebidas</td><td>8.0</td></tr>
+        <tr><td>Construcción y materiales</td><td>7.5</td></tr>
+        <tr><td>Sistema de espumado</td><td>7.5 <span class="win">nuevo</span></td></tr>
+        <tr><td>Tamaño y ergonomía</td><td>7.0</td></tr>
+      </table>
+      <p style="font-size:.75rem;color:#1d4ed8;margin-top:8px">El contexto de similares ML dio a Claude información de mercado → score más equilibrado. +1 sub-score (espumado), FAQ excelente (leche vegetal, cold brew).</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <h3>La historia del score: 8.2 → 6.5 → 7.2 — ¿cuál es correcto?</h3>
+    <div class="ch"><canvas id="cDlScore"></canvas></div>
+    <div class="note">
+      <strong>Análisis:</strong> Gemini (8.2) evaluó sin criticidad — copió el marketing del fabricante. V1 (6.5) fue el más honesto pero quizás demasiado penalizador por la falta de fuentes. V2 (7.2) encontró el equilibrio: usó los similares de ML para calibrar que en su categoría (cafeteras premium con molinillo integrado), la propuesta de valor es real aunque sin validación de compradores. <strong>El 7.2 de V2 es probablemente el más acertado de los tres.</strong>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <h3>FAQ del V2 — las 5 preguntas que importan para una cafetera de este precio</h3>
+    <table>
+      <thead>
+        <tr><th>Pregunta</th><th>¿Por qué importa?</th><th>¿La responde Gemini?</th><th>¿La responde V1?</th><th>¿La responde V2?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>¿Necesito molinillo por separado?</td><td>La ventaja principal de esta cafetera es el molinillo integrado</td><td>Implícito</td><td>Implícito</td><td>✅ Directo</td></tr>
+        <tr><td>¿Funciona con leches vegetales?</td><td>El espumado automático es compatible — info relevante para mucha gente</td><td>❌</td><td>Mencionado en pros</td><td>✅ Directo con explicación</td></tr>
+        <tr><td>¿Qué tan difícil es aprender?</td><td>La Bean Adapt la vende como "fácil" — ¿es cierto sin barismo previo?</td><td>❌</td><td>❌</td><td>✅ Honesto sobre curva</td></tr>
+        <tr><td>¿El café frío es cold brew real?</td><td>Feature destacado del fabricante — comprador quiere saber si cumple</td><td>❌</td><td>❌</td><td>✅ Aclaración honesta</td></tr>
+        <tr><td>¿1.6L es suficiente para uso diario?</td><td>Limitación real del depósito mencionada en todas las versiones</td><td>❌</td><td>❌</td><td>✅ Con contexto de uso</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>De'Longhi — Catalogo MX V2 vs la industria</h3>
+    <table>
+      <thead>
+        <tr><th>Aspecto</th><th>Home-Barista Forum</th><th>CoffeeGeek</th><th>Fabricante</th><th>Catalogo MX V2</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Score estructurado</td><td>❌ Discusiones</td><td>✅ Reviews largas</td><td>❌ Solo marketing</td><td>✅ 7.2/10</td></tr>
+        <tr><td>Disponible en MX / precio MXN</td><td>❌</td><td>❌</td><td>Parcial</td><td>✅</td></tr>
+        <tr><td>FAQ "leche vegetal"</td><td>✅ Hilos</td><td>❌</td><td>✅ En manual</td><td>✅ Directo</td></tr>
+        <tr><td>Honesto sobre falta de usuarios</td><td>N/A</td><td>N/A</td><td>❌ obvio</td><td>✅ Único</td></tr>
+        <tr><td>Alternativas en ML</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+      </tbody>
+    </table>
+    <div class="good">✅ Para cafeteras, los dioses son los foros especializados (home-barista.com) y YouTubers de café. V2 es honesto sobre sus limitaciones y agrega el FAQ que ningún foro tiene en formato estructurado para compradores de ML.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ COMPARATIVA GLOBAL ════════════════════════════ -->
+<div class="section">
+  <h2>4. Radar global — las 3 versiones vs la industria</h2>
+  <div class="card" style="margin-bottom:16px">
+    <div class="cht"><canvas id="cRadar"></canvas></div>
+  </div>
+
+  <div class="card">
+    <h3>Posicionamiento final actualizado</h3>
+    <div class="ch" style="height:320px"><canvas id="cPos"></canvas></div>
+    <div class="g3" style="margin-top:16px">
+      <div style="text-align:center;padding:16px;background:#fce7f3;border-radius:10px">
+        <div style="font-size:2rem;font-weight:900;color:#ec4899">55</div>
+        <div style="font-size:.8rem;font-weight:700;color:#9d174d">Gemini 2.5 Flash</div>
+        <div style="font-size:.75rem;color:#64748b;margin-top:4px">Infla, copia marketing, no detecta problemas reales</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:#dbeafe;border-radius:10px">
+        <div style="font-size:2rem;font-weight:900;color:#1d4ed8">68</div>
+        <div style="font-size:.8rem;font-weight:700;color:#1e40af">Abacus V1</div>
+        <div style="font-size:.75rem;color:#64748b;margin-top:4px">Honesto, técnico, sin FAQ ni alternativas</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:#d1fae5;border-radius:10px">
+        <div style="font-size:2rem;font-weight:900;color:#065f46">74</div>
+        <div style="font-size:.8rem;font-weight:700;color:#065f46">Abacus V2</div>
+        <div style="font-size:.75rem;color:#64748b;margin-top:4px">FAQ real, alternativas, precio-valor, YT global</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ QUÉ FALTA PARA EL 80 ═══════════════════════ -->
+<div class="section">
+  <h2>5. El camino al 80 — qué falta exactamente</h2>
+  <div class="card" style="background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;border:none">
+    <h3 style="color:#fff;margin-bottom:16px">De 74 a 80 — los 6 puntos que faltan</h3>
+    <table style="color:#e2e8f0">
+      <thead>
+        <tr>
+          <th style="color:#94a3b8">Mejora</th>
+          <th style="color:#94a3b8">Puntos</th>
+          <th style="color:#94a3b8">Dificultad</th>
+          <th style="color:#94a3b8">Qué implica</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:#10b981">Tabla comparativa con productos reales de ML</strong></td>
+          <td style="color:#10b981;font-weight:900">+3</td>
+          <td>Media</td>
+          <td>Guardar los resultados de Get Similar Products en el JSON y mostrarlos en una tabla con nombre, precio y link real de ML</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#10b981">Sección "vs modelo anterior" estructurada</strong></td>
+          <td style="color:#10b981;font-weight:900">+1.5</td>
+          <td>Baja</td>
+          <td>Agregar al schema un campo "vs_anterior" que Claude complete cuando tiene info de generación anterior (Switch original, etc.)</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#10b981">Filtro de FAQ (eliminar preguntas obvias)</strong></td>
+          <td style="color:#10b981;font-weight:900">+0.5</td>
+          <td>Baja</td>
+          <td>Ajuste de prompt: "Solo incluye preguntas que NO se respondan viendo la foto o el manual"</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#94a3b8">Score de confianza por sub-score</strong></td>
+          <td style="color:#94a3b8;font-weight:900">+0.5</td>
+          <td>Media</td>
+          <td>Mostrar cuántas fuentes respaldan cada sub-score: "Pantalla: 9.2 (3 fuentes)" vs "Audio: 7.5 (1 fuente)"</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#94a3b8">Preguntas de ML Questions API reales</strong></td>
+          <td style="color:#94a3b8;font-weight:900">+0.5</td>
+          <td>Media</td>
+          <td>Los FAQ del V2 son generados a partir de los datos disponibles — cuando ML tenga preguntas para ese producto, usar las reales</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:20px;padding:16px;background:rgba(16,185,129,.15);border-radius:10px;border:1px solid rgba(16,185,129,.3)">
+      <p style="color:#10b981;font-weight:700;margin-bottom:6px">La mejora más impactante y ejecutable ahora: Tabla comparativa con productos reales</p>
+      <p style="color:#94a3b8;font-size:.85rem;line-height:1.6">El nodo Get Similar Products YA está activo y trae datos de ML. Solo falta: 1) guardar los resultados en el JSON (modificar Build Final JSON), 2) agregar un componente ComparisonTable en la web. Esto solo son cambios de código — sin tocar el pipeline de n8n.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// Switch Sub-scores
+new Chart(document.getElementById('cSwSub'),{type:'bar',
+  data:{
+    labels:['Pantalla','Rendimiento','Diseño/Erg','Conectividad','Almac.','Audio','Construcción'],
+    datasets:[
+      {label:'Gemini', data:[9,5,8.5,8,7,null,null], backgroundColor:'#ec4899',borderRadius:5},
+      {label:'V1',     data:[9,6.5,8.5,8.5,7.5,7.5,8], backgroundColor:'#3b82f6',borderRadius:5},
+      {label:'V2',     data:[9.2,6,7.5,8,6.5,7.5,null], backgroundColor:'#10b981',borderRadius:5},
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top'}},scales:{y:{min:4,max:10,ticks:{stepSize:1}}}}
+});
+
+// ASUS Sub-scores
+new Chart(document.getElementById('cAsSub'),{type:'bar',
+  data:{
+    labels:['Pantalla','Rendimiento','Teclado','Batería','Portab.','Audio','Conectiv.','Webcam'],
+    datasets:[
+      {label:'Gemini', data:[7,7.5,null,5.5,8,null,null,null], backgroundColor:'#ec4899',borderRadius:5},
+      {label:'V1',     data:[6.5,7.5,8,5.5,8,6.5,7.5,6], backgroundColor:'#3b82f6',borderRadius:5},
+      {label:'V2',     data:[6.5,7.5,8,5.5,7.5,6.5,7.5,6], backgroundColor:'#10b981',borderRadius:5},
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top'}},scales:{y:{min:4,max:10,ticks:{stepSize:1}}}}
+});
+
+// DeLonghi Score evolution
+new Chart(document.getElementById('cDlScore'),{type:'line',
+  data:{
+    labels:['Gemini','V1','V2','Score "real" estimado'],
+    datasets:[
+      {label:'Score asignado',data:[8.2,6.5,7.2,null],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.1)',tension:.3,pointRadius:8,borderWidth:3},
+      {label:'Zona de honestidad estimada',data:[null,null,null,7.0],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.1)',borderDash:[6,3],pointRadius:6,borderWidth:2},
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top'}},scales:{y:{min:5,max:10,ticks:{stepSize:.5}}}}
+});
+
+// Radar
+new Chart(document.getElementById('cRadar'),{type:'radar',
+  data:{
+    labels:['Datos propios','Contras concretos','FAQ real','Contexto MX','Honestidad','Alternativas','Velocidad','Fuentes citadas'],
+    datasets:[
+      {label:'RTINGS/Wirecutter',data:[10,10,5,1,9,9,2,10],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.1)',borderWidth:2},
+      {label:'The Verge',        data:[8,8,2,3,7,6,6,8],  borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,.1)',borderWidth:2},
+      {label:'Gemini',           data:[4,3,1,8,3,1,10,5], borderColor:'#ec4899',backgroundColor:'rgba(236,72,153,.1)',borderWidth:2,borderDash:[4,4]},
+      {label:'V1',               data:[5,7,1,10,9,1,10,7],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.1)',borderWidth:2},
+      {label:'V2',               data:[5,8,8,10,9,7,10,8],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.2)',borderWidth:3,pointRadius:5},
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{r:{min:0,max:10,ticks:{stepSize:2},pointLabels:{font:{size:11}}}},
+    plugins:{legend:{position:'top'}}}
+});
+
+// Posicionamiento
+new Chart(document.getElementById('cPos'),{type:'bar',
+  data:{
+    labels:['RTINGS','Wirecutter','The Verge','Catalogo MX V2','Catalogo MX V1','Gemini','Blog afiliado'],
+    datasets:[{
+      label:'Calidad editorial (/100)',
+      data:[92,89,81,74,68,55,22],
+      backgroundColor:['#f59e0b','#ef4444','#8b5cf6','#10b981','#3b82f6','#ec4899','#94a3b8'],
+      borderRadius:8,borderSkipped:false
+    }]
+  },
+  options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{
+      x:{min:0,max:100,ticks:{color:'#94a3b8'},grid:{color:'rgba(255,255,255,.1)'}},
+      y:{ticks:{color:'#e2e8f0',font:{weight:'bold',size:12}}}
+    },
+    plugins:{legend:{display:false}}}
+});
+</script>
+</body>
+</html>
