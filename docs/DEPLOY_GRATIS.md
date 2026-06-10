@@ -76,6 +76,7 @@ Scheduler:
 - Excluye por 7 dias otros candidatos del mismo `source_slug` si ya se completo uno de esa fuente.
 - Si el usuario responde `1 https://meli.la/...` o `1 - https://meli.la/...`, el Poll lo procesa en la siguiente corrida disponible.
 - Puede procesar varias lineas en un mensaje: `1 - link`, `2 - link`, `3 - link`.
+- Puede dejar listos 1, 2 o 3 candidatos en una sola corrida si los links son validos.
 - Si el formato no se puede leer, responde por Telegram con un ejemplo valido.
 - Esperado: 5-15 min; peor caso 20+ min por demora de GitHub Actions. En pruebas reales GitHub llego a retrasar el schedule mas de una hora.
 

@@ -99,6 +99,7 @@ Fixes importantes:
 - Acepta multiples links en un solo mensaje:
   `1 - https://meli.la/...`
   `2 - https://meli.la/...`
+- Puede procesar 1, 2 o 3 candidatos en la misma corrida si existen links afiliados validos.
 
 ### [x] P4 Related Reviews / Comparadores
 
