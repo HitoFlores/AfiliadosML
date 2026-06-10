@@ -45,8 +45,8 @@ Cada corrida:
 3. `npm run n8n:prepare`.
 4. Importa credenciales n8n desde `N8N_CREDENTIALS_JSON_B64`.
 5. Importa workflows generados en `.tmp/n8n-ephemeral/workflows`.
-6. Si toca ciclo diario, ejecuta Scheduler.
-7. Si toca ciclo diario, ejecuta Freshness.
+6. Si toca ciclo diario, ejecuta Freshness.
+7. Si toca ciclo diario, ejecuta Scheduler.
 8. Ejecuta Telegram Poll.
 9. Ejecuta Main hasta `MAIN_MAX_RUNS`.
 10. Escribe resumen en GitHub Step Summary.

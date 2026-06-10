@@ -79,12 +79,12 @@ send_cycle_summary() {
     --data-urlencode "text=$(cat "$SUMMARY_FILE")" >/dev/null
 }
 
-if [[ "${RUN_DAILY_SCHEDULER:-false}" == "true" ]]; then
-  run_workflow "wG6XApFxO6SyCgIY" "Scheduler 9am"
-fi
-
 if [[ "${RUN_FRESHNESS:-false}" == "true" ]]; then
   run_workflow "freshnessAfML2026" "Freshness"
+fi
+
+if [[ "${RUN_DAILY_SCHEDULER:-false}" == "true" ]]; then
+  run_workflow "wG6XApFxO6SyCgIY" "Scheduler 9am"
 fi
 
 # Telegram Poll may call the main workflow through Execute Workflow nodes.
