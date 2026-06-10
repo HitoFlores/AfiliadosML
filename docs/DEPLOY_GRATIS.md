@@ -79,7 +79,7 @@ Freshness:
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
 - `ABACUS_API_KEY`
-- `N8N_GITHUB_TOKEN`: PAT con permiso de escribir contents. Si falta, usa `GITHUB_TOKEN` del workflow.
+- `GITHUB_TOKEN`: se usa el token integrado de GitHub Actions con `contents: write`. No configurar `N8N_GITHUB_TOKEN` para este flujo; un PAT vencido provoca errores 401 en freshness.
 
 ## Como Generar `N8N_CREDENTIALS_JSON_B64`
 
