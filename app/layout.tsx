@@ -69,6 +69,12 @@ export default function RootLayout({
                 Rankings
               </a>
               <a
+                href="/estado"
+                className="hidden sm:inline text-zinc-400 hover:text-white transition-colors"
+              >
+                Estado
+              </a>
+              <a
                 href="https://github.com/HitoFlores/AfiliadosML"
                 target="_blank"
                 rel="noopener noreferrer"

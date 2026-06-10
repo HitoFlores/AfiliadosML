@@ -164,7 +164,7 @@ Ruta recomendada:
 1. Dejar correr el Scheduler diario.
 2. Responder 2-3 candidatos por dia con links afiliados.
 3. Mantener `MAIN_MAX_RUNS=3` mientras se valida calidad.
-4. Cuando la calidad sea estable por 1 semana, subir `MAIN_MAX_RUNS` a 5.
+4. Cuando la calidad sea estable por 1 semana, subir `MAIN_MAX_RUNS` a 5 desde dispatch manual o workflow.
 5. Revisar cada manana:
    - GitHub Actions `Free ephemeral n8n`
    - commits nuevos `feat: review ...`
@@ -175,15 +175,53 @@ Si faltan candidatos:
 - Forzar regeneracion de reviews fuertes con `force_regen_slug`.
 - O agregar manualmente un producto a `articulos` usando el flujo Telegram normal.
 
-## Como Probar Stale Real
+## Flujo Completo Actual
 
-Opcion segura recomendada:
-1. No tocar productos activos.
-2. Crear una copia temporal de un JSON o usar una rama de prueba.
-3. Cambiar temporalmente `vendedor.item_id` a un item inexistente o sin sellers.
-4. Ejecutar Freshness local.
-5. Confirmar que `freshness.stale=true` y que candidatos con `source_slug` reciben boost.
-6. Revertir esa prueba antes de mergear.
+1. A las 9:00 AM America/Chihuahua, GitHub Actions corre `Free ephemeral n8n`.
+2. El runner prepara/importa workflows n8n desde `.tmp/n8n-ephemeral/workflows`.
+3. Si es ciclo diario, corre Scheduler:
+   - Lee `review_candidates`.
+   - Si hay candidatos `pending`, manda hasta 3 por Telegram.
+   - Si no hay candidatos, pide articulo manual.
+4. Si es ciclo diario, corre Freshness:
+   - Revisa precio/disponibilidad de reviews publicados.
+   - Escribe `freshness` en JSON via GitHub.
+   - Si hay stale, manda alerta Telegram y reprioriza candidatos relacionados.
+5. Corre Telegram Poll:
+   - Lee respuestas.
+   - Si recibe `1 https://meli.la/...`, marca candidato `ready`.
+   - Crea fila `articulos` con `candidate_id`.
+6. Corre Main hasta `MAIN_MAX_RUNS` veces:
+   - Toma `ready`, `pending` o candidato recuperable en `processing`.
+   - Genera review con Abacus.
+   - Commimea `data/{slug}.json`.
+   - Cierra fila `articulos`.
+   - Si venia de candidato, cierra `review_candidates` con `target_slug`.
+7. Cloudflare Pages despliega al recibir push en GitHub.
+8. La web muestra:
+   - Review nuevo.
+   - Reviews relacionados.
+   - Comparador si hay par cerrado.
+   - Rankings.
+   - `/estado` con resumen operativo.
+9. El runner manda resumen Telegram del ciclo diario.
+
+Horario actual:
+- Scheduler/Freshness diario: 9:00 AM Chihuahua (`0 15 * * *` UTC).
+- Poll/Main: cada 5 minutos de 9:00 AM a 2:00 PM Chihuahua.
+
+## Como Probar Stale Seguro
+
+Opcion segura implementada:
+1. Ejecutar `rtk npm run freshness:test`.
+2. El test usa fixtures locales y no toca `data/`, Google Sheets ni GitHub.
+3. Valida casos:
+   - activo inferido por precio
+   - listing inactivo
+   - sin stock
+   - sin precio
+   - precio +20%
+4. Si falla, no se debe pushear cambios de P6.
 
 Opcion live:
 1. Esperar a que ML detecte un producto sin stock, inactivo o con precio +20%.
@@ -198,17 +236,17 @@ Prioridad H1:
 - No crear workflow Cloudflare; deploy es por Cloudflare Pages conectado a GitHub.
 
 Prioridad H2:
-- Agregar reporte diario de Freshness por Telegram solo si `stale_count > 0`.
-- Agregar resumen de ciclo n8n: candidatos enviados, ready creados, reviews generados, stale detectados.
-- Agregar limite configurable `MAIN_MAX_RUNS` en GitHub Actions manual dispatch.
+- [x] Agregar reporte diario de Freshness por Telegram solo si `stale_count > 0`.
+- [x] Agregar resumen de ciclo n8n por Telegram/GitHub Step Summary.
+- [x] Agregar limite configurable `MAIN_MAX_RUNS` en GitHub Actions manual dispatch.
 
 Prioridad H3:
-- Crear prueba automatica para `prepare-workflows.mjs` que valide que existan los nodos criticos:
+- [x] Crear prueba automatica para `prepare-workflows.mjs` que valide que existan los nodos criticos:
   - `Build Final JSON`
   - `Build Review Candidates`
   - `Find Completed Candidate`
   - `Check Freshness`
-- Agregar una pagina `/estado` o reporte JSON estatico para ver conteos: reviews, candidatos, stale, rankings.
+- [x] Agregar pagina `/estado` para ver conteos: reviews, stale, rankings y comparadores.
 
 ## Comandos De Verificacion
 
@@ -216,6 +254,8 @@ Siempre correr antes de push:
 
 ```powershell
 rtk npm run n8n:prepare
+rtk npm run n8n:verify
+rtk npm run freshness:test
 rtk npm run review:audit
 rtk npm run build
 ```
@@ -253,5 +293,5 @@ Pendientes tecnicos P0-P6: cerrados.
 Pendientes operativos:
 - Escalar cobertura respondiendo candidatos diarios.
 - Observar un stale real en produccion.
-- Decidir si se implementa reporte Telegram de ciclo/stale.
-- Decidir si se agrega `/estado`.
+- Revisar en produccion el primer reporte Telegram de ciclo/stale.
+- Revisar `/estado` despues del proximo ciclo diario.

@@ -34,6 +34,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.7,
     },
+    {
+      url: `${SITE_URL}/estado`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.4,
+    },
     ...rankings.map(({ slug }) => ({
       url: `${SITE_URL}/rankings/${slug}`,
       lastModified: new Date(),

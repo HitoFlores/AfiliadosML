@@ -389,6 +389,47 @@ return [{
         credentials: markDone.credentials,
       },
       {
+        id: "freshness-build-stale-alert",
+        name: "Build Stale Alert",
+        type: "n8n-nodes-base.code",
+        typeVersion: 2,
+        position: [720, 240],
+        parameters: {
+          jsCode: `const result = $('Check Freshness').first().json;
+const stale = result.stale || [];
+if (!stale.length) return [];
+
+const lines = stale.slice(0, 10).map((entry, index) => {
+  const delta = entry.price_delta_pct === null || entry.price_delta_pct === undefined
+    ? ''
+    : ' (' + entry.price_delta_pct + '%)';
+  return (index + 1) + '. ' + entry.slug + ' - ' + entry.stale_reason + delta;
+});
+
+return [{
+  json: {
+    text: 'Freshness detecto ' + stale.length + ' review(s) stale\\n\\n' + lines.join('\\n') + '\\n\\nSe repriorizaran candidatos relacionados si existen.',
+  },
+}];`,
+        },
+      },
+      {
+        id: "freshness-send-stale-alert",
+        name: "Notify Stale Alert",
+        type: "n8n-nodes-base.httpRequest",
+        typeVersion: 4.2,
+        position: [960, 240],
+        parameters: {
+          method: "POST",
+          url: "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+          sendBody: true,
+          contentType: "raw",
+          rawContentType: "application/json",
+          body: "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: $json.text }) }}",
+          options: {},
+        },
+      },
+      {
         id: "freshness-reprioritize",
         name: "Reprioritize Candidates",
         type: "n8n-nodes-base.code",
@@ -466,7 +507,13 @@ return updates;`,
         main: [[{ node: "Check Freshness", type: "main", index: 0 }]],
       },
       "Check Freshness": {
-        main: [[{ node: "Get Review Candidates", type: "main", index: 0 }]],
+        main: [[
+          { node: "Get Review Candidates", type: "main", index: 0 },
+          { node: "Build Stale Alert", type: "main", index: 0 },
+        ]],
+      },
+      "Build Stale Alert": {
+        main: [[{ node: "Notify Stale Alert", type: "main", index: 0 }]],
       },
       "Get Review Candidates": {
         main: [[{ node: "Reprioritize Candidates", type: "main", index: 0 }]],
