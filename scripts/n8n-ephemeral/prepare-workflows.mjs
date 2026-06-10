@@ -559,8 +559,19 @@ function patchSchedulerReviewCandidates(workflow) {
       position: [1560, 420],
       parameters: {
         jsCode: `const rows = $input.all().map(i => i.json).filter(r => !r.error);
+const cooldownMs = 7 * 24 * 60 * 60 * 1000;
+const nowMs = Date.now();
+const completedBySource = new Set(rows
+  .filter(r => String(r.status || '').toLowerCase().trim() === 'done')
+  .filter(r => {
+    const t = Date.parse(r.updated_at || r.created_at || '');
+    return Number.isFinite(t) && nowMs - t < cooldownMs;
+  })
+  .map(r => String(r.source_slug || '').trim())
+  .filter(Boolean));
 const pending = rows
   .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
+  .filter(r => !completedBySource.has(String(r.source_slug || '').trim()))
   .sort((a, b) => Number(b.priority_score || 0) - Number(a.priority_score || 0))
   .slice(0, 3);
 
@@ -755,8 +766,19 @@ const isReferidoReply = (rt) =>`,
 const candidateIndex = Number($('Poll Telegram').first().json.candidate_index || 0);
 const referido = $('Poll Telegram').first().json.referido;
 const rows = $input.all().map(i => i.json).filter(r => !r.error);
+const cooldownMs = 7 * 24 * 60 * 60 * 1000;
+const nowMs = Date.now();
+const completedBySource = new Set(rows
+  .filter(r => String(r.status || '').toLowerCase().trim() === 'done')
+  .filter(r => {
+    const t = Date.parse(r.updated_at || r.created_at || '');
+    return Number.isFinite(t) && nowMs - t < cooldownMs;
+  })
+  .map(r => String(r.source_slug || '').trim())
+  .filter(Boolean));
 const pending = rows
   .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
+  .filter(r => !completedBySource.has(String(r.source_slug || '').trim()))
   .sort((a, b) => Number(b.priority_score || 0) - Number(a.priority_score || 0));
 const row = candidateId
   ? rows.find(r => r.candidate_id === candidateId)
