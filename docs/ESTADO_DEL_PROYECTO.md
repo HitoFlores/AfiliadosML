@@ -29,7 +29,7 @@ Google Sheet "Reviews ML":
 n8n workflows:
 - `AfiliadosML` (`iSQ59pcFepjqmBvC`): pipeline principal.
 - `AfiliadosML - Telegram Poll` (`wsMIARaCQQISWJtv`): lee respuestas de Telegram.
-- `AfiliadosML - Scheduler 7am` (`wG6XApFxO6SyCgIY`): manda candidatos diarios.
+- `AfiliadosML - Scheduler 7am` (`wG6XApFxO6SyCgIY`): manda candidatos diarios. El nombre es historico; GitHub Actions lo ejecuta a las 9am.
 - `AfiliadosML - Error Handler` (`WNQIZP0Tu3hQGODn`): marca errores en Sheet.
 - `AfiliadosML - Token Refresh` (`PhRg6OJo47YcvsDo`): refresca token ML.
 - `AfiliadosML - Recordatorios` (`7uVW6atEBK8fuoHV`): recordatorios opcionales.
@@ -144,7 +144,7 @@ Hace:
 
 Integracion:
 - `RUN_FRESHNESS=true` en `scripts/n8n-ephemeral/run-cycle.sh`.
-- GitHub Actions lo activa en el ciclo diario de 7am.
+- GitHub Actions lo activa en el ciclo diario de 9am.
 
 Verificacion live:
 - 5 reviews revisados.

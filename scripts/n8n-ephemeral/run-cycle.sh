@@ -80,7 +80,7 @@ send_cycle_summary() {
 }
 
 if [[ "${RUN_DAILY_SCHEDULER:-false}" == "true" ]]; then
-  run_workflow "wG6XApFxO6SyCgIY" "Scheduler 7am"
+  run_workflow "wG6XApFxO6SyCgIY" "Scheduler 9am"
 fi
 
 if [[ "${RUN_FRESHNESS:-false}" == "true" ]]; then
