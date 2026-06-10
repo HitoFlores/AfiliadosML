@@ -30,11 +30,12 @@ on:
         default: "3"
         type: string
   schedule:
-    # America/Chihuahua is UTC-6 on 2026-06-09. This is 9:00 AM local.
-    - cron: "0 15 * * *"
+    # America/Chihuahua is UTC-7 here. GitHub can delay/drop jobs at minute 0,
+    # so this targets 9:07 AM local instead of the congested top of the hour.
+    - cron: "7 16 * * *"
     # Poll/process every 5 minutes during the daily work window, 9 AM-2 PM local.
-    - cron: "5-55/5 15 * * *"
-    - cron: "*/5 16-19 * * *"
+    - cron: "12-57/5 16 * * *"
+    - cron: "*/5 17-20 * * *"
 
 concurrency:
   group: free-ephemeral-n8n
@@ -48,12 +49,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      RUN_DAILY_SCHEDULER: ${{ github.event_name == 'workflow_dispatch' && inputs.run_daily_scheduler == 'true' || github.event.schedule == '0 15 * * *' }}
-      RUN_FRESHNESS: ${{ github.event_name == 'workflow_dispatch' && inputs.run_daily_scheduler == 'true' || github.event.schedule == '0 15 * * *' }}
+      RUN_DAILY_SCHEDULER: ${{ github.event_name == 'workflow_dispatch' && inputs.run_daily_scheduler == 'true' || github.event.schedule == '7 16 * * *' }}
+      RUN_FRESHNESS: ${{ github.event_name == 'workflow_dispatch' && inputs.run_daily_scheduler == 'true' || github.event.schedule == '7 16 * * *' }}
       RUN_MAIN_SAFETY: ${{ github.event_name == 'workflow_dispatch' && inputs.run_main_safety == 'true' }}
       FORCE_REGEN_SLUG: ${{ github.event_name == 'workflow_dispatch' && inputs.force_regen_slug || '' }}
       MAIN_MAX_RUNS: ${{ github.event_name == 'workflow_dispatch' && inputs.main_max_runs || '3' }}
-      SEND_CYCLE_SUMMARY: ${{ github.event_name == 'workflow_dispatch' && inputs.run_daily_scheduler == 'true' || github.event.schedule == '0 15 * * *' }}
+      SEND_CYCLE_SUMMARY: ${{ github.event_name == 'workflow_dispatch' && inputs.run_daily_scheduler == 'true' || github.event.schedule == '7 16 * * *' }}
       N8N_ENCRYPTION_KEY: ${{ secrets.N8N_ENCRYPTION_KEY }}
       N8N_CREDENTIALS_JSON_B64: ${{ secrets.N8N_CREDENTIALS_JSON_B64 }}
       YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
