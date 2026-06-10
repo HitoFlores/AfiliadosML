@@ -89,7 +89,7 @@ Deduplica por `candidate_id` y solo agrega candidatos nuevos.
 
 ### [x] P3 Flujo Diario de Candidatos
 
-Scheduler manda candidatos pendientes por Telegram, excluyendo por 7 dias otros candidatos del mismo `source_slug` si ya se completo uno de esa fuente. Poll acepta respuesta `numero + link afiliado`, marca candidato `ready` y crea fila en `articulos`.
+Scheduler manda candidatos pendientes por Telegram en formato `1 - Articulo`, hasta 3 lineas, excluyendo por 7 dias otros candidatos del mismo `source_slug` si ya se completo uno de esa fuente. Poll acepta respuesta `numero + link afiliado`, marca candidato `ready` y crea fila en `articulos`.
 
 Fixes importantes:
 - No crea `WAITING_LINK` si ya hay candidatos pendientes.

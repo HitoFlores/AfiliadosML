@@ -583,19 +583,15 @@ if (!pending.length) {
   }}];
 }
 
-const shorten = (value, max = 130) => {
+const shorten = (value, max = 90) => {
   const text = String(value || '').replace(/\\s+/g, ' ').trim();
   return text.length > max ? text.slice(0, max - 1).trim().replace(/[.,;:]$/, '') + '...' : text;
 };
 
-const lines = pending.map((c, idx) => [
-  (idx + 1) + ') ' + c.candidate_name,
-  '   Motivo: ' + shorten(c.reason || 'Candidato pendiente de review.'),
-  '   Ref: ' + c.candidate_id,
-].join('\\n'));
+const lines = pending.map((c, idx) => (idx + 1) + ' - ' + shorten(c.candidate_name));
 
 return [{ json: {
-  text: base + '\\n\\n' + lines.join('\\n\\n') + '\\n\\nPara elegir uno, responde con una sola linea:\\n1 https://meli.la/...\\n\\nEl numero es el candidato. El link debe ser el afiliado de ML Partners.',
+  text: base + '\\n\\n' + lines.join('\\n') + '\\n\\nResponde con:\\n1 https://meli.la/...',
   has_candidates: true,
 }}];`,
       },

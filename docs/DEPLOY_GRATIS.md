@@ -72,6 +72,7 @@ Freshness:
 
 Scheduler:
 - Manda hasta 3 candidatos `pending` por prioridad.
+- Formato Telegram: una linea por candidato, `1 - Articulo`, `2 - Articulo`, `3 - Articulo`.
 - Excluye por 7 dias otros candidatos del mismo `source_slug` si ya se completo uno de esa fuente.
 - Si el usuario responde `1 https://meli.la/...`, el Poll lo procesa en la siguiente corrida disponible. Esperado: 5-15 min; peor caso 20+ min por demora de GitHub Actions.
 
