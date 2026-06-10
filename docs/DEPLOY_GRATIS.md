@@ -25,13 +25,14 @@ No hay workflow propio de Cloudflare en `.github/workflows`; el unico workflow v
 Workflow: `.github/workflows/free-ephemeral-n8n.yml`
 
 Horario actual, America/Chihuahua:
-- 9:00 AM: Scheduler + Freshness + Poll + Main.
-- 9:00 AM a 2:00 PM: Poll/Main cada 5 minutos.
+- 9:07 AM nominal: Freshness + Scheduler + Poll + Main.
+- 9:12 AM a 2:00 PM nominal: Poll/Main cada 5 minutos.
+- GitHub Actions puede retrasar jobs programados; no usarlo como alarma exacta.
 
 Crons UTC:
-- `0 15 * * *`: ciclo diario de 9:00 AM.
-- `5-55/5 15 * * *`: polling despues del disparo diario.
-- `*/5 16-19 * * *`: polling hasta las 2:00 PM.
+- `7 16 * * *`: ciclo diario de 9:07 AM.
+- `12-57/5 16 * * *`: polling despues del disparo diario.
+- `*/5 17-20 * * *`: polling hasta las 2:00 PM.
 
 Dispatch manual:
 - `run_daily_scheduler`: corre Scheduler y Freshness aunque no sea la hora diaria.
@@ -68,6 +69,11 @@ Freshness:
 - Escribe `freshness` en cada JSON.
 - Manda alerta Telegram solo si `stale_count > 0`.
 - Reprioriza candidatos relacionados si un review queda stale.
+
+Scheduler:
+- Manda hasta 3 candidatos `pending` por prioridad.
+- Excluye por 7 dias otros candidatos del mismo `source_slug` si ya se completo uno de esa fuente.
+- Si el usuario responde `1 https://meli.la/...`, el Poll lo procesa en la siguiente corrida disponible. Esperado: 5-15 min; peor caso 20+ min por demora de GitHub Actions.
 
 ## Secrets Requeridos
 

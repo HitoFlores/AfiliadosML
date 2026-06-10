@@ -1,6 +1,6 @@
 # AfiliadosML - Estado del proyecto
 
-Ultima actualizacion: 2026-06-09.
+Ultima actualizacion: 2026-06-10.
 
 Proyecto: pipeline automatico de reviews editoriales para productos de Mercado Libre Mexico. Un humano sigue aportando links afiliados; el sistema automatiza descubrimiento, cola, generacion, publicacion, relaciones, rankings y freshness.
 
@@ -29,7 +29,7 @@ Google Sheet "Reviews ML":
 n8n workflows:
 - `AfiliadosML` (`iSQ59pcFepjqmBvC`): pipeline principal.
 - `AfiliadosML - Telegram Poll` (`wsMIARaCQQISWJtv`): lee respuestas de Telegram.
-- `AfiliadosML - Scheduler 7am` (`wG6XApFxO6SyCgIY`): manda candidatos diarios. El nombre es historico; GitHub Actions lo ejecuta a las 9am.
+- `AfiliadosML - Scheduler 7am` (`wG6XApFxO6SyCgIY`): manda candidatos diarios. El nombre es historico; GitHub Actions lo ejecuta cerca de las 9am.
 - `AfiliadosML - Error Handler` (`WNQIZP0Tu3hQGODn`): marca errores en Sheet.
 - `AfiliadosML - Token Refresh` (`PhRg6OJo47YcvsDo`): refresca token ML.
 - `AfiliadosML - Recordatorios` (`7uVW6atEBK8fuoHV`): recordatorios opcionales.
@@ -95,6 +95,7 @@ Fixes importantes:
 - No crea `WAITING_LINK` si ya hay candidatos pendientes.
 - No confunde links afiliados de candidatos con el flujo manual normal.
 - El runner procesa hasta `MAIN_MAX_RUNS=3` filas por ciclo.
+- Si ya se completo un candidato originado por una review, no insiste con mas candidatos de esa misma fuente durante 7 dias.
 
 ### [x] P4 Related Reviews / Comparadores
 
@@ -144,7 +145,7 @@ Hace:
 
 Integracion:
 - `RUN_FRESHNESS=true` en `scripts/n8n-ephemeral/run-cycle.sh`.
-- GitHub Actions lo activa en el ciclo diario de 9am.
+- GitHub Actions lo activa en el ciclo diario antes del Scheduler, para no mandar candidatos si Freshness falla.
 
 Verificacion live:
 - 5 reviews revisados.
@@ -177,16 +178,17 @@ Si faltan candidatos:
 
 ## Flujo Completo Actual
 
-1. A las 9:00 AM America/Chihuahua, GitHub Actions corre `Free ephemeral n8n`.
+1. Cerca de las 9:07 AM America/Chihuahua, GitHub Actions corre `Free ephemeral n8n`. GitHub Actions no garantiza puntualidad; puede retrasar jobs programados.
 2. El runner prepara/importa workflows n8n desde `.tmp/n8n-ephemeral/workflows`.
-3. Si es ciclo diario, corre Scheduler:
-   - Lee `review_candidates`.
-   - Si hay candidatos `pending`, manda hasta 3 por Telegram.
-   - Si no hay candidatos, pide articulo manual.
-4. Si es ciclo diario, corre Freshness:
+3. Si es ciclo diario, corre Freshness:
    - Revisa precio/disponibilidad de reviews publicados.
    - Escribe `freshness` en JSON via GitHub.
    - Si hay stale, manda alerta Telegram y reprioriza candidatos relacionados.
+4. Si es ciclo diario, corre Scheduler:
+   - Lee `review_candidates`.
+   - Si hay candidatos `pending`, manda hasta 3 por Telegram.
+   - Excluye fuentes con un candidato completado en los ultimos 7 dias.
+   - Si no hay candidatos, pide articulo manual.
 5. Corre Telegram Poll:
    - Lee respuestas.
    - Si recibe `1 https://meli.la/...`, marca candidato `ready`.
@@ -207,8 +209,9 @@ Si faltan candidatos:
 9. El runner manda resumen Telegram del ciclo diario.
 
 Horario actual:
-- Scheduler/Freshness diario: 9:00 AM Chihuahua (`0 15 * * *` UTC).
-- Poll/Main: cada 5 minutos de 9:00 AM a 2:00 PM Chihuahua.
+- Freshness/Scheduler diario: 9:07 AM Chihuahua nominal (`7 16 * * *` UTC).
+- Poll/Main: cada 5 minutos de 9:12 AM a 2:00 PM Chihuahua nominal.
+- Respuesta Telegram de candidato no es instantanea: normalmente entra en 5-15 min; en carga alta de GitHub puede tardar 20+ min.
 
 ## Como Probar Stale Seguro
 
@@ -281,7 +284,7 @@ En GitHub Secrets y/o entorno local:
 - `ML_CLIENT_SECRET`
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
-- `GITHUB_TOKEN` o `N8N_GITHUB_TOKEN`
+- `GITHUB_TOKEN` integrado de GitHub Actions con `contents: write`; no usar `N8N_GITHUB_TOKEN` para este flujo.
 - `ABACUS_API_KEY`
 - `N8N_ENCRYPTION_KEY`
 - `N8N_CREDENTIALS_JSON_B64`
@@ -293,5 +296,5 @@ Pendientes tecnicos P0-P6: cerrados.
 Pendientes operativos:
 - Escalar cobertura respondiendo candidatos diarios.
 - Observar un stale real en produccion.
-- Revisar en produccion el primer reporte Telegram de ciclo/stale.
 - Revisar `/estado` despues del proximo ciclo diario.
+- Monitorear que el cooldown de `source_slug` evite repetir candidatos del Apple Watch Series 11 durante 7 dias.
