@@ -720,6 +720,41 @@ const isReferidoReply = (rt) =>`,
   }
 
   code = findNode(workflow, "Poll Telegram").parameters.jsCode;
+  code = code.replace(
+    "let candidateAffiliate = null;",
+    "let candidateAffiliates = [];",
+  );
+  code = code.replaceAll(
+    "candidateAffiliate = { candidate_id: candidateId, referido: link };",
+    "candidateAffiliates.push({ candidate_id: candidateId, referido: link });",
+  );
+  code = code.replace(
+    `  // Fallback: acepta "1 https://meli.la/..." aunque Telegram no lo marque como reply.
+  const candidateChoice = text.match(/^(\\d+)\\s+(\\S+)/);
+  if (candidateChoice && looksLikeLink(candidateChoice[2])) {
+    candidateAffiliate = { candidate_index: Number(candidateChoice[1]), referido: candidateChoice[2] };
+    sd.consecutive_errors = 0;
+    continue;
+  }`,
+    `  // Fallback: acepta una o varias lineas "1 https://..." o "1 - https://...".
+  const candidateLines = String(text || '').split(/\\n+/).map(line => line.trim()).filter(Boolean);
+  for (const line of candidateLines) {
+    const candidateChoice = line.match(/^(\\d+)\\s*(?:[-.)]\\s*)?(\\S+)/);
+    if (candidateChoice && looksLikeLink(candidateChoice[2])) {
+      candidateAffiliates.push({ candidate_index: Number(candidateChoice[1]), referido: candidateChoice[2] });
+    }
+  }
+  if (candidateAffiliates.length) {
+    sd.consecutive_errors = 0;
+    continue;
+  }`,
+  );
+  code = code.replace(
+    "if (candidateAffiliate) return [{ json: { tipo: 'candidate_affiliate', ...candidateAffiliate } }];",
+    "if (candidateAffiliates.length) return candidateAffiliates.map(entry => ({ json: { tipo: 'candidate_affiliate', ...entry } }));",
+  );
+  findNode(workflow, "Poll Telegram").parameters.jsCode = code;
+
   if (!code.includes("isCandidateReply")) {
     code = code.replace(
       "const replyTo = (msg.reply_to_message && msg.reply_to_message.text) || '';",
@@ -758,9 +793,9 @@ const isReferidoReply = (rt) =>`,
       typeVersion: 2,
       position: [1120, 520],
       parameters: {
-        jsCode: `const candidateId = $('Poll Telegram').first().json.candidate_id;
-const candidateIndex = Number($('Poll Telegram').first().json.candidate_index || 0);
-const referido = $('Poll Telegram').first().json.referido;
+        jsCode: `const requests = $('Poll Telegram').all()
+  .map(i => i.json)
+  .filter(item => item.tipo === 'candidate_affiliate');
 const rows = $input.all().map(i => i.json).filter(r => !r.error);
 const cooldownMs = 7 * 24 * 60 * 60 * 1000;
 const nowMs = Date.now();
@@ -776,31 +811,40 @@ const pending = rows
   .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
   .filter(r => !completedBySource.has(String(r.source_slug || '').trim()))
   .sort((a, b) => Number(b.priority_score || 0) - Number(a.priority_score || 0));
-const row = candidateId
-  ? rows.find(r => r.candidate_id === candidateId)
-  : pending[candidateIndex - 1];
 
-if (!row) {
-  await this.helpers.httpRequest({
-    method: 'POST',
-    url: 'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage',
-    body: { chat_id: $env.TELEGRAM_CHAT_ID, text: 'No encontre ese candidato en review_candidates.' },
-    json: true,
-  });
-  return [];
+const out = [];
+for (const request of requests) {
+  const candidateId = request.candidate_id;
+  const candidateIndex = Number(request.candidate_index || 0);
+  const referido = request.referido;
+  const row = candidateId
+    ? rows.find(r => r.candidate_id === candidateId)
+    : pending[candidateIndex - 1];
+
+  if (!row) {
+    await this.helpers.httpRequest({
+      method: 'POST',
+      url: 'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage',
+      body: { chat_id: $env.TELEGRAM_CHAT_ID, text: 'No encontre ese candidato en review_candidates.' },
+      json: true,
+    });
+    continue;
+  }
+
+  if (!referido) continue;
+
+  out.push({ json: {
+    row_number: row.row_number,
+    candidate_id: row.candidate_id,
+    candidate_name: row.candidate_name,
+    source_slug: row.source_slug,
+    referido,
+    articulo: row.candidate_ml_url || referido,
+    target_slug: row.target_slug || '',
+  }});
 }
 
-if (!referido) return [];
-
-return [{ json: {
-  row_number: row.row_number,
-  candidate_id: row.candidate_id,
-  candidate_name: row.candidate_name,
-  source_slug: row.source_slug,
-  referido,
-  articulo: row.candidate_ml_url || referido,
-  target_slug: row.target_slug || '',
-}}];`,
+return out;`,
       },
     },
     {
@@ -844,11 +888,11 @@ return [{ json: {
         columns: {
           mappingMode: "defineBelow",
           value: {
-            articulo: "={{ $('Find Candidate Affiliate').first().json.articulo }}",
-            referido: "={{ $('Find Candidate Affiliate').first().json.referido }}",
+            articulo: "={{ $json.articulo }}",
+            referido: "={{ $json.referido }}",
             idioma: "es",
             estatus: "ready",
-            candidate_id: "={{ $('Find Candidate Affiliate').first().json.candidate_id }}",
+            candidate_id: "={{ $json.candidate_id }}",
           },
           matchingColumns: [],
           schema: [],
@@ -871,7 +915,7 @@ return [{ json: {
         sendBody: true,
         contentType: "raw",
         rawContentType: "application/json",
-        body: "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: 'Candidato listo para generar review:\\n' + $('Find Candidate Affiliate').first().json.candidate_name }) }}",
+        body: "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: 'Candidato listo para generar review:\\n' + $json.candidate_name }) }}",
         options: {},
       },
     },

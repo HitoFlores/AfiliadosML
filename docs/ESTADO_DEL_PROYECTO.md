@@ -89,13 +89,16 @@ Deduplica por `candidate_id` y solo agrega candidatos nuevos.
 
 ### [x] P3 Flujo Diario de Candidatos
 
-Scheduler manda candidatos pendientes por Telegram en formato `1 - Articulo`, hasta 3 lineas, excluyendo por 7 dias otros candidatos del mismo `source_slug` si ya se completo uno de esa fuente. Poll acepta respuesta `numero + link afiliado`, marca candidato `ready` y crea fila en `articulos`.
+Scheduler manda candidatos pendientes por Telegram en formato `1 - Articulo`, hasta 3 lineas, excluyendo por 7 dias otros candidatos del mismo `source_slug` si ya se completo uno de esa fuente. Poll acepta una o varias respuestas en formato `numero link` o `numero - link`, marca cada candidato como `ready` y crea filas en `articulos`.
 
 Fixes importantes:
 - No crea `WAITING_LINK` si ya hay candidatos pendientes.
 - No confunde links afiliados de candidatos con el flujo manual normal.
 - El runner procesa hasta `MAIN_MAX_RUNS=3` filas por ciclo.
 - Si ya se completo un candidato originado por una review, no insiste con mas candidatos de esa misma fuente durante 7 dias.
+- Acepta multiples links en un solo mensaje:
+  `1 - https://meli.la/...`
+  `2 - https://meli.la/...`
 
 ### [x] P4 Related Reviews / Comparadores
 
