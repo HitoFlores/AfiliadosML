@@ -747,6 +747,13 @@ const isReferidoReply = (rt) =>`,
   if (candidateAffiliates.length) {
     sd.consecutive_errors = 0;
     continue;
+  }
+
+  if (isCandidateReply || /^\\d+\\s*/.test(text)) {
+    await tg('No pude leer el link del candidato. Usa una linea por candidato:\\n1 - https://meli.la/...\\n2 - https://meli.la/...', {
+      reply_markup: { force_reply: true, input_field_placeholder: '1 - https://meli.la/...' }
+    });
+    continue;
   }`,
   );
   code = code.replace(
