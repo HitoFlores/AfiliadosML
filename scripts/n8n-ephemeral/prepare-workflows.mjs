@@ -565,13 +565,14 @@ const forceSlug = norm($env.FORCE_REGEN_SLUG || '');`,
   ? rows.find((r) => norm(r.slug) === forceSlug)
   : (
     rows.find((r) => norm(r.estatus) === 'ready') ||
-    rows.find((r) => norm(r.estatus) === 'pending')
+    rows.find((r) => norm(r.estatus) === 'pending') ||
+    rows.find((r) => norm(r.estatus) === 'processing' && r.candidate_id && r.referido)
   );`,
   );
 
   code = code.replace(
     "_pass:      estatus === 'ready' ? 'pass2' : 'pass1',",
-    "_pass:      forceSlug ? 'pass2' : (estatus === 'ready' ? 'pass2' : 'pass1'),",
+    "_pass:      forceSlug ? 'pass2' : ((estatus === 'ready' || (estatus === 'processing' && pick.candidate_id && pick.referido)) ? 'pass2' : 'pass1'),",
   );
 
   node.parameters.jsCode = code;
@@ -580,11 +581,63 @@ const forceSlug = norm($env.FORCE_REGEN_SLUG || '');`,
 function patchRouteRowCandidateId(workflow) {
   const node = findNode(workflow, "Route Row");
   let code = node.parameters.jsCode;
-  if (code.includes("candidate_id: (pick.candidate_id")) return;
-  code = code.replace(
-    "idioma:     ((pick.idioma || 'es').toString().trim() || 'es').toLowerCase(),",
-    "idioma:     ((pick.idioma || 'es').toString().trim() || 'es').toLowerCase(),\n    candidate_id: (pick.candidate_id || '').toString(),",
-  );
+
+  if (!code.includes("candidate_id: (pick.candidate_id")) {
+    code = code.replace(
+      "idioma:     ((pick.idioma || 'es').toString().trim() || 'es').toLowerCase(),",
+      "idioma:     ((pick.idioma || 'es').toString().trim() || 'es').toLowerCase(),\n    candidate_id: (pick.candidate_id || '').toString(),",
+    );
+  }
+
+  if (!code.includes("resolveShortMlLink")) {
+    const start = code.indexOf("if (link.includes('meli.la/')) {");
+    const end = code.indexOf("\n\n//", start + 1);
+    if (start !== -1 && end !== -1) {
+      code =
+        code.slice(0, start) +
+        `async function resolveShortMlLink(startUrl) {
+  let current = startUrl;
+  for (let i = 0; i < 6; i++) {
+    const response = await this.helpers.httpRequest({
+      method: 'GET',
+      url: current,
+      followRedirect: false,
+      followRedirects: false,
+      returnFullResponse: true,
+      ignoreResponseCode: true,
+    });
+    const headers = response.headers || {};
+    const location = headers.location || headers.Location;
+    if (!location) {
+      const body = typeof response.body === 'string' ? response.body : JSON.stringify(response.body || response);
+      return { url: current, body };
+    }
+    current = new URL(location, current).toString();
+    const idFromUrl = current.match(/\\/p\\/(ML[A-Z]?[0-9]+)/i) || current.match(/(ML[A-Z][0-9]{6,})/i);
+    if (idFromUrl) return { url: current, product_id: idFromUrl[1].toUpperCase(), body: '' };
+  }
+  return { url: current, body: '' };
+}
+
+if (link.includes('meli.la/')) {
+  try {
+    const resolved = await resolveShortMlLink.call(this, link);
+    const html = resolved.body || '';
+    const firstMlm = resolved.product_id || (html.match(/MLM[0-9]{6,}/)?.[0] || '');
+    if (firstMlm) {
+      product_id = firstMlm.toUpperCase();
+      link = resolved.url && resolved.url.includes('mercadolibre')
+        ? resolved.url
+        : 'https://www.mercadolibre.com.mx/p/' + product_id;
+    }
+  } catch(e) {
+    // Si falla la resolucion, product_id queda vacio y el pipeline lo manejara.
+  }
+}` +
+        code.slice(end);
+    }
+  }
+
   node.parameters.jsCode = code;
 }
 
@@ -1226,7 +1279,7 @@ function buildSimilarProductsPayload() {
 }
 
 const similarPayload = buildSimilarProductsPayload();`,
-    );
+      );
 
     code = code.replace(
       "youtube_debug: $('Top videos').first().json.youtube_filter || null,",
@@ -1266,6 +1319,45 @@ const similarPayload = buildSimilarProductsPayload();`,
     code = code.replace(
       "youtube_debug: $('Top videos').first().json.youtube_filter || null,",
       "youtube_debug: $('Top videos').first().json.youtube_filter || null,\n  ml_search_debug: similarPayload.debug,",
+    );
+  }
+
+  if (!code.includes("comparativaEditorialClean")) {
+    code = code.replace(
+      "const similarPayload = buildSimilarProductsPayload();",
+      `const similarPayload = buildSimilarProductsPayload();
+
+function isSelfComparisonTitle(title) {
+  const raw = String(title || '');
+  if (/\\beste\\s+modelo\\b/i.test(raw)) return true;
+  const stop = new Set(['de','del','la','el','los','las','para','con','sin','por','una','uno','un','y','review','analisis','premium','opcion','apple','watch','smartwatch','gps','mm','caja','color','aluminio','correa']);
+  const tokens = (value) => String(value || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+    .replace(/[^a-z0-9\\s]/g, ' ')
+    .split(/\\s+/)
+    .filter((token) => token.length > 2 && !stop.has(token));
+  const current = tokens([displayTitle, item.name].filter(Boolean).join(' '));
+  const candidate = tokens(raw);
+  if (current.length < 2 || candidate.length < 2) return false;
+  const hits = candidate.filter((token) => current.includes(token)).length;
+  return hits >= Math.min(candidate.length, current.length, 3);
+}
+
+const comparativaEditorialClean = (parsedAbacus.comparativa_editorial || [])
+  .filter((entry) => !isSelfComparisonTitle(entry?.titulo));`,
+    );
+
+    code = code.replace(
+      "comparativa_editorial: parsedAbacus.comparativa_editorial || [],",
+      "comparativa_editorial: comparativaEditorialClean,",
+    );
+  }
+
+  if (!code.includes("candidate_id: $('Route Row').first().json.candidate_id")) {
+    code = code.replace(
+      "slug,",
+      "slug,\n    candidate_id: $('Route Row').first().json.candidate_id || '',",
     );
   }
 

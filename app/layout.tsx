@@ -63,6 +63,12 @@ export default function RootLayout({
                 Reviews
               </a>
               <a
+                href="/rankings"
+                className="text-zinc-400 hover:text-white transition-colors"
+              >
+                Rankings
+              </a>
+              <a
                 href="https://github.com/HitoFlores/AfiliadosML"
                 target="_blank"
                 rel="noopener noreferrer"

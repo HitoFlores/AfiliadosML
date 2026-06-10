@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { loadProductBySlug, allSlugs } from "@/lib/product";
+import { loadProductBySlug, allSlugs, relatedReviewsForSlug } from "@/lib/product";
 import { buildToc } from "@/lib/toc";
 import ImageGallery from "@/components/ImageGallery";
 import ScoreBadge from "@/components/ScoreBadge";
@@ -17,6 +17,7 @@ import Verdict from "@/components/Verdict";
 import TableOfContents from "@/components/TableOfContents";
 import { Byline, SourcesBlock } from "@/components/Byline";
 import BuyerDecisionBlock from "@/components/BuyerDecisionBlock";
+import RelatedReviews from "@/components/RelatedReviews";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://catalogomx.com";
 
@@ -58,6 +59,7 @@ export default async function ReviewPage({
   const displayTitle = producto.display_title ?? producto.nombre;
   const affiliateUrl = data.link_afiliado ?? "#";
   const pageUrl = `${SITE_URL}/reviews/${slug}`;
+  const relatedReviews = relatedReviewsForSlug(slug);
 
   // Inyecta ids a los <h2> y arma la tabla de contenidos.
   const { html: articleHtml, toc } = buildToc(editorial.articuloHtml);
@@ -293,6 +295,9 @@ export default async function ReviewPage({
 
       {/* Alternativas */}
       <AlternativasSection alternativas={alternativas} />
+
+      {/* Reviews relacionados generados desde candidatos */}
+      <RelatedReviews reviews={relatedReviews} />
 
       {/* Reviews de compradores */}
       <BuyerReviews reviews={reviews_ml} />

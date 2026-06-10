@@ -44,4 +44,7 @@ run_workflow "wsMIARaCQQISWJtv" "Telegram Poll"
 
 # The ephemeral runner cannot rely on n8n Execute Workflow activation state.
 # Run main after polling; Route Row exits cleanly when no pending/ready row exists.
-run_workflow "iSQ59pcFepjqmBvC" "AfiliadosML main"
+MAIN_MAX_RUNS="${MAIN_MAX_RUNS:-3}"
+for ((i=1; i<=MAIN_MAX_RUNS; i++)); do
+  run_workflow "iSQ59pcFepjqmBvC" "AfiliadosML main ${i}/${MAIN_MAX_RUNS}"
+done

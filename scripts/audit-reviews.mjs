@@ -83,11 +83,12 @@ for (const file of files) {
   }
 
   const currentTitle = normalize([review.producto?.display_title, review.producto?.nombre].filter(Boolean).join(" "));
-  const premium = (review.editorial?.comparativa_editorial ?? []).find((item) =>
-    normalize(item?.tipo).includes("premium"),
-  );
-  if (premium && sameProductText(currentTitle, normalize(premium.titulo))) {
-    fail(label, "comparativa premium parece repetir el producto actual");
+  const selfComparison = (review.editorial?.comparativa_editorial ?? []).find((item) => {
+    const title = normalize(item?.titulo);
+    return title.includes("este modelo") || sameProductText(currentTitle, title);
+  });
+  if (selfComparison) {
+    fail(label, `comparativa_editorial parece repetir el producto actual (${selfComparison.titulo})`);
   }
 }
 
@@ -120,7 +121,35 @@ function normalize(value) {
 
 function sameProductText(current, candidate) {
   if (!current || !candidate) return false;
-  const stop = new Set(["de", "del", "la", "el", "los", "las", "para", "con", "sin", "por", "una", "uno", "un", "y", "review", "analisis", "premium", "opcion"]);
+  const stop = new Set([
+    "de",
+    "del",
+    "la",
+    "el",
+    "los",
+    "las",
+    "para",
+    "con",
+    "sin",
+    "por",
+    "una",
+    "uno",
+    "un",
+    "y",
+    "review",
+    "analisis",
+    "premium",
+    "opcion",
+    "apple",
+    "watch",
+    "smartwatch",
+    "gps",
+    "mm",
+    "caja",
+    "color",
+    "aluminio",
+    "correa",
+  ]);
   const tokens = current.split(" ").filter((t) => t.length > 2 && !stop.has(t));
   if (tokens.length < 3) return false;
   const hits = tokens.filter((t) => candidate.includes(t)).length;

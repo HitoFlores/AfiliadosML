@@ -90,6 +90,7 @@ export interface RawProduct {
     slug: string;
     categoria: string;
     generado_en: string;
+    candidate_id?: string;
   };
   producto: {
     nombre: string;
@@ -232,6 +233,25 @@ export interface NormalizedProduct extends Omit<RawProduct, "editorial" | "autor
   autoria: Autoria;
 }
 
+export interface RelatedReview {
+  relationId: string;
+  sourceSlug: string;
+  targetSlug: string;
+  product: NormalizedProduct;
+}
+
+export interface ComparisonPair {
+  pair: string;
+  source: NormalizedProduct;
+  target: NormalizedProduct;
+}
+
+export interface RankingCategory {
+  slug: string;
+  label: string;
+  products: NormalizedProduct[];
+}
+
 /* ------------------------------ Normalizador ----------------------------- */
 
 function normalize(raw: RawProduct): NormalizedProduct {
@@ -360,4 +380,104 @@ export function allSlugs(): { slug: string }[] {
         return [];
       }
     });
+}
+
+export function loadAllProducts(): NormalizedProduct[] {
+  const dir = dataDir();
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith(".json"))
+    .flatMap((file) => {
+      try {
+        const raw: RawProduct = JSON.parse(
+          fs.readFileSync(path.join(dir, file), "utf-8").replace(/^\uFEFF/, "")
+        );
+        return raw.meta?.slug ? [normalize(raw)] : [];
+      } catch {
+        return [];
+      }
+    });
+}
+
+export function relatedReviewsForSlug(slug: string): RelatedReview[] {
+  return loadAllProducts()
+    .flatMap((product) => {
+      const candidateId = product.meta.candidate_id ?? "";
+      const [sourceSlug] = candidateId.split(":");
+      if (!sourceSlug || sourceSlug !== slug || product.meta.slug === slug) return [];
+      return [
+        {
+          relationId: candidateId,
+          sourceSlug,
+          targetSlug: product.meta.slug,
+          product,
+        },
+      ];
+    })
+    .sort((a, b) => b.product.editorial.score - a.product.editorial.score);
+}
+
+export function comparisonPairs(): ComparisonPair[] {
+  const products = loadAllProducts();
+  const bySlug = new Map(products.map((product) => [product.meta.slug, product]));
+  return products
+    .flatMap((target) => {
+      const candidateId = target.meta.candidate_id ?? "";
+      const [sourceSlug] = candidateId.split(":");
+      const source = sourceSlug ? bySlug.get(sourceSlug) : null;
+      if (!source || source.meta.slug === target.meta.slug) return [];
+      return [
+        {
+          pair: `${source.meta.slug}-vs-${target.meta.slug}`,
+          source,
+          target,
+        },
+      ];
+    })
+    .sort((a, b) => a.pair.localeCompare(b.pair));
+}
+
+export function loadComparisonPair(pair: string): ComparisonPair | null {
+  return comparisonPairs().find((entry) => entry.pair === pair) ?? null;
+}
+
+function slugifyRanking(value: string): string {
+  return String(value || "otros")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+function categoryLabel(value: string): string {
+  const cleaned = String(value || "Otros").replace(/^MLM-?/i, "").replace(/-/g, " ");
+  return cleaned
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+export function rankingCategories(): RankingCategory[] {
+  const grouped = new Map<string, NormalizedProduct[]>();
+  for (const product of loadAllProducts()) {
+    const category = product.meta.categoria || "otros";
+    grouped.set(category, [...(grouped.get(category) ?? []), product]);
+  }
+
+  return [...grouped.entries()]
+    .map(([category, products]) => ({
+      slug: slugifyRanking(category),
+      label: categoryLabel(category),
+      products: products.sort((a, b) => b.editorial.score - a.editorial.score),
+    }))
+    .sort((a, b) => b.products.length - a.products.length || a.label.localeCompare(b.label));
+}
+
+export function loadRankingCategory(slug: string): RankingCategory | null {
+  return rankingCategories().find((category) => category.slug === slug) ?? null;
 }
