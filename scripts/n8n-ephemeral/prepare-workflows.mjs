@@ -39,7 +39,16 @@ for (const file of files) {
   fs.writeFileSync(path.join(outDir, file), JSON.stringify(workflow, null, 2));
 }
 
-console.log(`Prepared ${files.length} workflows in ${path.relative(root, outDir)}`);
+const mainSourcePath = path.join(sourceDir, "iSQ59pcFepjqmBvC_AfiliadosML.json");
+const mainSourceWorkflow = JSON.parse(fs.readFileSync(mainSourcePath, "utf8").replace(/^\uFEFF/, ""));
+const freshnessWorkflow = buildFreshnessWorkflow(mainSourceWorkflow);
+sanitizeWorkflowForImport(freshnessWorkflow);
+fs.writeFileSync(
+  path.join(outDir, "freshness_AfiliadosML - Freshness.json"),
+  JSON.stringify(freshnessWorkflow, null, 2),
+);
+
+console.log(`Prepared ${files.length + 1} workflows in ${path.relative(root, outDir)}`);
 
 function findNode(workflow, name) {
   const node = workflow.nodes.find((entry) => entry.name === name);
@@ -171,6 +180,304 @@ function reviewCandidatesSheetName() {
     value: "review_candidates",
     mode: "name",
     cachedResultName: "review_candidates",
+  };
+}
+
+function buildFreshnessWorkflow(mainWorkflow) {
+  const getTokens = structuredClone(findNode(mainWorkflow, "Get tokens"));
+  const refreshToken = structuredClone(findNode(mainWorkflow, "Refresh Token"));
+  const putTokens = structuredClone(findNode(mainWorkflow, "Put Tokens"));
+  const markDone = findNode(mainWorkflow, "Mark Done");
+
+  getTokens.id = "freshness-get-tokens";
+  getTokens.name = "Get tokens";
+  getTokens.position = [-240, 0];
+  refreshToken.id = "freshness-refresh-token";
+  refreshToken.name = "Refresh Token";
+  refreshToken.position = [0, 0];
+  putTokens.id = "freshness-put-tokens";
+  putTokens.name = "Put Tokens";
+  putTokens.position = [240, 0];
+
+  return {
+    id: "freshnessAfML2026",
+    name: "AfiliadosML - Freshness",
+    active: false,
+    nodes: [
+      {
+        id: "freshness-trigger",
+        name: "Ephemeral Execute Trigger",
+        type: "n8n-nodes-base.executeWorkflowTrigger",
+        typeVersion: 1,
+        position: [-480, 0],
+        parameters: {},
+      },
+      getTokens,
+      refreshToken,
+      putTokens,
+      {
+        id: "freshness-check",
+        name: "Check Freshness",
+        type: "n8n-nodes-base.code",
+        typeVersion: 2,
+        position: [480, 0],
+        parameters: {
+          jsCode: `const accessToken = $('Refresh Token').first().json.access_token;
+const githubToken = $env.GITHUB_TOKEN;
+const owner = 'HitoFlores';
+const repo = 'AfiliadosML';
+const checkedAt = new Date().toISOString();
+
+if (!githubToken) {
+  throw new Error('GITHUB_TOKEN is required for freshness metadata commits');
+}
+
+const gh = async (method, path, body) => this.helpers.httpRequest({
+  method,
+  url: 'https://api.github.com/repos/' + owner + '/' + repo + path,
+  headers: {
+    Authorization: 'Bearer ' + githubToken,
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Content-Type': 'application/json',
+  },
+  body: body ? JSON.stringify(body) : undefined,
+  json: true,
+});
+
+const ml = async (path) => this.helpers.httpRequest({
+  method: 'GET',
+  url: 'https://api.mercadolibre.com' + path,
+  headers: { Authorization: 'Bearer ' + accessToken },
+  ignoreResponseCode: true,
+  json: true,
+});
+
+const files = (await gh('GET', '/contents/data?ref=main'))
+  .filter((entry) => entry.type === 'file' && entry.name.endsWith('.json'));
+
+const stale = [];
+const checked = [];
+
+for (const file of files) {
+  const current = await gh('GET', '/contents/data/' + encodeURIComponent(file.name) + '?ref=main');
+  const review = JSON.parse(Buffer.from(current.content, 'base64').toString('utf8'));
+  const itemId = review.vendedor?.item_id;
+  const catalogProductId = review.meta?.producto_id;
+  const previousPrice = Number(review.precio?.actual || 0);
+  const priorFreshness = review.freshness || {};
+
+  const freshness = {
+    checked_at: checkedAt,
+    item_id: itemId || null,
+    catalog_product_id: catalogProductId || null,
+    status: 'unknown',
+    is_available: false,
+    stale: true,
+    stale_reason: 'missing_item_id',
+    price_previous: previousPrice || null,
+    price_current: null,
+    price_delta_pct: null,
+    available_quantity: null,
+    permalink: null,
+    error_msg: null,
+  };
+
+  if (catalogProductId) {
+    try {
+      const response = await ml('/products/' + catalogProductId + '/items?limit=20');
+      if (response?.error || response?.statusCode >= 400 || response?.status === 403) {
+        freshness.status = 'api_error';
+        freshness.error_msg = response.message || response.error || 'ml_api_error';
+        freshness.stale_reason = 'api_error';
+      } else {
+        const results = Array.isArray(response.results) ? response.results : [];
+        const item = results.find((entry) => entry.item_id === itemId) || results[0] || null;
+        if (!item) {
+          freshness.status = 'no_seller_items';
+          freshness.error_msg = 'ML returned no seller items for catalog product';
+          freshness.stale_reason = 'no_seller_items';
+        } else {
+          const currentPrice = Number(item.price || 0);
+          const deltaPct = previousPrice > 0 && currentPrice > 0
+            ? Number((((currentPrice - previousPrice) / previousPrice) * 100).toFixed(2))
+            : null;
+          const availableQuantityRaw = item.available_quantity;
+          const availableQuantity = availableQuantityRaw === undefined || availableQuantityRaw === null
+            ? null
+            : Number(availableQuantityRaw);
+          const status = String(item.status || (currentPrice > 0 ? 'active_inferred' : 'unknown'));
+          const inactive = !['active', 'active_inferred'].includes(status);
+          const noStock = availableQuantity !== null && availableQuantity <= 0;
+          const missingPrice = currentPrice <= 0;
+          const priceTooHigh = deltaPct !== null && deltaPct >= 20;
+
+          freshness.item_id = item.item_id || itemId || null;
+          freshness.status = status;
+          freshness.is_available = !inactive && !noStock && !missingPrice;
+          freshness.stale = inactive || noStock || missingPrice || priceTooHigh;
+          freshness.stale_reason = inactive
+            ? 'inactive_listing'
+            : noStock
+            ? 'no_stock'
+            : missingPrice
+            ? 'missing_price'
+            : priceTooHigh
+            ? 'price_increased_20pct'
+            : '';
+          freshness.price_current = currentPrice || null;
+          freshness.price_delta_pct = deltaPct;
+          freshness.available_quantity = availableQuantity;
+          freshness.permalink = item.permalink || null;
+        }
+      }
+    } catch (error) {
+      freshness.status = 'exception';
+      freshness.error_msg = error.message || String(error);
+      freshness.stale_reason = 'exception';
+    }
+  }
+
+  const changed = JSON.stringify(priorFreshness) !== JSON.stringify(freshness);
+  review.freshness = freshness;
+  checked.push({
+    slug: review.meta?.slug,
+    item_id: itemId,
+    status: freshness.status,
+    stale: freshness.stale,
+    stale_reason: freshness.stale_reason,
+    price_delta_pct: freshness.price_delta_pct,
+    changed,
+  });
+
+  if (freshness.stale) stale.push(checked[checked.length - 1]);
+
+  if (changed) {
+    await gh('PUT', '/contents/data/' + encodeURIComponent(file.name), {
+      message: 'chore: refresh ' + review.meta.slug + ' freshness',
+      content: Buffer.from(JSON.stringify(review, null, 2)).toString('base64'),
+      sha: current.sha,
+    });
+  }
+}
+
+return [{
+  json: {
+    checked_at: checkedAt,
+    checked_count: checked.length,
+    changed_count: checked.filter((entry) => entry.changed).length,
+    stale_count: stale.length,
+    checked,
+    stale,
+  },
+}];`,
+        },
+      },
+      {
+        id: "freshness-get-candidates",
+        name: "Get Review Candidates",
+        type: "n8n-nodes-base.googleSheets",
+        typeVersion: 4.5,
+        position: [720, 0],
+        continueOnFail: true,
+        alwaysOutputData: true,
+        parameters: {
+          documentId: markDone.parameters.documentId,
+          sheetName: reviewCandidatesSheetName(),
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "freshness-reprioritize",
+        name: "Reprioritize Candidates",
+        type: "n8n-nodes-base.code",
+        typeVersion: 2,
+        position: [960, 0],
+        parameters: {
+          jsCode: `const stale = $('Check Freshness').first().json.stale || [];
+const staleBySlug = new Map(stale.map((entry) => [entry.slug, entry]));
+if (!staleBySlug.size) return [];
+
+const rows = $input.all().map((item) => item.json).filter((row) => !row.error);
+const updates = [];
+for (const row of rows) {
+  const status = String(row.status || '').toLowerCase().trim();
+  const staleSource = staleBySlug.get(row.source_slug);
+  if (!staleSource || status !== 'pending' || !row.row_number) continue;
+
+  const currentScore = Number(row.priority_score || 0);
+  const boost = staleSource.stale_reason === 'price_increased_20pct' ? 15 : 25;
+  const nextScore = Math.min(100, Math.max(currentScore, currentScore + boost));
+  const reason = String(row.reason || '').replace(/^Freshness: [^|]+\\|\\s*/i, '');
+
+  updates.push({
+    json: {
+      row_number: row.row_number,
+      priority_score: nextScore,
+      reason: 'Freshness: ' + staleSource.stale_reason + ' en ' + staleSource.slug + ' | ' + reason,
+      updated_at: new Date().toISOString(),
+    },
+  });
+}
+
+return updates;`,
+        },
+      },
+      {
+        id: "freshness-update-candidates",
+        name: "Update Candidate Priority",
+        type: "n8n-nodes-base.googleSheets",
+        typeVersion: 4.5,
+        position: [1200, 0],
+        parameters: {
+          operation: "update",
+          documentId: markDone.parameters.documentId,
+          sheetName: reviewCandidatesSheetName(),
+          columns: {
+            mappingMode: "defineBelow",
+            value: {
+              row_number: "={{ $json.row_number }}",
+              priority_score: "={{ $json.priority_score }}",
+              reason: "={{ $json.reason }}",
+              updated_at: "={{ $json.updated_at }}",
+            },
+            matchingColumns: ["row_number"],
+            schema: [],
+            attemptToConvertTypes: false,
+            convertFieldsToString: true,
+          },
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+    ],
+    connections: {
+      "Ephemeral Execute Trigger": {
+        main: [[{ node: "Get tokens", type: "main", index: 0 }]],
+      },
+      "Get tokens": {
+        main: [[{ node: "Refresh Token", type: "main", index: 0 }]],
+      },
+      "Refresh Token": {
+        main: [[{ node: "Put Tokens", type: "main", index: 0 }]],
+      },
+      "Put Tokens": {
+        main: [[{ node: "Check Freshness", type: "main", index: 0 }]],
+      },
+      "Check Freshness": {
+        main: [[{ node: "Get Review Candidates", type: "main", index: 0 }]],
+      },
+      "Get Review Candidates": {
+        main: [[{ node: "Reprioritize Candidates", type: "main", index: 0 }]],
+      },
+      "Reprioritize Candidates": {
+        main: [[{ node: "Update Candidate Priority", type: "main", index: 0 }]],
+      },
+    },
+    settings: {
+      executionOrder: "v1",
+    },
   };
 }
 

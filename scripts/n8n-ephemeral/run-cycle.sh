@@ -39,6 +39,10 @@ if [[ "${RUN_DAILY_SCHEDULER:-false}" == "true" ]]; then
   run_workflow "wG6XApFxO6SyCgIY" "Scheduler 7am"
 fi
 
+if [[ "${RUN_FRESHNESS:-false}" == "true" ]]; then
+  run_workflow "freshnessAfML2026" "Freshness"
+fi
+
 # Telegram Poll may call the main workflow through Execute Workflow nodes.
 run_workflow "wsMIARaCQQISWJtv" "Telegram Poll"
 

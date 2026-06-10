@@ -71,6 +71,36 @@ for (const file of files) {
     );
   }
 
+  const freshness = review.freshness;
+  const generatedAt = Date.parse(review.meta?.generado_en || "");
+  const reviewAgeHours = Number.isFinite(generatedAt)
+    ? (Date.now() - generatedAt) / (1000 * 60 * 60)
+    : Infinity;
+  if (!freshness && reviewAgeHours > 36) {
+    fail(label, "falta freshness verificable en review con mas de 36h");
+  }
+  if (freshness) {
+    const checkedAt = Date.parse(freshness.checked_at || "");
+    if (!Number.isFinite(checkedAt)) {
+      fail(label, "freshness.checked_at invalido");
+    } else {
+      const ageDays = (Date.now() - checkedAt) / (1000 * 60 * 60 * 24);
+      if (ageDays > 14) fail(label, `freshness viejo (${ageDays.toFixed(1)} dias)`);
+    }
+    if (typeof freshness.stale !== "boolean") {
+      fail(label, "freshness.stale debe ser boolean");
+    }
+    if (freshness.stale && !freshness.stale_reason) {
+      fail(label, "freshness stale sin stale_reason");
+    }
+    if (!freshness.stale && !freshness.is_available) {
+      fail(label, "freshness no stale pero is_available=false");
+    }
+    if (!freshness.stale && !(Number(freshness.price_current) > 0)) {
+      fail(label, "freshness no stale sin price_current valido");
+    }
+  }
+
   for (const field of [
     "riesgos_compra_ml",
     "checklist_antes_de_comprar",

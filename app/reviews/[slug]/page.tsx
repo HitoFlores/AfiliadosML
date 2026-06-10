@@ -60,6 +60,12 @@ export default async function ReviewPage({
   const affiliateUrl = data.link_afiliado ?? "#";
   const pageUrl = `${SITE_URL}/reviews/${slug}`;
   const relatedReviews = relatedReviewsForSlug(slug);
+  const freshnessDate = data.freshness?.checked_at?.slice(0, 10) ?? autoria.actualizado;
+  const priceStatus = data.freshness?.stale
+    ? "requiere revision"
+    : data.freshness?.is_available
+    ? "disponible verificado"
+    : "verificar antes de comprar";
 
   // Inyecta ids a los <h2> y arma la tabla de contenidos.
   const { html: articleHtml, toc } = buildToc(editorial.articuloHtml);
@@ -163,7 +169,7 @@ export default async function ReviewPage({
               <span>{precio.moneda}</span>
             </div>
             <p className="text-[11px] text-gray-400 mb-4">
-              Precio relevado el {autoria.actualizado} · puede variar
+              Precio verificado el {freshnessDate} · {priceStatus}
             </p>
             {precioValor && (
               <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 mb-4">

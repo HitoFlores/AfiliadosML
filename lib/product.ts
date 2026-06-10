@@ -48,6 +48,22 @@ interface RawProductoSimilarML {
   envio_gratis: boolean;
 }
 
+interface RawFreshness {
+  checked_at: string;
+  item_id: string | null;
+  catalog_product_id?: string | null;
+  status: string;
+  is_available: boolean;
+  stale: boolean;
+  stale_reason: string;
+  price_previous: number | null;
+  price_current: number | null;
+  price_delta_pct: number | null;
+  available_quantity: number | null;
+  permalink: string | null;
+  error_msg: string | null;
+}
+
 interface RawEditorial {
   score: number;
   score_justificacion?: string;
@@ -120,6 +136,7 @@ export interface RawProduct {
   };
   link_afiliado: string | null;
   productos_similares_ml?: RawProductoSimilarML[];
+  freshness?: RawFreshness;
   reviews_ml: {
     total: number;
     con_comentario: number;
