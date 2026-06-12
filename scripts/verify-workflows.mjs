@@ -25,7 +25,7 @@ const required = [
   },
   {
     fileIncludes: "Scheduler 7am",
-    nodes: ["Armar Mensaje Candidates", "Needs Waiting Link"],
+    nodes: ["Armar Mensaje Candidates", "Build Candidate Snapshot Updates", "Persist Candidate Snapshot", "Needs Waiting Link"],
   },
   {
     fileIncludes: "Telegram Poll",

@@ -613,19 +613,70 @@ const shorten = (value, max = 90) => {
   return text.length > max ? text.slice(0, max - 1).trim().replace(/[.,;:]$/, '') + '...' : text;
 };
 
+const batchId = 'sched-' + Date.now();
 const lines = pending.map((c, idx) => (idx + 1) + ' - ' + shorten(c.candidate_name));
 sd.review_candidate_snapshot = pending.map((c, idx) => ({
   index: idx + 1,
   candidate_id: c.candidate_id,
   row_number: c.row_number,
+  batch_id: batchId,
   shown_at: new Date().toISOString(),
 }));
 
 return [{ json: {
   text: base + '\\n\\n' + lines.join('\\n') + '\\n\\nResponde con una linea por candidato:\\n1 - https://meli.la/...\\n2 - descartar',
   has_candidates: true,
+  snapshot: sd.review_candidate_snapshot,
 }}];`,
       },
+    },
+    {
+      id: "sched-review-candidates-snapshot-build",
+      name: "Build Candidate Snapshot Updates",
+      type: "n8n-nodes-base.code",
+      typeVersion: 2,
+      position: [1780, 640],
+      parameters: {
+        jsCode: `const snapshot = $('Armar Mensaje Candidates').first().json.snapshot || [];
+return snapshot
+  .filter(entry => entry.row_number)
+  .map(entry => ({
+    json: {
+      row_number: entry.row_number,
+      shown_batch_id: entry.batch_id,
+      shown_index: entry.index,
+      shown_at: entry.shown_at,
+    },
+  }));`,
+      },
+    },
+    {
+      id: "sched-review-candidates-snapshot-save",
+      name: "Persist Candidate Snapshot",
+      type: "n8n-nodes-base.googleSheets",
+      typeVersion: 4.5,
+      position: [2000, 640],
+      continueOnFail: true,
+      parameters: {
+        operation: "update",
+        documentId: leerSheet.parameters.documentId,
+        sheetName: reviewCandidatesSheetName(),
+        columns: {
+          mappingMode: "defineBelow",
+          value: {
+            row_number: "={{ $json.row_number }}",
+            shown_batch_id: "={{ $json.shown_batch_id }}",
+            shown_index: "={{ $json.shown_index }}",
+            shown_at: "={{ $json.shown_at }}",
+          },
+          matchingColumns: ["row_number"],
+          schema: [],
+          attemptToConvertTypes: false,
+          convertFieldsToString: true,
+        },
+        options: {},
+      },
+      credentials: leerSheet.credentials,
     },
     {
       id: "sched-review-candidates-waiting-link",
@@ -650,8 +701,12 @@ return [{ json: { create_waiting_link: true } }];`,
   workflow.connections["Armar Mensaje Candidates"] = {
     main: [[
       { node: "Pedir Articulo del Dia", type: "main", index: 0 },
+      { node: "Build Candidate Snapshot Updates", type: "main", index: 0 },
       { node: "Needs Waiting Link", type: "main", index: 0 },
     ]],
+  };
+  workflow.connections["Build Candidate Snapshot Updates"] = {
+    main: [[{ node: "Persist Candidate Snapshot", type: "main", index: 0 }]],
   };
   workflow.connections["Needs Waiting Link"] = {
     main: [[{ node: "Crear waiting_link", type: "main", index: 0 }]],
@@ -949,6 +1004,10 @@ const pending = rows
   .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
   .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)));
 const snapshot = Array.isArray(sd.review_candidate_snapshot) ? sd.review_candidate_snapshot : [];
+const shownRows = rows
+  .filter(r => String(r.shown_batch_id || '').trim() && Number(r.shown_index || 0) > 0)
+  .sort((a, b) => Date.parse(b.shown_at || '') - Date.parse(a.shown_at || ''));
+const latestShownBatch = String(shownRows[0]?.shown_batch_id || '').trim();
 const norm = (value) => String(value || '')
   .toLowerCase()
   .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
@@ -970,7 +1029,10 @@ for (const request of requests) {
   const referido = request.referido;
   const action = request.action === 'discard' ? 'discard' : 'ready';
   const snapshotRow = candidateId ? rows.find(r => r.candidate_id === candidateId) : null;
-  const row = snapshotRow || pending.find(r => matchesHint(r, request.candidate_name_hint)) || pending[candidateIndex - 1];
+  const persistedRow = latestShownBatch
+    ? rows.find(r => String(r.shown_batch_id || '').trim() === latestShownBatch && Number(r.shown_index || 0) === candidateIndex)
+    : null;
+  const row = snapshotRow || persistedRow || pending.find(r => matchesHint(r, request.candidate_name_hint)) || pending[candidateIndex - 1];
 
   if (!row) {
     await this.helpers.httpRequest({
@@ -978,7 +1040,7 @@ for (const request of requests) {
       url: 'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage',
       body: {
         chat_id: $env.TELEGRAM_CHAT_ID,
-        text: 'No encontre el candidato ' + candidateIndex + ' en review_candidates. Filas leidas: ' + rows.length + ', pending visibles: ' + pending.length + (request.candidate_name_hint ? ', texto: ' + request.candidate_name_hint : ''),
+        text: 'No encontre el candidato ' + candidateIndex + ' en review_candidates. Filas leidas: ' + rows.length + ', pending visibles: ' + pending.length + ', ultimo lote: ' + (latestShownBatch || 'n/d') + (request.candidate_name_hint ? ', texto: ' + request.candidate_name_hint : ''),
       },
       json: true,
     });

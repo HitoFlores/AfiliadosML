@@ -60,7 +60,9 @@ Estados principales:
 `waiting_link -> waiting_confirm -> pending -> waiting -> ready -> done`
 
 `review_candidates`:
-`candidate_id`, `source_slug`, `source_product_id`, `relation_type`, `candidate_tier`, `candidate_name`, `candidate_query`, `candidate_ml_url`, `candidate_ml_id`, `affiliate_url`, `target_slug`, `status`, `priority_score`, `reason`, `mentioned_in`, `created_at`, `updated_at`, `error_msg`
+`candidate_id`, `source_slug`, `source_product_id`, `relation_type`, `candidate_tier`, `candidate_name`, `candidate_query`, `candidate_ml_url`, `candidate_ml_id`, `affiliate_url`, `target_slug`, `status`, `priority_score`, `reason`, `mentioned_in`, `shown_batch_id`, `shown_index`, `shown_at`, `created_at`, `updated_at`, `error_msg`
+
+Los headers `candidate_tier`, `shown_batch_id`, `shown_index` y `shown_at` deben existir en Google Sheets para que Scheduler/Poll puedan priorizar y resolver indices persistentes.
 
 ## Plan Maestro: Escala Automatica
 
@@ -95,7 +97,7 @@ Fixes importantes:
 - No crea `WAITING_LINK` si ya hay candidatos pendientes.
 - No confunde links afiliados de candidatos con el flujo manual normal.
 - El runner procesa hasta `MAIN_MAX_RUNS=3` filas por ciclo.
-- Usa snapshot `index -> candidate_id` para que `1`, `2`, `3` no cambien aunque se reordene la sheet.
+- Persiste snapshot `shown_batch_id + shown_index -> candidate_id` en `review_candidates` para que `1`, `2`, `3` resuelvan contra el ultimo lote mostrado aunque Telegram conserve un draft/reply viejo.
 - Acepta multiples acciones en un solo mensaje:
   `1 - https://meli.la/...`
   `2 - descartar`
@@ -193,7 +195,7 @@ Si faltan candidatos:
    - Lee `review_candidates`.
    - Si hay candidatos `pending`, manda hasta 3 por Telegram priorizando `superior > economico > similar > unknown`.
    - Excluye candidatos ya publicados y estados `done`, `ready`, `processing`, `discarded`.
-   - Guarda snapshot de candidatos mostrados para resolver indices en Poll.
+   - Guarda `shown_batch_id`, `shown_index` y `shown_at` para resolver indices en Poll.
    - Si no hay candidatos, pide articulo manual.
 5. Corre Telegram Poll:
    - Lee respuestas.

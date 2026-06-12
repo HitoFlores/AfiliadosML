@@ -125,11 +125,22 @@ function parseCandidateActions(text, replyText = "") {
 }
 
 function resolveActions(actions, rows, snapshot) {
+  const shownRows = rows
+    .filter((row) => String(row.shown_batch_id || "").trim() && Number(row.shown_index || 0) > 0)
+    .sort((a, b) => Date.parse(b.shown_at || "") - Date.parse(a.shown_at || ""));
+  const latestShownBatch = String(shownRows[0]?.shown_batch_id || "").trim();
+
   return actions.map((action) => {
     const hit = snapshot.find((entry) => Number(entry.index) === Number(action.candidate_index));
     const hint = norm(action.candidate_name_hint).slice(0, 48);
     const row =
       rows.find((entry) => entry.candidate_id === hit?.candidate_id) ||
+      rows.find(
+        (entry) =>
+          latestShownBatch &&
+          String(entry.shown_batch_id || "").trim() === latestShownBatch &&
+          Number(entry.shown_index || 0) === Number(action.candidate_index),
+      ) ||
       rows.find((entry) => hint && norm(entry.candidate_name).startsWith(hint));
     if (!row) return null;
     return {
@@ -243,6 +254,33 @@ assertEqual(
     [],
   ),
   [{ candidate_id: "src:samsung", status: "ready", createsQueueRow: true }],
+);
+
+assertEqual(
+  "persisted latest batch wins over stale telegram quote",
+  resolveActions(
+    [{ candidate_index: 1, candidate_name_hint: "Samsung Galaxy Watch...", action: "ready", referido: "https://meli.la/mac" }],
+    [
+      {
+        candidate_id: "src:samsung",
+        candidate_name: "Samsung Galaxy Watch7 44mm Reloj",
+        status: "pending",
+        shown_batch_id: "old",
+        shown_index: 1,
+        shown_at: "2026-06-12T17:00:00Z",
+      },
+      {
+        candidate_id: "src:macbook",
+        candidate_name: "Apple MacBook Air 13 M5 512GB",
+        status: "pending",
+        shown_batch_id: "new",
+        shown_index: 1,
+        shown_at: "2026-06-12T18:00:00Z",
+      },
+    ],
+    [],
+  ),
+  [{ candidate_id: "src:macbook", status: "ready", createsQueueRow: true }],
 );
 
 console.log("Review candidate logic test passed.");

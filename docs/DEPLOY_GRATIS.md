@@ -74,7 +74,8 @@ Scheduler:
 - Manda hasta 3 candidatos `pending`, priorizando `candidate_tier`: `superior > economico > similar > unknown`.
 - Formato Telegram: una linea por candidato, `1 - Articulo`, `2 - Articulo`, `3 - Articulo`.
 - Excluye candidatos ya publicados y estados `done`, `ready`, `processing`, `discarded`.
-- Guarda snapshot de `index -> candidate_id` para que los numeros respondidos no cambien si se reordena la sheet.
+- Guarda `shown_batch_id`, `shown_index` y `shown_at` en `review_candidates` para que los numeros respondidos apunten al ultimo lote mostrado aunque Telegram conserve un draft/reply viejo.
+- Requiere que los headers `candidate_tier`, `shown_batch_id`, `shown_index` y `shown_at` existan en la pestana `review_candidates`.
 - Si el usuario responde `1 - https://meli.la/...`, el Poll lo procesa en la siguiente corrida disponible.
 - Si el usuario responde `1 - descartar`, `1 - eliminar`, `1 - basura`, `1 - drop` o `1 - delete`, el Poll marca el candidato como `discarded`.
 - Puede procesar varias lineas en un mensaje: `1 - link`, `2 - descartar`, `3 - link`.
