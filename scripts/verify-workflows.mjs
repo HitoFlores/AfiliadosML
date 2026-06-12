@@ -24,8 +24,20 @@ const required = [
     ],
   },
   {
+    fileIncludes: "Sheet Schema",
+    nodes: ["Get Candidate Headers", "Build Candidate Headers", "Save Candidate Headers"],
+  },
+  {
     fileIncludes: "Scheduler 7am",
-    nodes: ["Armar Mensaje Candidates", "Build Candidate Snapshot Updates", "Persist Candidate Snapshot", "Needs Waiting Link"],
+    nodes: [
+      "Get Candidate Headers",
+      "Build Candidate Headers",
+      "Save Candidate Headers",
+      "Armar Mensaje Candidates",
+      "Build Candidate Snapshot Updates",
+      "Persist Candidate Snapshot",
+      "Needs Waiting Link",
+    ],
   },
   {
     fileIncludes: "Telegram Poll",

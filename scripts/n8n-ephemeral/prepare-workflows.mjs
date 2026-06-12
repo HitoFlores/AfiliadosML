@@ -49,7 +49,14 @@ fs.writeFileSync(
   JSON.stringify(freshnessWorkflow, null, 2),
 );
 
-console.log(`Prepared ${files.length + 1} workflows in ${path.relative(root, outDir)}`);
+const sheetSchemaWorkflow = buildSheetSchemaWorkflow(mainSourceWorkflow);
+sanitizeWorkflowForImport(sheetSchemaWorkflow);
+fs.writeFileSync(
+  path.join(outDir, "sheet_schema_AfiliadosML - Sheet Schema.json"),
+  JSON.stringify(sheetSchemaWorkflow, null, 2),
+);
+
+console.log(`Prepared ${files.length + 2} workflows in ${path.relative(root, outDir)}`);
 
 function readPublishedReviewMeta() {
   const dataDir = path.join(root, "data");
@@ -202,6 +209,120 @@ function reviewCandidatesSheetName() {
     value: "review_candidates",
     mode: "name",
     cachedResultName: "review_candidates",
+  };
+}
+
+function requiredReviewCandidateHeaders() {
+  return [
+    "candidate_id",
+    "source_slug",
+    "source_product_id",
+    "relation_type",
+    "candidate_tier",
+    "candidate_name",
+    "candidate_query",
+    "candidate_ml_url",
+    "candidate_ml_id",
+    "affiliate_url",
+    "target_slug",
+    "status",
+    "priority_score",
+    "reason",
+    "mentioned_in",
+    "shown_batch_id",
+    "shown_index",
+    "shown_at",
+    "created_at",
+    "updated_at",
+    "error_msg",
+  ];
+}
+
+function buildCandidateHeaderCode() {
+  return `const required = ${JSON.stringify(requiredReviewCandidateHeaders(), null, 2)};
+const current = ($json.values?.[0] || []).map(v => String(v || '').trim()).filter(Boolean);
+const headers = [...current];
+for (const header of required) {
+  if (!headers.includes(header)) headers.push(header);
+}
+return [{ json: { headers, changed: headers.length !== current.length } }];`;
+}
+
+function buildSheetSchemaWorkflow(mainWorkflow) {
+  const markDone = findNode(mainWorkflow, "Mark Done");
+  const spreadsheetId = markDone.parameters.documentId.value;
+
+  return {
+    id: "sheetSchemaAfML2026",
+    name: "AfiliadosML - Sheet Schema",
+    active: false,
+    nodes: [
+      {
+        id: "sheet-schema-trigger",
+        name: "Ephemeral Execute Trigger",
+        type: "n8n-nodes-base.executeWorkflowTrigger",
+        typeVersion: 1,
+        position: [-480, 0],
+        parameters: {},
+      },
+      {
+        id: "sheet-schema-get-candidate-headers",
+        name: "Get Candidate Headers",
+        type: "n8n-nodes-base.httpRequest",
+        typeVersion: 4.2,
+        position: [-240, 0],
+        parameters: {
+          authentication: "predefinedCredentialType",
+          nodeCredentialType: "googleSheetsOAuth2Api",
+          url: `=https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/{{ encodeURIComponent('review_candidates!1:1') }}`,
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "sheet-schema-build-candidate-headers",
+        name: "Build Candidate Headers",
+        type: "n8n-nodes-base.code",
+        typeVersion: 2,
+        position: [0, 0],
+        parameters: {
+          jsCode: buildCandidateHeaderCode(),
+        },
+      },
+      {
+        id: "sheet-schema-save-candidate-headers",
+        name: "Save Candidate Headers",
+        type: "n8n-nodes-base.httpRequest",
+        typeVersion: 4.2,
+        position: [240, 0],
+        parameters: {
+          method: "PUT",
+          authentication: "predefinedCredentialType",
+          nodeCredentialType: "googleSheetsOAuth2Api",
+          url: `=https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/{{ encodeURIComponent('review_candidates!A1') }}?valueInputOption=RAW`,
+          sendBody: true,
+          contentType: "raw",
+          rawContentType: "application/json",
+          body: "={{ JSON.stringify({ values: [ $json.headers ] }) }}",
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+    ],
+    connections: {
+      "Ephemeral Execute Trigger": {
+        main: [[{ node: "Get Candidate Headers", type: "main", index: 0 }]],
+      },
+      "Get Candidate Headers": {
+        main: [[{ node: "Build Candidate Headers", type: "main", index: 0 }]],
+      },
+      "Build Candidate Headers": {
+        main: [[{ node: "Save Candidate Headers", type: "main", index: 0 }]],
+      },
+    },
+    settings: {
+      executionOrder: "v1",
+    },
   };
 }
 
@@ -559,11 +680,54 @@ function patchSchedulerReviewCandidates(workflow) {
 
   workflow.nodes.push(
     {
+      id: "sched-review-candidates-headers-get",
+      name: "Get Candidate Headers",
+      type: "n8n-nodes-base.httpRequest",
+      typeVersion: 4.2,
+      position: [1120, 420],
+      parameters: {
+        authentication: "predefinedCredentialType",
+        nodeCredentialType: "googleSheetsOAuth2Api",
+        url: `=https://sheets.googleapis.com/v4/spreadsheets/${leerSheet.parameters.documentId.value}/values/{{ encodeURIComponent('review_candidates!1:1') }}`,
+        options: {},
+      },
+      credentials: leerSheet.credentials,
+    },
+    {
+      id: "sched-review-candidates-headers-build",
+      name: "Build Candidate Headers",
+      type: "n8n-nodes-base.code",
+      typeVersion: 2,
+      position: [1340, 420],
+      parameters: {
+        jsCode: buildCandidateHeaderCode(),
+      },
+    },
+    {
+      id: "sched-review-candidates-headers-save",
+      name: "Save Candidate Headers",
+      type: "n8n-nodes-base.httpRequest",
+      typeVersion: 4.2,
+      position: [1560, 420],
+      parameters: {
+        method: "PUT",
+        authentication: "predefinedCredentialType",
+        nodeCredentialType: "googleSheetsOAuth2Api",
+        url: `=https://sheets.googleapis.com/v4/spreadsheets/${leerSheet.parameters.documentId.value}/values/{{ encodeURIComponent('review_candidates!A1') }}?valueInputOption=RAW`,
+        sendBody: true,
+        contentType: "raw",
+        rawContentType: "application/json",
+        body: "={{ JSON.stringify({ values: [ $json.headers ] }) }}",
+        options: {},
+      },
+      credentials: leerSheet.credentials,
+    },
+    {
       id: "sched-review-candidates-read",
       name: "Leer Review Candidates",
       type: "n8n-nodes-base.googleSheets",
       typeVersion: 4.5,
-      position: [1340, 420],
+      position: [1780, 420],
       continueOnFail: true,
       alwaysOutputData: true,
       parameters: {
@@ -578,7 +742,7 @@ function patchSchedulerReviewCandidates(workflow) {
       name: "Armar Mensaje Candidates",
       type: "n8n-nodes-base.code",
       typeVersion: 2,
-      position: [1560, 420],
+      position: [2000, 420],
       parameters: {
         jsCode: `const sd = $getWorkflowStaticData('global');
 const rows = $input.all().map(i => i.json).filter(r => !r.error);
@@ -635,7 +799,7 @@ return [{ json: {
       name: "Build Candidate Snapshot Updates",
       type: "n8n-nodes-base.code",
       typeVersion: 2,
-      position: [1780, 640],
+      position: [2220, 640],
       parameters: {
         jsCode: `const snapshot = $('Armar Mensaje Candidates').first().json.snapshot || [];
 return snapshot
@@ -655,7 +819,7 @@ return snapshot
       name: "Persist Candidate Snapshot",
       type: "n8n-nodes-base.googleSheets",
       typeVersion: 4.5,
-      position: [2000, 640],
+      position: [2440, 640],
       continueOnFail: true,
       parameters: {
         operation: "update",
@@ -683,7 +847,7 @@ return snapshot
       name: "Needs Waiting Link",
       type: "n8n-nodes-base.code",
       typeVersion: 2,
-      position: [1780, 560],
+      position: [2220, 560],
       parameters: {
         jsCode: `const msg = $('Armar Mensaje Candidates').first().json;
 if (msg.has_candidates) return [];
@@ -694,6 +858,15 @@ return [{ json: { create_waiting_link: true } }];`,
 
   workflow.connections["Crear waiting_link"] = {
     main: [],
+  };
+  workflow.connections["Get Candidate Headers"] = {
+    main: [[{ node: "Build Candidate Headers", type: "main", index: 0 }]],
+  };
+  workflow.connections["Build Candidate Headers"] = {
+    main: [[{ node: "Save Candidate Headers", type: "main", index: 0 }]],
+  };
+  workflow.connections["Save Candidate Headers"] = {
+    main: [[{ node: "Leer Review Candidates", type: "main", index: 0 }]],
   };
   workflow.connections["Leer Review Candidates"] = {
     main: [[{ node: "Armar Mensaje Candidates", type: "main", index: 0 }]],
@@ -714,11 +887,11 @@ return [{ json: { create_waiting_link: true } }];`,
 
   const switchTargets = workflow.connections["Ya existe?"]?.main ?? [];
   if (switchTargets[2]) {
-    switchTargets[2] = [{ node: "Leer Review Candidates", type: "main", index: 0 }];
+    switchTargets[2] = [{ node: "Get Candidate Headers", type: "main", index: 0 }];
     workflow.connections["Ya existe?"].main = switchTargets;
   }
 
-  pedir.position = [1780, 420];
+  pedir.position = [2220, 420];
   pedir.parameters.body =
     '={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: $(\'Armar Mensaje Candidates\').first().json.text, reply_markup: { force_reply: true, input_field_placeholder: "1 - https://meli.la/..." } }) }}';
 }

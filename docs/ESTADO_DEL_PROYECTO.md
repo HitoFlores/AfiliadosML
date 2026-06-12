@@ -62,7 +62,7 @@ Estados principales:
 `review_candidates`:
 `candidate_id`, `source_slug`, `source_product_id`, `relation_type`, `candidate_tier`, `candidate_name`, `candidate_query`, `candidate_ml_url`, `candidate_ml_id`, `affiliate_url`, `target_slug`, `status`, `priority_score`, `reason`, `mentioned_in`, `shown_batch_id`, `shown_index`, `shown_at`, `created_at`, `updated_at`, `error_msg`
 
-Los headers `candidate_tier`, `shown_batch_id`, `shown_index` y `shown_at` deben existir en Google Sheets para que Scheduler/Poll puedan priorizar y resolver indices persistentes.
+Scheduler asegura automaticamente los headers requeridos en Google Sheets antes de leer candidatos. Esto incluye `candidate_tier`, `shown_batch_id`, `shown_index` y `shown_at`.
 
 ## Plan Maestro: Escala Automatica
 

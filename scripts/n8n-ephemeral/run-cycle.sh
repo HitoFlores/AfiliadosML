@@ -79,6 +79,8 @@ send_cycle_summary() {
     --data-urlencode "text=$(cat "$SUMMARY_FILE")" >/dev/null
 }
 
+run_workflow "sheetSchemaAfML2026" "Sheet Schema"
+
 if [[ "${RUN_FRESHNESS:-false}" == "true" ]]; then
   run_workflow "freshnessAfML2026" "Freshness"
 fi

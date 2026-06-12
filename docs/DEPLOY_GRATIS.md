@@ -55,7 +55,7 @@ Cada corrida:
 
 ## Workflows Generados
 
-`scripts/n8n-ephemeral/prepare-workflows.mjs` genera/importa 7 workflows:
+`scripts/n8n-ephemeral/prepare-workflows.mjs` genera/importa 8 workflows:
 - `AfiliadosML`
 - `AfiliadosML - Telegram Poll`
 - `AfiliadosML - Scheduler 7am` (nombre historico; se ejecuta a las 9am)
@@ -63,6 +63,11 @@ Cada corrida:
 - `AfiliadosML - Token Refresh`
 - `AfiliadosML - Recordatorios`
 - `AfiliadosML - Freshness`
+- `AfiliadosML - Sheet Schema`
+
+Sheet Schema:
+- Corre al inicio de cada ciclo.
+- Asegura headers nuevos en `review_candidates` usando Google Sheets API con la credencial n8n.
 
 Freshness:
 - Consulta Mercado Libre con OAuth.
@@ -75,7 +80,7 @@ Scheduler:
 - Formato Telegram: una linea por candidato, `1 - Articulo`, `2 - Articulo`, `3 - Articulo`.
 - Excluye candidatos ya publicados y estados `done`, `ready`, `processing`, `discarded`.
 - Guarda `shown_batch_id`, `shown_index` y `shown_at` en `review_candidates` para que los numeros respondidos apunten al ultimo lote mostrado aunque Telegram conserve un draft/reply viejo.
-- Requiere que los headers `candidate_tier`, `shown_batch_id`, `shown_index` y `shown_at` existan en la pestana `review_candidates`.
+- Antes de leer candidatos, asegura automaticamente los headers nuevos de `review_candidates`.
 - Si el usuario responde `1 - https://meli.la/...`, el Poll lo procesa en la siguiente corrida disponible.
 - Si el usuario responde `1 - descartar`, `1 - eliminar`, `1 - basura`, `1 - drop` o `1 - delete`, el Poll marca el candidato como `discarded`.
 - Puede procesar varias lineas en un mensaje: `1 - link`, `2 - descartar`, `3 - link`.
