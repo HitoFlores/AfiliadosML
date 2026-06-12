@@ -11,6 +11,7 @@ const required = [
       "Build Review Candidates",
       "Find Completed Candidate",
       "Mark Completed Candidate",
+      "Notify Candidate Done",
     ],
   },
   {

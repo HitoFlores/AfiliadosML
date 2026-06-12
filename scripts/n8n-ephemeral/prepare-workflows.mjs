@@ -2425,6 +2425,7 @@ function patchCandidateCompletion(workflow) {
   if (workflow.nodes.some((node) => node.name === "Find Completed Candidate")) return;
 
   const markDone = findNode(workflow, "Mark Done");
+  const notifyDone = findNode(workflow, "Notify Done");
 
   workflow.nodes.push(
     {
@@ -2434,17 +2435,45 @@ function patchCandidateCompletion(workflow) {
       typeVersion: 2,
       position: [1904, 384],
       parameters: {
-        jsCode: `const candidateId = $('Route Row').first().json.candidate_id || '';
-if (!candidateId) return [];
-
+        jsCode: `const route = $('Route Row').first().json;
+const review = $('Build Final JSON').first().json;
+const candidateId = route.candidate_id || review.meta?.candidate_id || '';
 const rows = $('Get Review Candidates').all().map(i => i.json).filter(r => !r.error);
-const row = rows.find(r => r.candidate_id === candidateId);
+const norm = (value) => String(value || '')
+  .toLowerCase()
+  .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+  .replace(/[^a-z0-9\\s]/g, ' ')
+  .replace(/\\s+/g, ' ')
+  .trim();
+const compactUrl = (value) => String(value || '').trim().replace(/\\?.*$/, '').replace(/\\/$/, '').toLowerCase();
+const activeStatuses = new Set(['ready', 'processing', 'pending']);
+const candidates = rows.filter(r => activeStatuses.has(String(r.status || '').toLowerCase().trim()));
+
+let row = candidateId ? rows.find(r => r.candidate_id === candidateId) : null;
+if (!row && route.referido) {
+  row = candidates.find(r => compactUrl(r.affiliate_url) === compactUrl(route.referido));
+}
+if (!row && route.product_id) {
+  row = candidates.find(r => String(r.candidate_ml_id || '').toUpperCase() === String(route.product_id || '').toUpperCase());
+}
+if (!row && route.articulo) {
+  const articulo = compactUrl(route.articulo);
+  row = candidates.find(r => compactUrl(r.candidate_ml_url) === articulo || compactUrl(r.affiliate_url) === articulo);
+}
+if (!row) {
+  const title = norm([review.producto?.display_title, review.producto?.nombre].filter(Boolean).join(' '));
+  row = candidates.find(r => {
+    const candidate = norm(r.candidate_name);
+    return candidate && title && (title.includes(candidate.slice(0, 60)) || candidate.includes(title.slice(0, 60)));
+  });
+}
 if (!row) return [];
 
 return [{ json: {
   row_number: row.row_number,
-  candidate_id: candidateId,
-  target_slug: $('Build Final JSON').first().json.meta.slug,
+  candidate_id: row.candidate_id,
+  candidate_name: row.candidate_name || review.producto?.display_title || review.producto?.nombre || '',
+  target_slug: review.meta.slug,
 }}];`,
       },
     },
@@ -2476,6 +2505,22 @@ return [{ json: {
       },
       credentials: markDone.credentials,
     },
+    {
+      id: "completed-candidate-notify",
+      name: "Notify Candidate Done",
+      type: "n8n-nodes-base.httpRequest",
+      typeVersion: 4.2,
+      position: [2320, 384],
+      parameters: {
+        method: "POST",
+        url: notifyDone.parameters.url,
+        sendBody: true,
+        contentType: "raw",
+        rawContentType: "application/json",
+        body: "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: '✅ Review de candidato publicada\\n\\n' + ($json.candidate_name || $('Build Final JSON').first().json.producto.display_title || $('Build Final JSON').first().json.producto.nombre) + '\\nslug: ' + $json.target_slug }) }}",
+        options: {},
+      },
+    },
   );
 
   const getTargets = workflow.connections["Get Review Candidates"]?.main?.[0] ?? [];
@@ -2485,5 +2530,8 @@ return [{ json: {
   workflow.connections["Get Review Candidates"] = { main: [getTargets] };
   workflow.connections["Find Completed Candidate"] = {
     main: [[{ node: "Mark Completed Candidate", type: "main", index: 0 }]],
+  };
+  workflow.connections["Mark Completed Candidate"] = {
+    main: [[{ node: "Notify Candidate Done", type: "main", index: 0 }]],
   };
 }

@@ -47,7 +47,7 @@ GitHub:
 3. Humano responde con una linea por candidato: `1 - https://meli.la/...` para aprobar o `1 - descartar` para eliminarlo.
 4. Poll resuelve los numeros contra el snapshot estable del Scheduler. Links validos marcan el candidato `ready`, guardan `affiliate_url` y crean fila `articulos` con `candidate_id`; descartes marcan `discarded` sin crear fila.
 5. Main toma filas `ready`/`pending`, genera review, commitea JSON y marca la fila `done`.
-6. Si venia de candidato, marca `review_candidates.status=done` y llena `target_slug`.
+6. Si venia de candidato, marca `review_candidates.status=done`, llena `target_slug` y avisa por Telegram. Si `candidate_id` se perdio en `articulos`, intenta cerrar el candidato por link afiliado, producto ML o nombre.
 7. Web muestra reviews relacionados, comparadores y rankings.
 8. Freshness diario revisa precios/disponibilidad y sube prioridad de candidatos si un origen queda stale.
 
@@ -207,7 +207,7 @@ Si faltan candidatos:
    - Genera review con Abacus.
    - Commimea `data/{slug}.json`.
    - Cierra fila `articulos`.
-   - Si venia de candidato, cierra `review_candidates` con `target_slug`.
+   - Si venia de candidato, cierra `review_candidates` con `target_slug` y manda aviso `Review de candidato publicada`.
 7. Cloudflare Pages despliega al recibir push en GitHub.
 8. La web muestra:
    - Review nuevo.
