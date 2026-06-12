@@ -71,12 +71,14 @@ Freshness:
 - Reprioriza candidatos relacionados si un review queda stale.
 
 Scheduler:
-- Manda hasta 3 candidatos `pending` por prioridad.
+- Manda hasta 3 candidatos `pending`, priorizando `candidate_tier`: `superior > economico > similar > unknown`.
 - Formato Telegram: una linea por candidato, `1 - Articulo`, `2 - Articulo`, `3 - Articulo`.
-- Excluye por 7 dias otros candidatos del mismo `source_slug` si ya se completo uno de esa fuente.
-- Si el usuario responde `1 https://meli.la/...` o `1 - https://meli.la/...`, el Poll lo procesa en la siguiente corrida disponible.
-- Puede procesar varias lineas en un mensaje: `1 - link`, `2 - link`, `3 - link`.
-- Puede dejar listos 1, 2 o 3 candidatos en una sola corrida si los links son validos.
+- Excluye candidatos ya publicados y estados `done`, `ready`, `processing`, `discarded`.
+- Guarda snapshot de `index -> candidate_id` para que los numeros respondidos no cambien si se reordena la sheet.
+- Si el usuario responde `1 - https://meli.la/...`, el Poll lo procesa en la siguiente corrida disponible.
+- Si el usuario responde `1 - descartar`, `1 - eliminar`, `1 - basura`, `1 - drop` o `1 - delete`, el Poll marca el candidato como `discarded`.
+- Puede procesar varias lineas en un mensaje: `1 - link`, `2 - descartar`, `3 - link`.
+- Puede dejar listos 1, 2 o 3 candidatos en una sola corrida si los links son validos; los descartes no crean filas en `articulos`.
 - Si el formato no se puede leer, responde por Telegram con un ejemplo valido.
 - Esperado: 5-15 min; peor caso 20+ min por demora de GitHub Actions. En pruebas reales GitHub llego a retrasar el schedule mas de una hora.
 

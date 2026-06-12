@@ -29,7 +29,7 @@ const required = [
   },
   {
     fileIncludes: "Telegram Poll",
-    nodes: ["Find Candidate Affiliate", "Mark Candidate Ready", "Add Candidate to Queue"],
+    nodes: ["Find Candidate Affiliate", "Mark Candidate Ready", "Filter Candidate Queue Adds", "Add Candidate to Queue"],
   },
 ];
 

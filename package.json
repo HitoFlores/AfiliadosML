@@ -10,7 +10,7 @@
     "review:backfill": "node scripts/backfill-review-quality.mjs",
     "review:audit": "node scripts/audit-reviews.mjs",
     "freshness:test": "node scripts/test-freshness-logic.mjs",
-    "n8n:verify": "node scripts/verify-workflows.mjs",
+    "n8n:verify": "node scripts/verify-workflows.mjs && node scripts/test-review-candidates-logic.mjs",
     "n8n:prepare": "node scripts/n8n-ephemeral/prepare-workflows.mjs",
     "n8n:cycle": "bash scripts/n8n-ephemeral/run-cycle.sh"
   },

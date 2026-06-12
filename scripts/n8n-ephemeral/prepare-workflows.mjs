@@ -4,6 +4,7 @@ import path from "node:path";
 const root = process.cwd();
 const sourceDir = path.join(root, "n8n-backup");
 const outDir = path.join(root, ".tmp", "n8n-ephemeral", "workflows");
+const publishedReviewMeta = readPublishedReviewMeta();
 
 fs.rmSync(outDir, { recursive: true, force: true });
 fs.mkdirSync(outDir, { recursive: true });
@@ -49,6 +50,27 @@ fs.writeFileSync(
 );
 
 console.log(`Prepared ${files.length + 1} workflows in ${path.relative(root, outDir)}`);
+
+function readPublishedReviewMeta() {
+  const dataDir = path.join(root, "data");
+  const meta = { slugs: [], candidateIds: [] };
+  if (!fs.existsSync(dataDir)) return meta;
+
+  for (const file of fs.readdirSync(dataDir).filter((entry) => entry.endsWith(".json"))) {
+    try {
+      const review = JSON.parse(fs.readFileSync(path.join(dataDir, file), "utf8").replace(/^\uFEFF/, ""));
+      if (review?.meta?.slug) meta.slugs.push(String(review.meta.slug));
+      if (review?.meta?.candidate_id) meta.candidateIds.push(String(review.meta.candidate_id));
+    } catch {
+      // Ignore draft or malformed local files; audit scripts report those separately.
+    }
+  }
+
+  return {
+    slugs: [...new Set(meta.slugs)].sort(),
+    candidateIds: [...new Set(meta.candidateIds)].sort(),
+  };
+}
 
 function findNode(workflow, name) {
   const node = workflow.nodes.find((entry) => entry.name === name);
@@ -558,21 +580,24 @@ function patchSchedulerReviewCandidates(workflow) {
       typeVersion: 2,
       position: [1560, 420],
       parameters: {
-        jsCode: `const rows = $input.all().map(i => i.json).filter(r => !r.error);
-const cooldownMs = 7 * 24 * 60 * 60 * 1000;
-const nowMs = Date.now();
-const completedBySource = new Set(rows
-  .filter(r => String(r.status || '').toLowerCase().trim() === 'done')
-  .filter(r => {
-    const t = Date.parse(r.updated_at || r.created_at || '');
-    return Number.isFinite(t) && nowMs - t < cooldownMs;
-  })
-  .map(r => String(r.source_slug || '').trim())
-  .filter(Boolean));
+        jsCode: `const sd = $getWorkflowStaticData('global');
+const rows = $input.all().map(i => i.json).filter(r => !r.error);
+const publishedSlugs = new Set(${JSON.stringify(publishedReviewMeta.slugs)});
+const publishedCandidateIds = new Set(${JSON.stringify(publishedReviewMeta.candidateIds)});
+const hiddenStatuses = new Set(['done', 'ready', 'processing', 'discarded']);
+const tierRank = (tier) => {
+  const t = String(tier || 'unknown').toLowerCase().trim();
+  if (t === 'superior') return 0;
+  if (t === 'economico') return 1;
+  if (t === 'similar') return 2;
+  return 3;
+};
 const pending = rows
   .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
-  .filter(r => !completedBySource.has(String(r.source_slug || '').trim()))
-  .sort((a, b) => Number(b.priority_score || 0) - Number(a.priority_score || 0))
+  .filter(r => !hiddenStatuses.has(String(r.status || '').toLowerCase().trim()))
+  .filter(r => !publishedSlugs.has(String(r.target_slug || '').trim()))
+  .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
+  .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)))
   .slice(0, 3);
 
 const base = 'Candidatos para el siguiente review';
@@ -589,9 +614,15 @@ const shorten = (value, max = 90) => {
 };
 
 const lines = pending.map((c, idx) => (idx + 1) + ' - ' + shorten(c.candidate_name));
+sd.review_candidate_snapshot = pending.map((c, idx) => ({
+  index: idx + 1,
+  candidate_id: c.candidate_id,
+  row_number: c.row_number,
+  shown_at: new Date().toISOString(),
+}));
 
 return [{ json: {
-  text: base + '\\n\\n' + lines.join('\\n') + '\\n\\nResponde con:\\n1 https://meli.la/...',
+  text: base + '\\n\\n' + lines.join('\\n') + '\\n\\nResponde con una linea por candidato:\\n1 - https://meli.la/...\\n2 - descartar',
   has_candidates: true,
 }}];`,
       },
@@ -634,7 +665,7 @@ return [{ json: { create_waiting_link: true } }];`,
 
   pedir.position = [1780, 420];
   pedir.parameters.body =
-    '={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: $(\'Armar Mensaje Candidates\').first().json.text, reply_markup: { force_reply: true, input_field_placeholder: "1 https://meli.la/..." } }) }}';
+    '={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: $(\'Armar Mensaje Candidates\').first().json.text, reply_markup: { force_reply: true, input_field_placeholder: "1 - https://meli.la/..." } }) }}';
 }
 
 function patchTelegramPollReviewCandidates(workflow) {
@@ -644,135 +675,224 @@ function patchTelegramPollReviewCandidates(workflow) {
   const tipo = findNode(workflow, "Tipo Mensaje");
   const addToQueue = findNode(workflow, "Add to Queue");
 
-  let code = findNode(workflow, "Poll Telegram").parameters.jsCode;
-  if (!code.includes("candidateAffiliate")) {
-    code = code.replace(
-      "let confirmFlag   = false;",
-      "let confirmFlag   = false;\nlet candidateAffiliate = null;",
-    );
-    code = code.replace(
-      "const isReferidoReply = (rt) =>",
-      `const extractCandidateId = (replyText, messageText) => {
-  if (!/Candidatos pendientes/i.test(replyText || '')) return null;
-  const choice = String(messageText || '').trim().match(/^(\\d+)/)?.[1];
-  const blocks = String(replyText || '').split(/\\n(?=\\d+\\.\\s)/);
-  const ids = [];
-  for (const block of blocks) {
-    const n = block.match(/^(\\d+)\\.\\s/)?.[1];
-    const id = block.match(/ID:\\s*([^\\s]+)/)?.[1];
-    if (id) ids.push({ n, id });
+  findNode(workflow, "Poll Telegram").parameters.jsCode = `const sd    = $getWorkflowStaticData('global');
+let offset  = sd.tg_offset || 0;
+const TOKEN = $env.TELEGRAM_BOT_TOKEN;
+const CHAT  = $env.TELEGRAM_CHAT_ID;
+
+const tg = async (text, extra = {}) => this.helpers.httpRequest({
+  method: 'POST',
+  url: 'https://api.telegram.org/bot' + TOKEN + '/sendMessage',
+  body: { chat_id: CHAT, text, parse_mode: 'Markdown', ...extra },
+  json: true,
+});
+
+const bumpError = async () => {
+  sd.consecutive_errors = (sd.consecutive_errors || 0) + 1;
+  if (sd.consecutive_errors >= 2) {
+    await tg('ALERTA: Dos errores seguidos. Deteniendo el procesamiento. Revisa el flujo y reactiva el Poll desde n8n cuando estes listo.');
+    sd.consecutive_errors = 0;
+    return true;
   }
-  if (choice) return ids.find(x => x.n === choice)?.id || null;
-  return ids.length === 1 ? ids[0].id : null;
+  return false;
 };
 
-const isReferidoReply = (rt) =>`,
-    );
-    code = code.replace(
-      "// Link enviado como respuesta al mensaje de Notify Esperando (sin /referido)",
-      `// Link afiliado para candidato sugerido por Scheduler.
-  const candidateId = extractCandidateId(replyTo, text);
-  if (candidateId && looksLikeLink(text)) {
-    const link = text.split(/\\s+/).find(looksLikeLink);
-    candidateAffiliate = { candidate_id: candidateId, referido: link };
-    sd.consecutive_errors = 0;
-    continue;
-  }
+const res = await this.helpers.httpRequest({
+  method: 'GET',
+  url: 'https://api.telegram.org/bot' + TOKEN + '/getUpdates',
+  qs: offset ? { offset } : {},
+  json: true,
+});
+const updates = res.result || [];
+if (!updates.length) return [];
 
-  // Link enviado como respuesta al mensaje de Notify Esperando (sin /referido)`,
-    );
-    code = code.replace(
-      "if (referido)      return [{ json: { tipo: 'referido',       referido } }];",
-      "if (candidateAffiliate) return [{ json: { tipo: 'candidate_affiliate', ...candidateAffiliate } }];\nif (referido)      return [{ json: { tipo: 'referido',       referido } }];",
-    );
-    findNode(workflow, "Poll Telegram").parameters.jsCode = code;
-  }
+let maxId = offset - 1;
+let referido = null;
+let askLink = false;
+let nuevoArticulo = null;
+let shouldStop = false;
+let confirmFlag = false;
+const candidateActions = [];
 
-  if (!code.includes("candidate_index")) {
-    code = findNode(workflow, "Poll Telegram").parameters.jsCode;
-    code = code.replace(
-      `  if (candidateId && looksLikeLink(text)) {
-    const link = text.split(/\\s+/).find(looksLikeLink);
-    candidateAffiliate = { candidate_id: candidateId, referido: link };
-    sd.consecutive_errors = 0;
-    continue;
-  }
+const isMlLink = (t) => Boolean(t && (t.includes('meli.la/') || t.includes('mercadolibre')));
+const looksLikeLink = (t) => Boolean(t && (t.startsWith('http') || t.startsWith('www.') || t.startsWith('meli')));
+const discardWords = new Set(['descartar', 'eliminar', 'basura', 'drop', 'delete']);
+const isSchedulerReply = (rt) =>
+  rt.includes('articulo') || rt.includes('Mercado Libre') || rt.includes('Buenos dias') || rt.includes('Candidatos para el siguiente review');
+const isReferidoReply = (rt) =>
+  rt.includes('ML Partners') || rt.includes('link de afiliado') || rt.includes('mejor vendedor') || rt.includes('genera el link');
 
-  // Link enviado como respuesta al mensaje de Notify Esperando (sin /referido)`,
-      `  if (candidateId && looksLikeLink(text)) {
-    const link = text.split(/\\s+/).find(looksLikeLink);
-    candidateAffiliate = { candidate_id: candidateId, referido: link };
-    sd.consecutive_errors = 0;
-    continue;
-  }
+const parseCandidateActions = (text) => {
+  const lines = String(text || '').split(/\\n+/).map(line => line.trim()).filter(Boolean);
+  if (!lines.length) return { actions: [], invalid: false };
+  const actions = [];
+  let sawNumber = false;
+  let invalid = false;
 
-  // Fallback: acepta "1 https://meli.la/..." aunque Telegram no lo marque como reply.
-  const candidateChoice = text.match(/^(\\d+)\\s+(\\S+)/);
-  if (candidateChoice && looksLikeLink(candidateChoice[2])) {
-    candidateAffiliate = { candidate_index: Number(candidateChoice[1]), referido: candidateChoice[2] };
-    sd.consecutive_errors = 0;
-    continue;
-  }
-
-  // Link enviado como respuesta al mensaje de Notify Esperando (sin /referido)`,
-    );
-    findNode(workflow, "Poll Telegram").parameters.jsCode = code;
-  }
-
-  code = findNode(workflow, "Poll Telegram").parameters.jsCode;
-  code = code.replace(
-    "let candidateAffiliate = null;",
-    "let candidateAffiliates = [];",
-  );
-  code = code.replaceAll(
-    "candidateAffiliate = { candidate_id: candidateId, referido: link };",
-    "candidateAffiliates.push({ candidate_id: candidateId, referido: link });",
-  );
-  code = code.replace(
-    `  // Fallback: acepta "1 https://meli.la/..." aunque Telegram no lo marque como reply.
-  const candidateChoice = text.match(/^(\\d+)\\s+(\\S+)/);
-  if (candidateChoice && looksLikeLink(candidateChoice[2])) {
-    candidateAffiliate = { candidate_index: Number(candidateChoice[1]), referido: candidateChoice[2] };
-    sd.consecutive_errors = 0;
-    continue;
-  }`,
-    `  // Fallback: acepta una o varias lineas "1 https://..." o "1 - https://...".
-  const candidateLines = String(text || '').split(/\\n+/).map(line => line.trim()).filter(Boolean);
-  for (const line of candidateLines) {
-    const candidateChoice = line.match(/^(\\d+)\\s*(?:[-.)]\\s*)?(\\S+)/);
-    if (candidateChoice && looksLikeLink(candidateChoice[2])) {
-      candidateAffiliates.push({ candidate_index: Number(candidateChoice[1]), referido: candidateChoice[2] });
+  for (const line of lines) {
+    const match = line.match(/^(\\d+)\\s*(?:[-.)]\\s*)?(\\S+)(?:\\s+.*)?$/);
+    if (!match) {
+      if (/^\\d+\\b/.test(line)) invalid = true;
+      continue;
+    }
+    sawNumber = true;
+    const index = Number(match[1]);
+    const value = match[2];
+    const actionWord = value.toLowerCase().trim();
+    if (looksLikeLink(value) && isMlLink(value)) {
+      actions.push({ candidate_index: index, action: 'ready', referido: value });
+    } else if (discardWords.has(actionWord)) {
+      actions.push({ candidate_index: index, action: 'discard' });
+    } else {
+      invalid = true;
     }
   }
-  if (candidateAffiliates.length) {
-    sd.consecutive_errors = 0;
+
+  return { actions, invalid: invalid || (sawNumber && !actions.length) };
+};
+
+const resolveMeliLa = async (meliUrl) => {
+  try {
+    const html = await this.helpers.httpRequest({
+      method: 'GET', url: meliUrl,
+      followRedirects: true, ignoreResponseCode: true,
+    });
+    const htmlStr = typeof html === 'string' ? html : JSON.stringify(html);
+    const mlmMatch = htmlStr.match(/MLM[0-9]{6,}/);
+    if (!mlmMatch) return null;
+    const mlmId = mlmMatch[0];
+    const hrefMatch = htmlStr.match(/href="https?:\\/\\/www\\.mercadolibre\\.com\\.mx\\/([^\\/\\?"]+)\\/p\\/(MLM[0-9]+)/);
+    let nombre = mlmId;
+    if (hrefMatch && hrefMatch[1]) {
+      nombre = hrefMatch[1].split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    }
+    const precioMatch = htmlStr.match(/\\$\\s*([\\d,]+(?:\\.\\d{2})?)/);
+    const precio = precioMatch ? '$' + precioMatch[1] + ' MXN' : '';
+    return { catalogUrl: 'https://www.mercadolibre.com.mx/p/' + mlmId, mlmId, nombre, precio };
+  } catch(e) { return null; }
+};
+
+for (const u of updates) {
+  if (shouldStop) break;
+  if (u.update_id > maxId) maxId = u.update_id;
+  const msg = u.message || {};
+  const text = (msg.text || '').trim();
+  const replyTo = (msg.reply_to_message && msg.reply_to_message.text) || '';
+  const isCandidateReply = /Candidatos para el siguiente review/i.test(replyTo);
+
+  if (/^\\/articulo_correcto/i.test(text)) {
+    const url = sd.pending_articulo || 'CONFIRM_FROM_SHEET';
+    if (url) {
+      sd.consecutive_errors = 0;
+      delete sd.pending_articulo; delete sd.pending_nombre;
+      nuevoArticulo = url;
+      await tg('Perfecto! Buscando el mejor vendedor para *' + (sd.pending_nombre || 'el articulo confirmado') + '*...');
+    } else {
+      await tg('No hay ningun articulo pendiente de confirmacion.');
+    }
     continue;
   }
 
-  if (isCandidateReply || /^\\d+\\s*/.test(text)) {
-    await tg('No pude leer el link del candidato. Usa una linea por candidato:\\n1 - https://meli.la/...\\n2 - https://meli.la/...', {
+  if (/^\\/articulo_incorrecto/i.test(text)) {
+    delete sd.pending_articulo; delete sd.pending_nombre;
+    shouldStop = await bumpError();
+    if (!shouldStop) {
+      await tg('Entendido. Manda el link correcto (intento ' + sd.consecutive_errors + ' de 2).', {
+        reply_markup: { force_reply: true, input_field_placeholder: 'https://meli.la/...' }
+      });
+    }
+    continue;
+  }
+
+  const parsedCandidates = parseCandidateActions(text);
+  if (parsedCandidates.invalid || (isCandidateReply && !parsedCandidates.actions.length)) {
+    await tg('Formato invalido. Usa una linea por candidato:\\n1 - https://meli.la/...\\n2 - descartar\\n3 - https://meli.la/...', {
       reply_markup: { force_reply: true, input_field_placeholder: '1 - https://meli.la/...' }
     });
     continue;
-  }`,
-  );
-  code = code.replace(
-    "if (candidateAffiliate) return [{ json: { tipo: 'candidate_affiliate', ...candidateAffiliate } }];",
-    "if (candidateAffiliates.length) return candidateAffiliates.map(entry => ({ json: { tipo: 'candidate_affiliate', ...entry } }));",
-  );
-  findNode(workflow, "Poll Telegram").parameters.jsCode = code;
-
-  if (!code.includes("isCandidateReply")) {
-    code = code.replace(
-      "const replyTo = (msg.reply_to_message && msg.reply_to_message.text) || '';",
-      "const replyTo = (msg.reply_to_message && msg.reply_to_message.text) || '';\n  const isCandidateReply = /Candidatos para el siguiente review|Candidatos pendientes/i.test(replyTo);",
-    );
-    code = code.replace(
-      "if (isSchedulerReply(replyTo) || looksLikeLink(text)) {",
-      "if (!isCandidateReply && (isSchedulerReply(replyTo) || looksLikeLink(text))) {",
-    );
-    findNode(workflow, "Poll Telegram").parameters.jsCode = code;
   }
+  if (parsedCandidates.actions.length) {
+    candidateActions.push(...parsedCandidates.actions);
+    sd.consecutive_errors = 0;
+    continue;
+  }
+
+  const m = text.match(/^\\/referido\\s+(\\S+)/i);
+  if (m) { referido = m[1]; sd.consecutive_errors = 0; continue; }
+  if (/^\\/referido\\s*$/i.test(text)) { askLink = true; continue; }
+
+  if (isReferidoReply(replyTo) && looksLikeLink(text)) {
+    referido = text.split(/\\s+/)[0];
+    sd.consecutive_errors = 0;
+    continue;
+  }
+
+  if (/link del referido/i.test(replyTo) || /pegalo en la sheet/i.test(replyTo)) {
+    referido = text.split(/\\s+/)[0];
+    sd.consecutive_errors = 0;
+    continue;
+  }
+
+  if (!isCandidateReply && (isSchedulerReply(replyTo) || looksLikeLink(text))) {
+    const candidato = text.split(/\\s+/)[0];
+    if (!isMlLink(candidato)) {
+      shouldStop = await bumpError();
+      if (!shouldStop) {
+        await tg('Ese link no parece ser de Mercado Libre (intento ' + (sd.consecutive_errors) + ' de 2).\\n\\nMandame el link de afiliado (meli.la/...).', {
+          reply_markup: { force_reply: true, input_field_placeholder: 'https://meli.la/...' }
+        });
+      }
+      continue;
+    }
+
+    await tg('Verificando tu link...');
+    const info = await resolveMeliLa(candidato);
+    if (info) {
+      sd.pending_articulo = info.catalogUrl;
+      sd.pending_nombre = info.nombre;
+      confirmFlag = true;
+      await tg(
+        'Encontre este producto:\\n\\n*' + info.nombre + '*' +
+        (info.precio ? '\\n' + info.precio : '') +
+        '\\nID: ' + info.mlmId +
+        '\\n\\n¿Es correcto?',
+      { reply_markup: { keyboard: [[{text: '/articulo_correcto'}, {text: '/articulo_incorrecto'}]], resize_keyboard: true, one_time_keyboard: true } }
+      );
+    } else {
+      shouldStop = await bumpError();
+      if (!shouldStop) {
+        await tg('No pude identificar el producto (intento ' + (sd.consecutive_errors) + ' de 2).\\n\\nIntenta con el link directo:\\nhttps://www.mercadolibre.com.mx/p/MLM...', {
+          reply_markup: { force_reply: true, input_field_placeholder: 'https://meli.la/...' }
+        });
+      }
+    }
+    continue;
+  }
+}
+
+sd.tg_offset = maxId + 1;
+if (updates.length) {
+  try {
+    await this.helpers.httpRequest({
+      method: 'GET',
+      url: 'https://api.telegram.org/bot' + TOKEN + '/getUpdates',
+      qs: { offset: sd.tg_offset, limit: 1 },
+      json: true,
+    });
+  } catch (e) {}
+}
+
+if (shouldStop) return [];
+if (candidateActions.length) return candidateActions.map(entry => ({ json: { tipo: 'candidate_affiliate', ...entry } }));
+if (referido) return [{ json: { tipo: 'referido', referido } }];
+if (nuevoArticulo) return [{ json: { tipo: 'nuevo_articulo', articulo_link: nuevoArticulo } }];
+if (askLink) {
+  await tg('Pega el link del referido (responde a ESTE mensaje):', {
+    reply_markup: { force_reply: true, input_field_placeholder: 'https://meli.la/...' }
+  });
+}
+if (confirmFlag) return [{ json: { tipo: 'confirmar_articulo', articulo_link: sd.pending_articulo || '', nombre: sd.pending_nombre || '' } }];
+return [];`;
 
   tipo.parameters.output =
     "={{ $json.tipo === 'nuevo_articulo' ? 0 : $json.tipo === 'confirmar_articulo' ? 2 : $json.tipo === 'candidate_affiliate' ? 3 : 1 }}";
@@ -803,27 +923,33 @@ const isReferidoReply = (rt) =>`,
         jsCode: `const requests = $('Poll Telegram').all()
   .map(i => i.json)
   .filter(item => item.tipo === 'candidate_affiliate');
+const sd = $getWorkflowStaticData('global');
 const rows = $input.all().map(i => i.json).filter(r => !r.error);
-const cooldownMs = 7 * 24 * 60 * 60 * 1000;
-const nowMs = Date.now();
-const completedBySource = new Set(rows
-  .filter(r => String(r.status || '').toLowerCase().trim() === 'done')
-  .filter(r => {
-    const t = Date.parse(r.updated_at || r.created_at || '');
-    return Number.isFinite(t) && nowMs - t < cooldownMs;
-  })
-  .map(r => String(r.source_slug || '').trim())
-  .filter(Boolean));
+const publishedSlugs = new Set(${JSON.stringify(publishedReviewMeta.slugs)});
+const publishedCandidateIds = new Set(${JSON.stringify(publishedReviewMeta.candidateIds)});
+const hiddenStatuses = new Set(['done', 'ready', 'processing', 'discarded']);
+const tierRank = (tier) => {
+  const t = String(tier || 'unknown').toLowerCase().trim();
+  if (t === 'superior') return 0;
+  if (t === 'economico') return 1;
+  if (t === 'similar') return 2;
+  return 3;
+};
 const pending = rows
   .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
-  .filter(r => !completedBySource.has(String(r.source_slug || '').trim()))
-  .sort((a, b) => Number(b.priority_score || 0) - Number(a.priority_score || 0));
+  .filter(r => !hiddenStatuses.has(String(r.status || '').toLowerCase().trim()))
+  .filter(r => !publishedSlugs.has(String(r.target_slug || '').trim()))
+  .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
+  .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)));
+const snapshot = Array.isArray(sd.review_candidate_snapshot) ? sd.review_candidate_snapshot : [];
 
 const out = [];
 for (const request of requests) {
-  const candidateId = request.candidate_id;
+  const snapshotHit = snapshot.find(entry => Number(entry.index) === Number(request.candidate_index || 0));
+  const candidateId = request.candidate_id || snapshotHit?.candidate_id || '';
   const candidateIndex = Number(request.candidate_index || 0);
   const referido = request.referido;
+  const action = request.action === 'discard' ? 'discard' : 'ready';
   const row = candidateId
     ? rows.find(r => r.candidate_id === candidateId)
     : pending[candidateIndex - 1];
@@ -838,16 +964,19 @@ for (const request of requests) {
     continue;
   }
 
-  if (!referido) continue;
+  if (action === 'ready' && !referido) continue;
 
   out.push({ json: {
     row_number: row.row_number,
     candidate_id: row.candidate_id,
     candidate_name: row.candidate_name,
     source_slug: row.source_slug,
-    referido,
+    referido: referido || '',
     articulo: row.candidate_ml_url || referido,
     target_slug: row.target_slug || '',
+    candidate_action: action,
+    status: action === 'discard' ? 'discarded' : 'ready',
+    error_msg: action === 'discard' ? 'discarded by user' : '',
   }});
 }
 
@@ -869,9 +998,9 @@ return out;`,
           value: {
             row_number: "={{ $json.row_number }}",
             affiliate_url: "={{ $json.referido }}",
-            status: "ready",
+            status: "={{ $json.status }}",
             updated_at: "={{ new Date().toISOString() }}",
-            error_msg: "",
+            error_msg: "={{ $json.error_msg }}",
           },
           matchingColumns: ["row_number"],
           schema: [],
@@ -883,11 +1012,24 @@ return out;`,
       credentials: getQueue.credentials,
     },
     {
+      id: "poll-candidates-ready-only",
+      name: "Filter Candidate Queue Adds",
+      type: "n8n-nodes-base.code",
+      typeVersion: 2,
+      position: [1450, 520],
+      parameters: {
+        jsCode: `return $('Find Candidate Affiliate').all()
+  .map(i => i.json)
+  .filter(item => item.status === 'ready')
+  .map(json => ({ json }));`,
+      },
+    },
+    {
       id: "poll-candidates-add-queue",
       name: "Add Candidate to Queue",
       type: "n8n-nodes-base.googleSheets",
       typeVersion: 4.5,
-      position: [1560, 520],
+      position: [1670, 520],
       parameters: {
         operation: "append",
         documentId: addToQueue.parameters.documentId,
@@ -915,7 +1057,7 @@ return out;`,
       name: "Notify Candidate Ready",
       type: "n8n-nodes-base.httpRequest",
       typeVersion: 4.2,
-      position: [1780, 520],
+      position: [1890, 520],
       parameters: {
         method: "POST",
         url: "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
@@ -931,7 +1073,7 @@ return out;`,
       name: "Run Main Candidate",
       type: "n8n-nodes-base.noOp",
       typeVersion: 1,
-      position: [2000, 520],
+      position: [2110, 520],
       parameters: {},
     },
   );
@@ -946,6 +1088,9 @@ return out;`,
     main: [[{ node: "Mark Candidate Ready", type: "main", index: 0 }]],
   };
   workflow.connections["Mark Candidate Ready"] = {
+    main: [[{ node: "Filter Candidate Queue Adds", type: "main", index: 0 }]],
+  };
+  workflow.connections["Filter Candidate Queue Adds"] = {
     main: [[{ node: "Add Candidate to Queue", type: "main", index: 0 }]],
   };
   workflow.connections["Add Candidate to Queue"] = {
@@ -1848,6 +1993,31 @@ const scorePrice = (price) => {
   const distance = Math.abs(p - currentPrice) / Math.max(currentPrice, 1);
   return Math.max(35, Math.round(90 - distance * 60));
 };
+const tierFromText = (value) => {
+  const text = norm(value);
+  if (/premium|superior|pro|max|ultra|gama alta|mas caro|mas potente/.test(text)) return 'superior';
+  if (/barat|econom|inferior|anterior|basico|entrada|menor precio/.test(text)) return 'economico';
+  if (/similar|mejor valor|valor|alternativa/.test(text)) return 'similar';
+  return '';
+};
+const tierFromPrice = (price) => {
+  const p = money(price);
+  if (!currentPrice || !p) return '';
+  const ratio = p / Math.max(currentPrice, 1);
+  if (ratio >= 1.12) return 'superior';
+  if (ratio <= 0.88) return 'economico';
+  return 'similar';
+};
+const classifyTier = (input) => {
+  const explicit = tierFromText(input.candidate_tier);
+  if (explicit) return explicit;
+  if (input.relation_type === 'mejor_alternativa') return tierFromText(input.tipo) || 'superior';
+  const priced = tierFromPrice(input.price);
+  if (priced) return priced;
+  const typed = tierFromText([input.relation_type, input.tipo, input.reason, input.mentioned_in].filter(Boolean).join(' '));
+  if (typed) return typed;
+  return 'unknown';
+};
 
 const rows = [];
 const push = (input) => {
@@ -1868,6 +2038,7 @@ const push = (input) => {
     source_slug: sourceSlug,
     source_product_id: sourceProductId,
     relation_type: relation,
+    candidate_tier: classifyTier(input),
     candidate_name: name,
     candidate_query: input.candidate_query || name,
     candidate_ml_url: input.candidate_ml_url || '',
@@ -1891,6 +2062,7 @@ for (const item of review.productos_similares_ml || []) {
     candidate_query: item.titulo,
     candidate_ml_url: item.permalink,
     candidate_ml_id: item.id,
+    price: item.precio,
     priority_score: scorePrice(item.precio),
     reason: item.precio ? 'Candidato real detectado por Mercado Libre en rango comparable.' : 'Candidato real detectado por Mercado Libre.',
     mentioned_in: 'productos_similares_ml',
@@ -1900,6 +2072,7 @@ for (const item of review.productos_similares_ml || []) {
 for (const item of review.editorial?.comparativa_editorial || []) {
   push({
     relation_type: 'comparativa_editorial',
+    tipo: item.tipo,
     candidate_name: item.titulo,
     candidate_query: item.titulo,
     priority_score: 70,
@@ -1923,6 +2096,7 @@ for (const item of review.editorial?.alternativas || []) {
 if (review.editorial?.mejor_alternativa?.titulo) {
   push({
     relation_type: 'mejor_alternativa',
+    tipo: review.editorial.mejor_alternativa.tipo,
     candidate_name: review.editorial.mejor_alternativa.titulo,
     candidate_query: review.editorial.mejor_alternativa.titulo,
     priority_score: 85,
@@ -1952,6 +2126,7 @@ return rows.map(json => ({ json }));`,
             source_slug: "={{ $json.source_slug }}",
             source_product_id: "={{ $json.source_product_id }}",
             relation_type: "={{ $json.relation_type }}",
+            candidate_tier: "={{ $json.candidate_tier }}",
             candidate_name: "={{ $json.candidate_name }}",
             candidate_query: "={{ $json.candidate_query }}",
             candidate_ml_url: "={{ $json.candidate_ml_url }}",

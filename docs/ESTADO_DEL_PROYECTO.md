@@ -43,9 +43,9 @@ GitHub:
 ## Flujo Operativo
 
 1. Scheduler diario lee `review_candidates`.
-2. Si hay candidatos `pending`, manda 2-3 por Telegram ordenados por `priority_score`.
-3. Humano responde: `1 https://meli.la/...` con el link afiliado de ML Partners.
-4. Poll marca el candidato como `ready`, guarda `affiliate_url` y crea fila `articulos` con `candidate_id`.
+2. Si hay candidatos `pending`, manda maximo 3 por Telegram priorizando `candidate_tier`: `superior`, `economico`, `similar`, `unknown`; dentro de cada tier ordena por `priority_score`.
+3. Humano responde con una linea por candidato: `1 - https://meli.la/...` para aprobar o `1 - descartar` para eliminarlo.
+4. Poll resuelve los numeros contra el snapshot estable del Scheduler. Links validos marcan el candidato `ready`, guardan `affiliate_url` y crean fila `articulos` con `candidate_id`; descartes marcan `discarded` sin crear fila.
 5. Main toma filas `ready`/`pending`, genera review, commitea JSON y marca la fila `done`.
 6. Si venia de candidato, marca `review_candidates.status=done` y llena `target_slug`.
 7. Web muestra reviews relacionados, comparadores y rankings.
@@ -60,7 +60,7 @@ Estados principales:
 `waiting_link -> waiting_confirm -> pending -> waiting -> ready -> done`
 
 `review_candidates`:
-`candidate_id`, `source_slug`, `source_product_id`, `relation_type`, `candidate_name`, `candidate_query`, `candidate_ml_url`, `candidate_ml_id`, `affiliate_url`, `target_slug`, `status`, `priority_score`, `reason`, `mentioned_in`, `created_at`, `updated_at`, `error_msg`
+`candidate_id`, `source_slug`, `source_product_id`, `relation_type`, `candidate_tier`, `candidate_name`, `candidate_query`, `candidate_ml_url`, `candidate_ml_id`, `affiliate_url`, `target_slug`, `status`, `priority_score`, `reason`, `mentioned_in`, `created_at`, `updated_at`, `error_msg`
 
 ## Plan Maestro: Escala Automatica
 
@@ -85,20 +85,21 @@ Se creo la pestana `review_candidates`. El main genera candidatos desde:
 - `alternativas`
 - `mejor_alternativa`
 
-Deduplica por `candidate_id` y solo agrega candidatos nuevos.
+Deduplica por `candidate_id` y solo agrega candidatos nuevos. Cada candidato guarda `candidate_tier` (`superior`, `economico`, `similar`, `unknown`) inferido desde `relation_type`, `comparativa_editorial.tipo`, `mejor_alternativa`, texto editorial y precio relativo cuando existe.
 
 ### [x] P3 Flujo Diario de Candidatos
 
-Scheduler manda candidatos pendientes por Telegram en formato `1 - Articulo`, hasta 3 lineas, excluyendo por 7 dias otros candidatos del mismo `source_slug` si ya se completo uno de esa fuente. Poll acepta una o varias respuestas en formato `numero link` o `numero - link`, marca cada candidato como `ready` y crea filas en `articulos`.
+Scheduler manda candidatos pendientes por Telegram en formato `1 - Articulo`, hasta 3 lineas. Prioriza `superior`, rellena con `economico` y despues usa `similar`/`unknown`; excluye candidatos publicados, `done`, `ready`, `processing` y `discarded`. Poll acepta una o varias respuestas en formato `numero - link` o `numero - descartar`, marca links como `ready` y crea filas en `articulos`; los descartes quedan como `discarded`.
 
 Fixes importantes:
 - No crea `WAITING_LINK` si ya hay candidatos pendientes.
 - No confunde links afiliados de candidatos con el flujo manual normal.
 - El runner procesa hasta `MAIN_MAX_RUNS=3` filas por ciclo.
-- Si ya se completo un candidato originado por una review, no insiste con mas candidatos de esa misma fuente durante 7 dias.
-- Acepta multiples links en un solo mensaje:
+- Usa snapshot `index -> candidate_id` para que `1`, `2`, `3` no cambien aunque se reordene la sheet.
+- Acepta multiples acciones en un solo mensaje:
   `1 - https://meli.la/...`
-  `2 - https://meli.la/...`
+  `2 - descartar`
+  `3 - https://meli.la/...`
 - Puede procesar 1, 2 o 3 candidatos en la misma corrida si existen links afiliados validos.
 
 ### [x] P4 Related Reviews / Comparadores
@@ -190,13 +191,15 @@ Si faltan candidatos:
    - Si hay stale, manda alerta Telegram y reprioriza candidatos relacionados.
 4. Si es ciclo diario, corre Scheduler:
    - Lee `review_candidates`.
-   - Si hay candidatos `pending`, manda hasta 3 por Telegram.
-   - Excluye fuentes con un candidato completado en los ultimos 7 dias.
+   - Si hay candidatos `pending`, manda hasta 3 por Telegram priorizando `superior > economico > similar > unknown`.
+   - Excluye candidatos ya publicados y estados `done`, `ready`, `processing`, `discarded`.
+   - Guarda snapshot de candidatos mostrados para resolver indices en Poll.
    - Si no hay candidatos, pide articulo manual.
 5. Corre Telegram Poll:
    - Lee respuestas.
-   - Si recibe `1 https://meli.la/...`, marca candidato `ready`.
-   - Crea fila `articulos` con `candidate_id`.
+   - Si recibe `1 - https://meli.la/...`, marca candidato `ready`.
+   - Si recibe `1 - descartar`, marca candidato `discarded`.
+   - Crea fila `articulos` con `candidate_id` solo para candidatos `ready`.
 6. Corre Main hasta `MAIN_MAX_RUNS` veces:
    - Toma `ready`, `pending` o candidato recuperable en `processing`.
    - Genera review con Abacus.
@@ -301,4 +304,4 @@ Pendientes operativos:
 - Escalar cobertura respondiendo candidatos diarios.
 - Observar un stale real en produccion.
 - Revisar `/estado` despues del proximo ciclo diario.
-- Monitorear que el cooldown de `source_slug` evite repetir candidatos del Apple Watch Series 11 durante 7 dias.
+- Monitorear que la cola diaria priorice `superior` y rellene con `economico` sin repetir candidatos ya publicados.
