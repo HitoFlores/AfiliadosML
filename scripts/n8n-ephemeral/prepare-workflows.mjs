@@ -722,7 +722,14 @@ const isSchedulerReply = (rt) =>
 const isReferidoReply = (rt) =>
   rt.includes('ML Partners') || rt.includes('link de afiliado') || rt.includes('mejor vendedor') || rt.includes('genera el link');
 
-const parseCandidateActions = (text) => {
+const candidateHintForIndex = (replyText, index) => {
+  const pattern = new RegExp('^\\\\s*' + index + '\\\\s*[-.)]\\\\s*(.+)$');
+  const line = String(replyText || '').split(/\\n+/).map(x => x.trim()).find(x => pattern.test(x));
+  if (!line) return '';
+  return (line.match(pattern)?.[1] || '').replace(/\\s+/g, ' ').trim();
+};
+
+const parseCandidateActions = (text, replyText = '') => {
   const lines = String(text || '').split(/\\n+/).map(line => line.trim()).filter(Boolean);
   if (!lines.length) return { actions: [], invalid: false };
   const actions = [];
@@ -740,9 +747,9 @@ const parseCandidateActions = (text) => {
     const value = match[2];
     const actionWord = value.toLowerCase().trim();
     if (looksLikeLink(value) && isMlLink(value)) {
-      actions.push({ candidate_index: index, action: 'ready', referido: value });
+      actions.push({ candidate_index: index, candidate_name_hint: candidateHintForIndex(replyText, index), action: 'ready', referido: value });
     } else if (discardWords.has(actionWord)) {
-      actions.push({ candidate_index: index, action: 'discard' });
+      actions.push({ candidate_index: index, candidate_name_hint: candidateHintForIndex(replyText, index), action: 'discard' });
     } else {
       invalid = true;
     }
@@ -804,7 +811,7 @@ for (const u of updates) {
     continue;
   }
 
-  const parsedCandidates = parseCandidateActions(text);
+  const parsedCandidates = parseCandidateActions(text, replyTo);
   if (parsedCandidates.invalid || (isCandidateReply && !parsedCandidates.actions.length)) {
     await tg('Formato invalido. Usa una linea por candidato:\\n1 - https://meli.la/...\\n2 - descartar\\n3 - https://meli.la/...', {
       reply_markup: { force_reply: true, input_field_placeholder: '1 - https://meli.la/...' }
@@ -942,6 +949,18 @@ const pending = rows
   .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
   .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)));
 const snapshot = Array.isArray(sd.review_candidate_snapshot) ? sd.review_candidate_snapshot : [];
+const norm = (value) => String(value || '')
+  .toLowerCase()
+  .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+  .replace(/[^a-z0-9\\s]/g, ' ')
+  .replace(/\\s+/g, ' ')
+  .trim();
+const matchesHint = (row, hint) => {
+  const h = norm(hint).replace(/\\s+\\.\\.\\.$/, '').trim();
+  if (!h || h.length < 6) return false;
+  const name = norm(row.candidate_name);
+  return name.includes(h) || h.includes(name) || name.startsWith(h.slice(0, 48));
+};
 
 const out = [];
 for (const request of requests) {
@@ -950,15 +969,17 @@ for (const request of requests) {
   const candidateIndex = Number(request.candidate_index || 0);
   const referido = request.referido;
   const action = request.action === 'discard' ? 'discard' : 'ready';
-  const row = candidateId
-    ? rows.find(r => r.candidate_id === candidateId)
-    : pending[candidateIndex - 1];
+  const snapshotRow = candidateId ? rows.find(r => r.candidate_id === candidateId) : null;
+  const row = snapshotRow || pending.find(r => matchesHint(r, request.candidate_name_hint)) || pending[candidateIndex - 1];
 
   if (!row) {
     await this.helpers.httpRequest({
       method: 'POST',
       url: 'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage',
-      body: { chat_id: $env.TELEGRAM_CHAT_ID, text: 'No encontre ese candidato en review_candidates.' },
+      body: {
+        chat_id: $env.TELEGRAM_CHAT_ID,
+        text: 'No encontre el candidato ' + candidateIndex + ' en review_candidates. Filas leidas: ' + rows.length + ', pending visibles: ' + pending.length + (request.candidate_name_hint ? ', texto: ' + request.candidate_name_hint : ''),
+      },
       json: true,
     });
     continue;

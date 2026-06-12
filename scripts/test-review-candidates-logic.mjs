@@ -73,7 +73,17 @@ function isMlLink(value) {
   return Boolean(value && /(meli\.la\/|mercadolibre)/i.test(value));
 }
 
-function parseCandidateActions(text) {
+function candidateHintForIndex(replyText, index) {
+  const pattern = new RegExp(`^\\s*${index}\\s*[-.)]\\s*(.+)$`);
+  const line = String(replyText || "")
+    .split(/\n+/)
+    .map((entry) => entry.trim())
+    .find((entry) => pattern.test(entry));
+  if (!line) return "";
+  return (line.match(pattern)?.[1] || "").replace(/\s+/g, " ").trim();
+}
+
+function parseCandidateActions(text, replyText = "") {
   const lines = String(text || "")
     .split(/\n+/)
     .map((line) => line.trim())
@@ -94,9 +104,18 @@ function parseCandidateActions(text) {
     const value = match[2];
     const actionWord = value.toLowerCase().trim();
     if (looksLikeLink(value) && isMlLink(value)) {
-      actions.push({ candidate_index: index, action: "ready", referido: value });
+      actions.push({
+        candidate_index: index,
+        candidate_name_hint: candidateHintForIndex(replyText, index),
+        action: "ready",
+        referido: value,
+      });
     } else if (discardWords.has(actionWord)) {
-      actions.push({ candidate_index: index, action: "discard" });
+      actions.push({
+        candidate_index: index,
+        candidate_name_hint: candidateHintForIndex(replyText, index),
+        action: "discard",
+      });
     } else {
       invalid = true;
     }
@@ -108,7 +127,10 @@ function parseCandidateActions(text) {
 function resolveActions(actions, rows, snapshot) {
   return actions.map((action) => {
     const hit = snapshot.find((entry) => Number(entry.index) === Number(action.candidate_index));
-    const row = rows.find((entry) => entry.candidate_id === hit?.candidate_id);
+    const hint = norm(action.candidate_name_hint).slice(0, 48);
+    const row =
+      rows.find((entry) => entry.candidate_id === hit?.candidate_id) ||
+      rows.find((entry) => hint && norm(entry.candidate_name).startsWith(hint));
     if (!row) return null;
     return {
       candidate_id: row.candidate_id,
@@ -165,16 +187,32 @@ const mixed = parseCandidateActions([
 ].join("\n"));
 assertEqual("mixed message parses", mixed, {
   actions: [
-    { candidate_index: 1, action: "ready", referido: "https://meli.la/abc" },
-    { candidate_index: 2, action: "discard" },
-    { candidate_index: 3, action: "ready", referido: "https://www.mercadolibre.com.mx/p/MLM123" },
+    { candidate_index: 1, candidate_name_hint: "", action: "ready", referido: "https://meli.la/abc" },
+    { candidate_index: 2, candidate_name_hint: "", action: "discard" },
+    { candidate_index: 3, candidate_name_hint: "", action: "ready", referido: "https://www.mercadolibre.com.mx/p/MLM123" },
+  ],
+  invalid: false,
+});
+
+const replyHint = [
+  "Candidatos para el siguiente review",
+  "1 - Samsung Galaxy Watch...",
+].join("\n");
+assertEqual("reply text carries candidate hint", parseCandidateActions("1 - https://meli.la/abc", replyHint), {
+  actions: [
+    {
+      candidate_index: 1,
+      candidate_name_hint: "Samsung Galaxy Watch...",
+      action: "ready",
+      referido: "https://meli.la/abc",
+    },
   ],
   invalid: false,
 });
 
 for (const word of discardWords) {
   assertEqual(`discard word ${word}`, parseCandidateActions(`9 - ${word}`).actions, [
-    { candidate_index: 9, action: "discard" },
+    { candidate_index: 9, candidate_name_hint: "", action: "discard" },
   ]);
 }
 
@@ -187,14 +225,24 @@ const changedRows = [
 ];
 assertEqual(
   "snapshot keeps index stable after sheet changes",
-  resolveActions([{ candidate_index: 1, action: "ready", referido: "https://meli.la/abc" }], changedRows, snapshot),
+  resolveActions([{ candidate_index: 1, candidate_name_hint: "", action: "ready", referido: "https://meli.la/abc" }], changedRows, snapshot),
   [{ candidate_id: "src:superior-1", status: "ready", createsQueueRow: true }],
 );
 
 assertEqual(
   "discard does not create queue row",
-  resolveActions([{ candidate_index: 2, action: "discard" }], rows, snapshot),
+  resolveActions([{ candidate_index: 2, candidate_name_hint: "", action: "discard" }], rows, snapshot),
   [{ candidate_id: "src:economico-1", status: "discarded", createsQueueRow: false }],
+);
+
+assertEqual(
+  "reply hint resolves when scheduler snapshot is unavailable",
+  resolveActions(
+    [{ candidate_index: 1, candidate_name_hint: "Samsung Galaxy Watch...", action: "ready", referido: "https://meli.la/abc" }],
+    [{ candidate_id: "src:samsung", candidate_name: "Samsung Galaxy Watch7 44mm Reloj", status: "pending" }],
+    [],
+  ),
+  [{ candidate_id: "src:samsung", status: "ready", createsQueueRow: true }],
 );
 
 console.log("Review candidate logic test passed.");
