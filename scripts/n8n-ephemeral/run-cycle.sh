@@ -81,6 +81,14 @@ send_cycle_summary() {
 
 run_workflow "sheetSchemaAfML2026" "Sheet Schema"
 
+if [[ "${SCHEMA_ONLY:-false}" == "true" ]]; then
+  if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+    cat "$SUMMARY_FILE" >> "$GITHUB_STEP_SUMMARY"
+  fi
+  send_cycle_summary || true
+  exit 0
+fi
+
 if [[ "${RUN_FRESHNESS:-false}" == "true" ]]; then
   run_workflow "freshnessAfML2026" "Freshness"
 fi

@@ -39,6 +39,7 @@ Dispatch manual:
 - `run_main_safety`: reservado para compatibilidad; el runner ya corre Main al final.
 - `force_regen_slug`: regenera un slug especifico si existe en Sheet.
 - `main_max_runs`: limite de ejecuciones Main en ese ciclo. Default: `3`.
+- `schema_only`: asegura schema de Google Sheets y termina sin correr Freshness, Scheduler, Poll ni Main.
 
 Cada corrida:
 1. Checkout del repo.
