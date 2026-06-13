@@ -71,7 +71,14 @@ fs.writeFileSync(
   JSON.stringify(candidateCleanupWorkflow, null, 2),
 );
 
-console.log(`Prepared ${files.length + 4} workflows in ${path.relative(root, outDir)}`);
+const candidateRestoreWorkflow = buildCandidateRestoreWorkflow(mainSourceWorkflow);
+sanitizeWorkflowForImport(candidateRestoreWorkflow);
+fs.writeFileSync(
+  path.join(outDir, "candidate_restore_AfiliadosML - Candidate Restore.json"),
+  JSON.stringify(candidateRestoreWorkflow, null, 2),
+);
+
+console.log(`Prepared ${files.length + 5} workflows in ${path.relative(root, outDir)}`);
 
 function readPublishedReviewMeta() {
   const dataDir = path.join(root, "data");
@@ -589,7 +596,7 @@ const cleanCandidateName = (value) => {
     .replace(/^[,.;:\\-/\\s]+|[,.;:\\-/\\s]+$/g, '')
     .trim();
 };
-const canonicalCandidateKey = (value) => norm(cleanCandidateName(value)).split(' ').filter(token => token.length > 2 || /^[0-9]+$/.test(token)).join(' ');
+const canonicalCandidateKey = (value) => norm(cleanCandidateName(value)).split(' ').filter(token => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se').join(' ');
 const existing = new Set(
   $input.all()
     .map(i => String(i.json?.candidate_id || '').trim())
@@ -819,13 +826,13 @@ const cleanCandidateName = (value) => {
     .replace(/^[,.;:\\-/\\s]+|[,.;:\\-/\\s]+$/g, '')
     .trim();
 };
-const canonicalCandidateKey = (value) => norm(cleanCandidateName(value)).split(' ').filter(token => token.length > 2 || /^[0-9]+$/.test(token)).join(' ');
+const canonicalCandidateKey = (value) => norm(cleanCandidateName(value)).split(' ').filter(token => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se').join(' ');
 const isGenericCandidateName = (value) => {
   const rawText = norm(value);
   const text = norm(cleanCandidateName(value));
   if (!text || text.length < 6 || /sin candidato real confiable/.test(text) || /\\bo similar\\b/.test(rawText)) return true;
   const tokens = text.split(' ').filter(Boolean);
-  const meaningful = tokens.filter(token => token.length > 2 || /^[0-9]+$/.test(token));
+  const meaningful = tokens.filter(token => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se');
   if (meaningful.length < 2) return true;
   const genericOnly = new Set(['laptop','windows','android','smartwatch','cafetera','consola','modelo','anterior','inferior','premium','barata','valor','alta','gama','producto','alternativa','opcion']);
   const hasModelSignal = tokens.some(token => /\\d/.test(token)) || /\\b(m\\d|ecam\\d|ec\\d|oled|lite|pro|ultra|air|series|forerunner|galaxy|switch|steam deck)\\b/.test(text);
@@ -870,15 +877,28 @@ for (const row of rows) {
 }
 const now = new Date().toISOString();
 const updates = [];
+const preferredByKey = new Map();
+for (const [key, siblings] of byKey) {
+  const preferred = [...siblings].sort((a, b) => {
+    const rankDiff = rank(b) - rank(a);
+    if (rankDiff) return rankDiff;
+    const scoreDiff = Number(b.priority_score || 0) - Number(a.priority_score || 0);
+    if (scoreDiff) return scoreDiff;
+    return Number(a.row_number || 999999) - Number(b.row_number || 999999);
+  })[0];
+  preferredByKey.set(key, preferred);
+}
 for (const row of rows) {
   if (String(row.status || '').toLowerCase().trim() !== 'pending' || !row.row_number) continue;
   const rawName = String(row.candidate_name || '').trim();
   const cleanName = cleanCandidateName(rawName);
-  const siblings = byKey.get(canonicalCandidateKey(rawName)) || [];
+  const key = canonicalCandidateKey(rawName);
+  const siblings = byKey.get(key) || [];
+  const preferred = preferredByKey.get(key);
   const duplicate = siblings.some(other => {
     if (other === row) return false;
     if (rank(other) > rank(row)) return true;
-    return cleanCandidateName(other.candidate_name) === cleanName && String(other.candidate_name || '').trim() !== rawName;
+    return cleanCandidateName(other.candidate_name) === cleanName && preferred !== row;
   });
   let reason = '';
   if (duplicate) reason = 'cleanup: duplicate candidate';
@@ -940,6 +960,109 @@ return updates;`,
       },
       "Build Candidate Cleanup": {
         main: [[{ node: "Discard Bad Pending Candidates", type: "main", index: 0 }]],
+      },
+    },
+    settings: {
+      executionOrder: "v1",
+    },
+  };
+}
+
+function buildCandidateRestoreWorkflow(mainWorkflow) {
+  const markDone = findNode(mainWorkflow, "Mark Done");
+  return {
+    name: "AfiliadosML - Candidate Restore",
+    id: "candidateRestoreAfML2026",
+    active: false,
+    nodes: [
+      {
+        id: "candidate-restore-trigger",
+        name: "Ephemeral Execute Trigger",
+        type: "n8n-nodes-base.executeWorkflowTrigger",
+        typeVersion: 1,
+        position: [0, 0],
+        parameters: {},
+      },
+      {
+        id: "candidate-restore-read",
+        name: "Get Review Candidates",
+        type: "n8n-nodes-base.googleSheets",
+        typeVersion: 4.5,
+        position: [240, 0],
+        continueOnFail: true,
+        alwaysOutputData: true,
+        parameters: {
+          documentId: markDone.parameters.documentId,
+          sheetName: reviewCandidatesSheetName(),
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "candidate-restore-build",
+        name: "Build Candidate Restore",
+        type: "n8n-nodes-base.code",
+        typeVersion: 2,
+        position: [480, 0],
+        parameters: {
+          jsCode: `const rowsToRestore = new Set(String($env.RESTORE_CANDIDATE_ROWS || '')
+  .split(',')
+  .map(value => Number(value.trim()))
+  .filter(Boolean));
+if (!rowsToRestore.size) return [];
+const now = new Date().toISOString();
+return $input.all()
+  .map(i => i.json)
+  .filter(row => rowsToRestore.has(Number(row.row_number || 0)))
+  .filter(row => String(row.status || '').toLowerCase().trim() === 'discarded')
+  .filter(row => /^cleanup:/i.test(String(row.error_msg || '').trim()))
+  .map(row => ({
+    json: {
+      row_number: row.row_number,
+      status: 'pending',
+      updated_at: now,
+      error_msg: 'restored: cleanup audit false positive',
+    },
+  }));`,
+        },
+      },
+      {
+        id: "candidate-restore-update",
+        name: "Restore Candidate Rows",
+        type: "n8n-nodes-base.googleSheets",
+        typeVersion: 4.5,
+        position: [720, 0],
+        parameters: {
+          operation: "update",
+          documentId: markDone.parameters.documentId,
+          sheetName: reviewCandidatesSheetName(),
+          columns: {
+            mappingMode: "defineBelow",
+            value: {
+              row_number: "={{ $json.row_number }}",
+              status: "={{ $json.status }}",
+              updated_at: "={{ $json.updated_at }}",
+              error_msg: "={{ $json.error_msg }}",
+            },
+            matchingColumns: ["row_number"],
+            schema: [],
+            attemptToConvertTypes: false,
+            convertFieldsToString: true,
+          },
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+    ],
+    connections: {
+      "Ephemeral Execute Trigger": {
+        main: [[{ node: "Get Review Candidates", type: "main", index: 0 }]],
+      },
+      "Get Review Candidates": {
+        main: [[{ node: "Build Candidate Restore", type: "main", index: 0 }]],
+      },
+      "Build Candidate Restore": {
+        main: [[{ node: "Restore Candidate Rows", type: "main", index: 0 }]],
       },
     },
     settings: {
@@ -1390,7 +1513,7 @@ const cleanCandidateName = (value) => String(value || '')
   .trim();
 const canonicalCandidateKey = (value) => norm(cleanCandidateName(value))
   .split(' ')
-  .filter(token => token.length > 2 || /^[0-9]+$/.test(token))
+  .filter(token => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se')
   .join(' ');
 const preferredKeys = new Set(rows
   .filter(r => ['ready', 'done', 'processing'].includes(String(r.status || '').toLowerCase().trim()) || String(r.affiliate_url || '').trim())
@@ -1851,7 +1974,7 @@ const cleanCandidateName = (value) => String(value || '')
   .trim();
 const canonicalCandidateKey = (value) => norm(cleanCandidateName(value))
   .split(' ')
-  .filter(token => token.length > 2 || /^[0-9]+$/.test(token))
+  .filter(token => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se')
   .join(' ');
 const preferredKeys = new Set(rows
   .filter(r => ['ready', 'done', 'processing'].includes(String(r.status || '').toLowerCase().trim()) || String(r.affiliate_url || '').trim())
@@ -2955,14 +3078,14 @@ const cleanCandidateName = (value) => {
 };
 const canonicalCandidateKey = (value) => norm(cleanCandidateName(value))
   .split(' ')
-  .filter(token => token.length > 2 || /^[0-9]+$/.test(token))
+  .filter(token => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se')
   .join(' ');
 const isGenericCandidateName = (value) => {
   const rawText = norm(value);
   const text = norm(cleanCandidateName(value));
   if (!text || text.length < 6 || /sin candidato real confiable/.test(text) || /\\bo similar\\b/.test(rawText)) return true;
   const tokens = text.split(' ').filter(Boolean);
-  const meaningful = tokens.filter(token => token.length > 2 || /^[0-9]+$/.test(token));
+  const meaningful = tokens.filter(token => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se');
   if (meaningful.length < 2) return true;
   const genericOnly = new Set(['laptop','windows','android','smartwatch','cafetera','consola','modelo','anterior','inferior','premium','barata','valor','alta','gama','producto','alternativa','opcion']);
   const hasModelSignal = tokens.some(token => /\\d/.test(token)) || /\\b(m\\d|ecam\\d|ec\\d|oled|lite|pro|ultra|air|series|forerunner|galaxy|switch|steam deck)\\b/.test(text);

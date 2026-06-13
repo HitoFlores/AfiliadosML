@@ -15,7 +15,7 @@ export function slugify(value) {
 export function meaningfulName(value) {
   return norm(value)
     .split(" ")
-    .filter((token) => token.length > 2 || /^[0-9]+$/.test(token))
+    .filter((token) => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === "se")
     .join(" ");
 }
 

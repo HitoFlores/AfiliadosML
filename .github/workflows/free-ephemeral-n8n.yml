@@ -53,6 +53,11 @@ on:
         options:
           - "false"
           - "true"
+      restore_candidate_rows:
+        description: "Comma-separated review_candidates rows to restore from cleanup"
+        required: false
+        default: ""
+        type: string
   schedule:
     # America/Chihuahua is UTC-7 here. GitHub can delay/drop jobs at minute 0,
     # so this targets 9:07 AM local instead of the congested top of the hour.
@@ -81,6 +86,7 @@ jobs:
       SCHEMA_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.schema_only == 'true' }}
       RUN_CANDIDATE_BACKFILL: ${{ github.event_name == 'workflow_dispatch' && inputs.run_candidate_backfill == 'true' }}
       RUN_CANDIDATE_CLEANUP: ${{ github.event_name == 'workflow_dispatch' && inputs.run_candidate_cleanup == 'true' }}
+      RESTORE_CANDIDATE_ROWS: ${{ github.event_name == 'workflow_dispatch' && inputs.restore_candidate_rows || '' }}
       SEND_CYCLE_SUMMARY: ${{ github.event_name == 'workflow_dispatch' && inputs.run_daily_scheduler == 'true' || github.event.schedule == '7 16 * * *' }}
       N8N_ENCRYPTION_KEY: ${{ secrets.N8N_ENCRYPTION_KEY }}
       N8N_CREDENTIALS_JSON_B64: ${{ secrets.N8N_CREDENTIALS_JSON_B64 }}

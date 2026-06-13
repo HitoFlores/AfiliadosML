@@ -29,6 +29,18 @@ export function buildCandidateCleanupUpdates({ rows = [], reviews = [], now = ne
   }
 
   const updates = [];
+  const preferredByKey = new Map();
+
+  for (const [key, siblings] of byKey) {
+    const preferred = [...siblings].sort((a, b) => {
+      const rankDiff = protectedRank(b) - protectedRank(a);
+      if (rankDiff) return rankDiff;
+      const scoreDiff = Number(b.priority_score || 0) - Number(a.priority_score || 0);
+      if (scoreDiff) return scoreDiff;
+      return Number(a.row_number || 999999) - Number(b.row_number || 999999);
+    })[0];
+    preferredByKey.set(key, preferred);
+  }
 
   for (const row of rows) {
     const status = String(row.status || "").toLowerCase().trim();
@@ -39,10 +51,11 @@ export function buildCandidateCleanupUpdates({ rows = [], reviews = [], now = ne
     const key = canonicalCandidateKey(rawName);
     const sourceReview = reviewBySlug.get(String(row.source_slug || "").trim());
     const siblings = key ? byKey.get(key) || [] : [];
+    const preferred = key ? preferredByKey.get(key) : null;
     const hasBetterDuplicate = siblings.some((other) => {
       if (other === row) return false;
       if (protectedRank(other) > protectedRank(row)) return true;
-      return cleanCandidateName(other.candidate_name) === cleanName && String(other.candidate_name || "").trim() !== rawName;
+      return cleanCandidateName(other.candidate_name) === cleanName && preferred !== row;
     });
 
     let reason = "";

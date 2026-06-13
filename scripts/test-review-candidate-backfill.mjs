@@ -66,6 +66,16 @@ assertEqual(
   ),
   true,
 );
+assertEqual("M2 stays in canonical key", canonicalCandidateKey("MacBook Air M2"), "macbook air m2");
+assertEqual("M3 stays in canonical key", canonicalCandidateKey("MacBook Air M3 con descuento"), "macbook air m3");
+assertEqual(
+  "MacBook Air M2 is not self candidate for M5 review",
+  isSelfCandidate(
+    { candidate_name: "MacBook Air M2 (reacondicionado o segunda mano)" },
+    { meta: { slug: "apple-macbook-air-13-m5-512gb" }, producto: { display_title: "Apple MacBook Air 13 M5 512GB" } },
+  ),
+  false,
+);
 
 assertEqual("tier superior text", classifyCandidateTier({ tipo: "premium" }), "superior");
 assertEqual("tier economico text", classifyCandidateTier({ tipo: "modelo anterior o inferior" }), "economico");
@@ -155,6 +165,8 @@ const cleanupRows = [
   { row_number: 6, candidate_name: "Samsung Galaxy Watch 7 o similar", status: "pending" },
   { row_number: 7, candidate_name: "Garmin Forerunner 265", status: "ready" },
   { row_number: 8, candidate_name: "Historical Done (o similar)", status: "done" },
+  { row_number: 9, candidate_name: "MacBook Air M3 (si se consigue con descuento)", status: "pending", priority_score: 70 },
+  { row_number: 10, candidate_name: "MacBook Air M3 con descuento", status: "pending", priority_score: 85 },
 ];
 assertEqual(
   "cleanup discards only pending bad rows",
@@ -187,6 +199,12 @@ assertEqual(
       status: "discarded",
       updated_at: "2026-06-12T00:00:00.000Z",
       error_msg: "cleanup: generic candidate",
+    },
+    {
+      row_number: 9,
+      status: "discarded",
+      updated_at: "2026-06-12T00:00:00.000Z",
+      error_msg: "cleanup: duplicate candidate",
     },
   ],
 );

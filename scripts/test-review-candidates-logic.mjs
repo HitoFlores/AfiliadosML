@@ -23,7 +23,7 @@ function selectCandidates(rows, published = { slugs: [], candidateIds: [] }) {
   const canonicalCandidateKey = (value) =>
     norm(cleanCandidateName(value))
       .split(" ")
-      .filter((token) => token.length > 2 || /^[0-9]+$/.test(token))
+      .filter((token) => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se')
       .join(" ");
   const preferredKeys = new Set(
     rows
