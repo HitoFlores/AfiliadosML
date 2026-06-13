@@ -1638,6 +1638,8 @@ return snapshot
       parameters: {
         jsCode: `const msg = $('Armar Mensaje Candidates').first().json;
 if (msg.has_candidates) return [];
+const schedulerState = $('Determinar Estado').first().json.estado;
+if (schedulerState === 'esperando') return [];
 return [{ json: { create_waiting_link: true } }];`,
       },
     },
@@ -1673,6 +1675,12 @@ return [{ json: { create_waiting_link: true } }];`,
   };
 
   const switchTargets = workflow.connections["Ya existe?"]?.main ?? [];
+  if (switchTargets[1]) {
+    switchTargets[1] = [
+      { node: "Actualizar Timestamp", type: "main", index: 0 },
+      { node: "Get Candidate Headers", type: "main", index: 0 },
+    ];
+  }
   if (switchTargets[2]) {
     switchTargets[2] = [{ node: "Get Candidate Headers", type: "main", index: 0 }];
     workflow.connections["Ya existe?"].main = switchTargets;
