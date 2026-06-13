@@ -2165,7 +2165,7 @@ return out;`,
         sendBody: true,
         contentType: "raw",
         rawContentType: "application/json",
-        body: "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: 'Candidato listo para generar review:\\n' + $json.candidate_name }) }}",
+        body: "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: 'Candidato listo para generar review:\\n' + ($('Filter Candidate Queue Adds').first().json.candidate_name || $json.candidate_id || 'candidato sin nombre') }) }}",
         options: {},
       },
     },
@@ -2431,7 +2431,7 @@ function scoreVideo(v) {
 }
 const scored = candidates.map((v) => ({ v, s: scoreVideo(v) }));
 const accepted = scored.filter((x) => x.s.accepted);
-const ids = accepted.map((x) => x.v.id.videoId).filter(Boolean);
+const ids = accepted.map((x) => x.v.id.videoId).filter(Boolean).slice(0, 50);
 const stats = {};
 if (ids.length) {
   const res = await this.helpers.httpRequest({ method: 'GET', url: 'https://www.googleapis.com/youtube/v3/videos', qs: { part: 'statistics', id: ids.join(','), key: API_KEY }, json: true });
@@ -2510,7 +2510,7 @@ function scoreVideo(v) {
 }
 const search = $('Get Videos YT').first().json.items || [];
 const scored = search.map(scoreVideo).filter(Boolean);
-const ids = scored.map((v) => v.id && v.id.videoId).filter(Boolean);
+const ids = scored.map((v) => v.id && v.id.videoId).filter(Boolean).slice(0, 50);
 const stats = {};
 if (ids.length) {
   const res = await this.helpers.httpRequest({ method: 'GET', url: 'https://www.googleapis.com/youtube/v3/videos', qs: { part: 'statistics', id: ids.join(','), key: API_KEY }, json: true });

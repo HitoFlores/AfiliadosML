@@ -26,7 +26,7 @@ function assertIncludes(name, values, expected) {
 const rows = buildBackfillCandidates({ now: "2026-06-12T00:00:00.000Z" });
 const names = rows.map((row) => row.candidate_name);
 
-assertIncludes("MacBook backfill includes clean Pro", names, "MacBook Pro M5 Pro 14 pulgadas");
+assertEqual("MacBook backfill skips published Pro", names.includes("MacBook Pro M5 Pro 14 pulgadas"), false);
 assertEqual("MacBook backfill removes commercial M2", names.includes("MacBook Air M2 (reacondicionado o segunda mano)"), false);
 assertEqual("MacBook backfill removes commercial M3", names.includes("MacBook Air M3 con descuento"), false);
 assertEqual("MacBook backfill skips generic Windows processor alternative", names.includes("Laptop Windows con Intel Core Ultra o AMD Ryzen AI (gama alta)"), false);
@@ -34,7 +34,7 @@ assertIncludes("Switch backfill includes Lite", names, "Nintendo Switch Lite");
 assertIncludes("Switch backfill includes Switch 2", names, "Nintendo Switch 2");
 assertIncludes("Switch backfill includes Steam Deck", names, "Steam Deck Valve");
 assertIncludes("Coffee backfill includes Arte", names, "De'Longhi La Specialista Arte EC9155M");
-assertIncludes("Coffee backfill includes Eletta", names, "De'Longhi Eletta Explore ECAM450.86.T");
+assertEqual("Coffee backfill skips published Eletta", names.includes("De'Longhi Eletta Explore ECAM450.86.T"), false);
 assertIncludes("Coffee backfill includes Sage", names, "Sage Breville Barista Touch Impress");
 assertEqual(
   "garbage title is ignored",
