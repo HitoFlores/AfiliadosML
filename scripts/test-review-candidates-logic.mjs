@@ -12,11 +12,35 @@ function tierRank(tier) {
 function selectCandidates(rows, published = { slugs: [], candidateIds: [] }) {
   const publishedSlugs = new Set(published.slugs || []);
   const publishedCandidateIds = new Set(published.candidateIds || []);
+  const cleanCandidateName = (value) =>
+    String(value || "")
+      .replace(/\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\b/gi, " ")
+      .replace(/\b(en oferta|con descuento|descuento|oferta)\b/gi, " ")
+      .replace(/\bo similar\b.*$/gi, " ")
+      .replace(/\bsimilar\b/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  const canonicalCandidateKey = (value) =>
+    norm(cleanCandidateName(value))
+      .split(" ")
+      .filter((token) => token.length > 2 || /^[0-9]+$/.test(token))
+      .join(" ");
+  const preferredKeys = new Set(
+    rows
+      .filter(
+        (row) =>
+          ["ready", "done", "processing"].includes(String(row.status || "").toLowerCase().trim()) ||
+          String(row.affiliate_url || "").trim(),
+      )
+      .map((row) => canonicalCandidateKey(row.candidate_name))
+      .filter(Boolean),
+  );
   const sorted = rows
     .filter((row) => String(row.status || "").toLowerCase().trim() === "pending")
     .filter((row) => !hiddenStatuses.has(String(row.status || "").toLowerCase().trim()))
     .filter((row) => !publishedSlugs.has(String(row.target_slug || "").trim()))
     .filter((row) => !publishedCandidateIds.has(String(row.candidate_id || "").trim()))
+    .filter((row) => !preferredKeys.has(canonicalCandidateKey(row.candidate_name)))
     .sort(
       (a, b) =>
         tierRank(a.candidate_tier) - tierRank(b.candidate_tier) ||
@@ -182,6 +206,8 @@ const rows = [
   { candidate_id: "src:ready-1", candidate_tier: "superior", status: "ready", priority_score: 100 },
   { candidate_id: "src:published-1", candidate_tier: "superior", status: "pending", priority_score: 100 },
   { candidate_id: "src:target-published", candidate_tier: "superior", status: "pending", priority_score: 100, target_slug: "already-live" },
+  { candidate_id: "src:watch-ready", candidate_name: "Apple Watch Series 10", candidate_tier: "superior", status: "ready", priority_score: 100 },
+  { candidate_id: "src:watch-pending", candidate_name: "Apple Watch Series 10 reacondicionado o en oferta", candidate_tier: "superior", status: "pending", priority_score: 100 },
 ];
 
 assertEqual("price classifies superior", classifyTier({ relation_type: "similar_ml", price: 130 }, 100), "superior");
@@ -197,6 +223,11 @@ assertEqual(
   "single source still fills up to 3 with tier priority",
   selected.map((row) => row.candidate_id),
   ["src:superior-1", "src:economico-1", "src:economico-2"],
+);
+assertEqual(
+  "ready duplicate hides pending duplicate",
+  selected.some((row) => row.candidate_id === "src:watch-pending"),
+  false,
 );
 
 const diverseSelected = selectCandidates([

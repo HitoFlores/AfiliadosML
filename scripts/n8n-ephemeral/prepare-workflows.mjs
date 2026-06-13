@@ -64,7 +64,14 @@ fs.writeFileSync(
   JSON.stringify(candidateBackfillWorkflow, null, 2),
 );
 
-console.log(`Prepared ${files.length + 3} workflows in ${path.relative(root, outDir)}`);
+const candidateCleanupWorkflow = buildCandidateCleanupWorkflow(mainSourceWorkflow);
+sanitizeWorkflowForImport(candidateCleanupWorkflow);
+fs.writeFileSync(
+  path.join(outDir, "candidate_cleanup_AfiliadosML - Candidate Cleanup.json"),
+  JSON.stringify(candidateCleanupWorkflow, null, 2),
+);
+
+console.log(`Prepared ${files.length + 4} workflows in ${path.relative(root, outDir)}`);
 
 function readPublishedReviewMeta() {
   const dataDir = path.join(root, "data");
@@ -562,7 +569,27 @@ const norm = (value) => String(value || '')
   .replace(/[^a-z0-9\\s]/g, ' ')
   .replace(/\\s+/g, ' ')
   .trim();
-const meaningfulName = (value) => norm(value).split(' ').filter(token => token.length > 2 || /^[0-9]+$/.test(token)).join(' ');
+const cleanCandidateName = (value) => {
+  let name = String(value || '').replace(/\\s+/g, ' ').trim();
+  if (!name) return '';
+  name = name.replace(/\\(([^)]*)\\)/g, (_, content) => {
+    const text = norm(content);
+    if (!text || /reacondicionado|segunda mano|usad[oa]?|oferta|descuento|similar|este modelo|si se consigue/.test(text)) return ' ';
+    return ' ' + content + ' ';
+  });
+  return name
+    .replace(/\\bserie\\s+(\\d+)/gi, '$1')
+    .replace(/\\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\\b/gi, ' ')
+    .replace(/\\b(en oferta|con descuento|descuento|oferta)\\b/gi, ' ')
+    .replace(/\\bsi se consigue\\b.*$/gi, ' ')
+    .replace(/\\beste modelo\\b/gi, ' ')
+    .replace(/\\bo similar\\b.*$/gi, ' ')
+    .replace(/\\bsimilar\\b/gi, ' ')
+    .replace(/\\s+/g, ' ')
+    .replace(/^[,.;:\\-/\\s]+|[,.;:\\-/\\s]+$/g, '')
+    .trim();
+};
+const canonicalCandidateKey = (value) => norm(cleanCandidateName(value)).split(' ').filter(token => token.length > 2 || /^[0-9]+$/.test(token)).join(' ');
 const existing = new Set(
   $input.all()
     .map(i => String(i.json?.candidate_id || '').trim())
@@ -570,13 +597,14 @@ const existing = new Set(
 );
 const existingNames = new Set(
   $input.all()
-    .map(i => meaningfulName(i.json?.candidate_name))
+    .filter(i => !['discarded'].includes(String(i.json?.status || '').toLowerCase().trim()))
+    .map(i => canonicalCandidateKey(i.json?.candidate_name))
     .filter(Boolean)
 );
 const now = new Date().toISOString();
 return generated
   .filter(row => row.candidate_id && !existing.has(row.candidate_id))
-  .filter(row => !existingNames.has(meaningfulName(row.candidate_name)))
+  .filter(row => !existingNames.has(canonicalCandidateKey(row.candidate_name)))
   .map(row => ({
     json: {
       ...row,
@@ -651,6 +679,267 @@ return generated
       },
       "Build Backfill Candidates": {
         main: [[{ node: "Append Backfill Candidates", type: "main", index: 0 }]],
+      },
+    },
+    settings: {
+      executionOrder: "v1",
+    },
+  };
+}
+
+function buildCandidateCleanupWorkflow(mainWorkflow) {
+  const markDone = findNode(mainWorkflow, "Mark Done");
+  return {
+    name: "AfiliadosML - Candidate Cleanup",
+    id: "candidateCleanupAfML2026",
+    active: false,
+    nodes: [
+      {
+        id: "candidate-cleanup-trigger",
+        name: "Ephemeral Execute Trigger",
+        type: "n8n-nodes-base.executeWorkflowTrigger",
+        typeVersion: 1,
+        position: [0, 0],
+        parameters: {},
+      },
+      {
+        id: "candidate-cleanup-backup-read",
+        name: "Read Candidates For Backup",
+        type: "n8n-nodes-base.httpRequest",
+        typeVersion: 4.2,
+        position: [240, 0],
+        parameters: {
+          method: "GET",
+          authentication: "predefinedCredentialType",
+          nodeCredentialType: "googleSheetsOAuth2Api",
+          url: `=https://sheets.googleapis.com/v4/spreadsheets/${markDone.parameters.documentId.value}/values/{{ encodeURIComponent('review_candidates') }}`,
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "candidate-cleanup-backup-build",
+        name: "Build Backup Payload",
+        type: "n8n-nodes-base.code",
+        typeVersion: 2,
+        position: [480, 0],
+        parameters: {
+          jsCode: `const values = Array.isArray($json.values) ? $json.values : [];
+const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 14);
+return [{
+  json: {
+    backup_title: 'review_candidates_backup_' + stamp,
+    rows_backed_up: Math.max(values.length - 1, 0),
+    values,
+  },
+}];`,
+        },
+      },
+      {
+        id: "candidate-cleanup-backup-create",
+        name: "Create Candidate Backup Sheet",
+        type: "n8n-nodes-base.httpRequest",
+        typeVersion: 4.2,
+        position: [720, 0],
+        parameters: {
+          method: "POST",
+          authentication: "predefinedCredentialType",
+          nodeCredentialType: "googleSheetsOAuth2Api",
+          url: `=https://sheets.googleapis.com/v4/spreadsheets/${markDone.parameters.documentId.value}:batchUpdate`,
+          sendBody: true,
+          contentType: "raw",
+          rawContentType: "application/json",
+          body: "={{ JSON.stringify({ requests: [{ addSheet: { properties: { title: $json.backup_title } } }] }) }}",
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "candidate-cleanup-backup-write",
+        name: "Write Candidate Backup Values",
+        type: "n8n-nodes-base.httpRequest",
+        typeVersion: 4.2,
+        position: [960, 0],
+        parameters: {
+          method: "PUT",
+          authentication: "predefinedCredentialType",
+          nodeCredentialType: "googleSheetsOAuth2Api",
+          url: `=https://sheets.googleapis.com/v4/spreadsheets/${markDone.parameters.documentId.value}/values/{{ encodeURIComponent($('Build Backup Payload').first().json.backup_title + '!A1') }}?valueInputOption=RAW`,
+          sendBody: true,
+          contentType: "raw",
+          rawContentType: "application/json",
+          body: "={{ JSON.stringify({ values: $('Build Backup Payload').first().json.values }) }}",
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "candidate-cleanup-read",
+        name: "Get Review Candidates",
+        type: "n8n-nodes-base.googleSheets",
+        typeVersion: 4.5,
+        position: [1200, 0],
+        continueOnFail: true,
+        alwaysOutputData: true,
+        parameters: {
+          documentId: markDone.parameters.documentId,
+          sheetName: reviewCandidatesSheetName(),
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "candidate-cleanup-build",
+        name: "Build Candidate Cleanup",
+        type: "n8n-nodes-base.code",
+        typeVersion: 2,
+        position: [1440, 0],
+        parameters: {
+          jsCode: `// Temporal cleanup: discard bad pending candidates, preserving history.
+const rows = $input.all().map(i => i.json).filter(r => !r.error);
+const publishedReviews = ${JSON.stringify(publishedReviewMeta.reviews)};
+const norm = (value) => String(value || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9\\s]/g, ' ').replace(/\\s+/g, ' ').trim();
+const cleanCandidateName = (value) => {
+  let name = String(value || '').replace(/\\s+/g, ' ').trim();
+  if (!name) return '';
+  name = name.replace(/\\(([^)]*)\\)/g, (_, content) => {
+    const text = norm(content);
+    if (!text || /reacondicionado|segunda mano|usad[oa]?|oferta|descuento|similar|este modelo|si se consigue/.test(text)) return ' ';
+    return ' ' + content + ' ';
+  });
+  return name
+    .replace(/\\bserie\\s+(\\d+)/gi, '$1')
+    .replace(/\\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\\b/gi, ' ')
+    .replace(/\\b(en oferta|con descuento|descuento|oferta)\\b/gi, ' ')
+    .replace(/\\bsi se consigue\\b.*$/gi, ' ')
+    .replace(/\\beste modelo\\b/gi, ' ')
+    .replace(/\\bo similar\\b.*$/gi, ' ')
+    .replace(/\\bsimilar\\b/gi, ' ')
+    .replace(/\\s+/g, ' ')
+    .replace(/^[,.;:\\-/\\s]+|[,.;:\\-/\\s]+$/g, '')
+    .trim();
+};
+const canonicalCandidateKey = (value) => norm(cleanCandidateName(value)).split(' ').filter(token => token.length > 2 || /^[0-9]+$/.test(token)).join(' ');
+const isGenericCandidateName = (value) => {
+  const rawText = norm(value);
+  const text = norm(cleanCandidateName(value));
+  if (!text || text.length < 6 || /sin candidato real confiable/.test(text) || /\\bo similar\\b/.test(rawText)) return true;
+  const tokens = text.split(' ').filter(Boolean);
+  const meaningful = tokens.filter(token => token.length > 2 || /^[0-9]+$/.test(token));
+  if (meaningful.length < 2) return true;
+  const genericOnly = new Set(['laptop','windows','android','smartwatch','cafetera','consola','modelo','anterior','inferior','premium','barata','valor','alta','gama','producto','alternativa','opcion']);
+  const hasModelSignal = tokens.some(token => /\\d/.test(token)) || /\\b(m\\d|ecam\\d|ec\\d|oled|lite|pro|ultra|air|series|forerunner|galaxy|switch|steam deck)\\b/.test(text);
+  const nonGeneric = meaningful.filter(token => !genericOnly.has(token));
+  if (!hasModelSignal && nonGeneric.length < 2) return true;
+  if (/^(laptop windows|smartwatch|cafetera|consola|alternativa|opcion)\\b/.test(text)) return true;
+  if (/^(intel core|amd ryzen)\\b/.test(text)) return true;
+  return false;
+};
+const splitCompositeCandidateName = (value) => {
+  const raw = String(value || '').replace(/\\s+/g, ' ').trim();
+  if (!raw || /\\bo similar\\b/.test(norm(raw))) return [];
+  const rawForSplit = cleanCandidateName(raw);
+  const parts = rawForSplit.split(/\\s+(?:o|y|vs\\.?|versus)\\s+|(?:\\s*\\/\\s*)/i).map(cleanCandidateName).filter(Boolean);
+  if (parts.length <= 1) return rawForSplit ? [rawForSplit] : [];
+  const realParts = parts.filter(part => !isGenericCandidateName(part));
+  return realParts.length >= 2 ? [...new Set(realParts)] : [];
+};
+const reviewTitleBySlug = new Map(publishedReviews.map(review => [String(review.slug || '').trim(), review.title || '']));
+const isSelfCandidate = (row) => {
+  const raw = String(row.candidate_name || '');
+  if (/\\beste\\s+modelo\\b/i.test(raw)) return true;
+  const candidateKey = canonicalCandidateKey(raw);
+  const sourceKey = canonicalCandidateKey(reviewTitleBySlug.get(String(row.source_slug || '').trim()));
+  return candidateKey && sourceKey && (candidateKey === sourceKey || sourceKey.includes(candidateKey) || candidateKey.includes(sourceKey));
+};
+const rank = (row) => {
+  const status = String(row.status || '').toLowerCase().trim();
+  if (status === 'done') return 4;
+  if (status === 'ready') return 3;
+  if (String(row.affiliate_url || '').trim()) return 2;
+  if (status === 'processing') return 1;
+  return 0;
+};
+const byKey = new Map();
+for (const row of rows) {
+  const key = canonicalCandidateKey(row.candidate_name);
+  if (!key) continue;
+  const list = byKey.get(key) || [];
+  list.push(row);
+  byKey.set(key, list);
+}
+const now = new Date().toISOString();
+const updates = [];
+for (const row of rows) {
+  if (String(row.status || '').toLowerCase().trim() !== 'pending' || !row.row_number) continue;
+  const rawName = String(row.candidate_name || '').trim();
+  const cleanName = cleanCandidateName(rawName);
+  const siblings = byKey.get(canonicalCandidateKey(rawName)) || [];
+  const duplicate = siblings.some(other => {
+    if (other === row) return false;
+    if (rank(other) > rank(row)) return true;
+    return cleanCandidateName(other.candidate_name) === cleanName && String(other.candidate_name || '').trim() !== rawName;
+  });
+  let reason = '';
+  if (duplicate) reason = 'cleanup: duplicate candidate';
+  else if (splitCompositeCandidateName(rawName).length > 1) reason = 'cleanup: composite candidate';
+  else if (isSelfCandidate(row)) reason = 'cleanup: self candidate';
+  else if (isGenericCandidateName(rawName)) reason = 'cleanup: generic candidate';
+  if (!reason) continue;
+  updates.push({ json: { row_number: row.row_number, status: 'discarded', updated_at: now, error_msg: reason } });
+}
+return updates;`,
+        },
+      },
+      {
+        id: "candidate-cleanup-update",
+        name: "Discard Bad Pending Candidates",
+        type: "n8n-nodes-base.googleSheets",
+        typeVersion: 4.5,
+        position: [1680, 0],
+        parameters: {
+          operation: "update",
+          documentId: markDone.parameters.documentId,
+          sheetName: reviewCandidatesSheetName(),
+          columns: {
+            mappingMode: "defineBelow",
+            value: {
+              row_number: "={{ $json.row_number }}",
+              status: "={{ $json.status }}",
+              updated_at: "={{ $json.updated_at }}",
+              error_msg: "={{ $json.error_msg }}",
+            },
+            matchingColumns: ["row_number"],
+            schema: [],
+            attemptToConvertTypes: false,
+            convertFieldsToString: true,
+          },
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+    ],
+    connections: {
+      "Ephemeral Execute Trigger": {
+        main: [[{ node: "Read Candidates For Backup", type: "main", index: 0 }]],
+      },
+      "Read Candidates For Backup": {
+        main: [[{ node: "Build Backup Payload", type: "main", index: 0 }]],
+      },
+      "Build Backup Payload": {
+        main: [[{ node: "Create Candidate Backup Sheet", type: "main", index: 0 }]],
+      },
+      "Create Candidate Backup Sheet": {
+        main: [[{ node: "Write Candidate Backup Values", type: "main", index: 0 }]],
+      },
+      "Write Candidate Backup Values": {
+        main: [[{ node: "Get Review Candidates", type: "main", index: 0 }]],
+      },
+      "Get Review Candidates": {
+        main: [[{ node: "Build Candidate Cleanup", type: "main", index: 0 }]],
+      },
+      "Build Candidate Cleanup": {
+        main: [[{ node: "Discard Bad Pending Candidates", type: "main", index: 0 }]],
       },
     },
     settings: {
@@ -1092,11 +1381,26 @@ const tierRank = (tier) => {
   return 3;
 };
 const norm = (value) => String(value || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9\\s]/g, ' ').replace(/\\s+/g, ' ').trim();
+const cleanCandidateName = (value) => String(value || '')
+  .replace(/\\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\\b/gi, ' ')
+  .replace(/\\b(en oferta|con descuento|descuento|oferta)\\b/gi, ' ')
+  .replace(/\\bo similar\\b.*$/gi, ' ')
+  .replace(/\\bsimilar\\b/gi, ' ')
+  .replace(/\\s+/g, ' ')
+  .trim();
+const canonicalCandidateKey = (value) => norm(cleanCandidateName(value))
+  .split(' ')
+  .filter(token => token.length > 2 || /^[0-9]+$/.test(token))
+  .join(' ');
+const preferredKeys = new Set(rows
+  .filter(r => ['ready', 'done', 'processing'].includes(String(r.status || '').toLowerCase().trim()) || String(r.affiliate_url || '').trim())
+  .map(r => canonicalCandidateKey(r.candidate_name))
+  .filter(Boolean));
 const isPublishedName = (candidateName) => {
-  const candidate = norm(candidateName);
+  const candidate = canonicalCandidateKey(candidateName);
   if (!candidate || candidate.length < 10) return false;
   return publishedReviews.some(review => {
-    const title = norm(review.title);
+    const title = canonicalCandidateKey(review.title);
     return title && (title.includes(candidate.slice(0, 80)) || candidate.includes(title.slice(0, 80)));
   });
 };
@@ -1107,6 +1411,7 @@ const sorted = rows
   .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
   .filter(r => !publishedProductIds.has(String(r.candidate_ml_id || '').trim()))
   .filter(r => !isPublishedName(r.candidate_name))
+  .filter(r => !preferredKeys.has(canonicalCandidateKey(r.candidate_name)))
   .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)));
 const pending = [];
 const seenSources = new Set();
@@ -1537,11 +1842,26 @@ const norm = (value) => String(value || '')
   .replace(/[^a-z0-9\\s]/g, ' ')
   .replace(/\\s+/g, ' ')
   .trim();
+const cleanCandidateName = (value) => String(value || '')
+  .replace(/\\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\\b/gi, ' ')
+  .replace(/\\b(en oferta|con descuento|descuento|oferta)\\b/gi, ' ')
+  .replace(/\\bo similar\\b.*$/gi, ' ')
+  .replace(/\\bsimilar\\b/gi, ' ')
+  .replace(/\\s+/g, ' ')
+  .trim();
+const canonicalCandidateKey = (value) => norm(cleanCandidateName(value))
+  .split(' ')
+  .filter(token => token.length > 2 || /^[0-9]+$/.test(token))
+  .join(' ');
+const preferredKeys = new Set(rows
+  .filter(r => ['ready', 'done', 'processing'].includes(String(r.status || '').toLowerCase().trim()) || String(r.affiliate_url || '').trim())
+  .map(r => canonicalCandidateKey(r.candidate_name))
+  .filter(Boolean));
 const isPublishedName = (candidateName) => {
-  const candidate = norm(candidateName);
+  const candidate = canonicalCandidateKey(candidateName);
   if (!candidate || candidate.length < 10) return false;
   return publishedReviews.some(review => {
-    const title = norm(review.title);
+    const title = canonicalCandidateKey(review.title);
     return title && (title.includes(candidate.slice(0, 80)) || candidate.includes(title.slice(0, 80)));
   });
 };
@@ -1552,6 +1872,7 @@ const pending = rows
   .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
   .filter(r => !publishedProductIds.has(String(r.candidate_ml_id || '').trim()))
   .filter(r => !isPublishedName(r.candidate_name))
+  .filter(r => !preferredKeys.has(canonicalCandidateKey(r.candidate_name)))
   .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)));
 const snapshot = Array.isArray(sd.review_candidate_snapshot) ? sd.review_candidate_snapshot : [];
 const shownRows = rows
@@ -2612,6 +2933,66 @@ const norm = (s) => String(s || '')
   .replace(/\\s+/g, ' ')
   .trim();
 const slugify = (s) => norm(s).replace(/\\s+/g, '-').slice(0, 80);
+const cleanCandidateName = (value) => {
+  let name = String(value || '').replace(/\\s+/g, ' ').trim();
+  if (!name) return '';
+  name = name.replace(/\\(([^)]*)\\)/g, (_, content) => {
+    const text = norm(content);
+    if (!text || /reacondicionado|segunda mano|usad[oa]?|oferta|descuento|similar|este modelo|si se consigue/.test(text)) return ' ';
+    return ' ' + content + ' ';
+  });
+  return name
+    .replace(/\\bserie\\s+(\\d+)/gi, '$1')
+    .replace(/\\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\\b/gi, ' ')
+    .replace(/\\b(en oferta|con descuento|descuento|oferta)\\b/gi, ' ')
+    .replace(/\\bsi se consigue\\b.*$/gi, ' ')
+    .replace(/\\beste modelo\\b/gi, ' ')
+    .replace(/\\bo similar\\b.*$/gi, ' ')
+    .replace(/\\bsimilar\\b/gi, ' ')
+    .replace(/\\s+/g, ' ')
+    .replace(/^[,.;:\\-/\\s]+|[,.;:\\-/\\s]+$/g, '')
+    .trim();
+};
+const canonicalCandidateKey = (value) => norm(cleanCandidateName(value))
+  .split(' ')
+  .filter(token => token.length > 2 || /^[0-9]+$/.test(token))
+  .join(' ');
+const isGenericCandidateName = (value) => {
+  const rawText = norm(value);
+  const text = norm(cleanCandidateName(value));
+  if (!text || text.length < 6 || /sin candidato real confiable/.test(text) || /\\bo similar\\b/.test(rawText)) return true;
+  const tokens = text.split(' ').filter(Boolean);
+  const meaningful = tokens.filter(token => token.length > 2 || /^[0-9]+$/.test(token));
+  if (meaningful.length < 2) return true;
+  const genericOnly = new Set(['laptop','windows','android','smartwatch','cafetera','consola','modelo','anterior','inferior','premium','barata','valor','alta','gama','producto','alternativa','opcion']);
+  const hasModelSignal = tokens.some(token => /\\d/.test(token)) || /\\b(m\\d|ecam\\d|ec\\d|oled|lite|pro|ultra|air|series|forerunner|galaxy|switch|steam deck)\\b/.test(text);
+  const nonGeneric = meaningful.filter(token => !genericOnly.has(token));
+  if (!hasModelSignal && nonGeneric.length < 2) return true;
+  if (/^(laptop windows|smartwatch|cafetera|consola|alternativa|opcion)\\b/.test(text)) return true;
+  if (/^(intel core|amd ryzen)\\b/.test(text)) return true;
+  return false;
+};
+const splitCompositeCandidateName = (value) => {
+  const raw = String(value || '').replace(/\\s+/g, ' ').trim();
+  if (!raw || /\\bo similar\\b/.test(norm(raw))) return [];
+  const rawForSplit = cleanCandidateName(raw);
+  const parts = rawForSplit.split(/\\s+(?:o|y|vs\\.?|versus)\\s+|(?:\\s*\\/\\s*)/i).map(cleanCandidateName).filter(Boolean);
+  if (parts.length <= 1) return rawForSplit ? [rawForSplit] : [];
+  const realParts = parts.filter(part => !isGenericCandidateName(part));
+  return realParts.length >= 2 ? [...new Set(realParts)] : [];
+};
+const isSelfCandidate = (name) => {
+  if (/\\beste\\s+modelo\\b/i.test(String(name || ''))) return true;
+  const candidateKey = canonicalCandidateKey(name);
+  const sourceKey = canonicalCandidateKey([review.producto?.display_title, review.producto?.nombre, review.meta?.slug].filter(Boolean).join(' '));
+  return candidateKey && sourceKey && (candidateKey === sourceKey || sourceKey.includes(candidateKey) || candidateKey.includes(sourceKey));
+};
+const existingKeys = new Set(
+  $input.all()
+    .filter(i => !['discarded'].includes(String(i.json?.status || '').toLowerCase().trim()))
+    .map(i => canonicalCandidateKey(i.json?.candidate_name))
+    .filter(Boolean)
+);
 const money = (n) => Number.isFinite(Number(n)) ? Number(n) : null;
 const currentPrice = money(review.precio?.actual);
 const scorePrice = (price) => {
@@ -2647,39 +3028,45 @@ const classifyTier = (input) => {
 };
 
 const rows = [];
+const rowKeys = new Set();
 const push = (input) => {
-  const name = String(input.candidate_name || '').trim();
+  const rawName = String(input.candidate_name || '').trim();
   const relation = String(input.relation_type || '').trim();
-  if (name.length > 120) return;
-  if (!name || !relation) return;
+  if (rawName.length > 160) return;
+  if (!rawName || !relation || isGenericCandidateName(rawName) || isSelfCandidate(rawName)) return;
 
-  const candidateId = [
-    sourceSlug,
-    input.candidate_ml_id || slugify(name),
-  ].filter(Boolean).join(':');
+  for (const name of splitCompositeCandidateName(rawName)) {
+    if (!name || name.length > 120 || isGenericCandidateName(name) || isSelfCandidate(name)) continue;
+    const key = canonicalCandidateKey(name);
+    const candidateId = [
+      sourceSlug,
+      slugify(name),
+    ].filter(Boolean).join(':');
 
-  if (existing.has(candidateId) || rows.some(r => r.candidate_id === candidateId)) return;
+    if (existing.has(candidateId) || existingKeys.has(key) || rowKeys.has(key) || rows.some(r => r.candidate_id === candidateId)) continue;
+    rowKeys.add(key);
 
-  rows.push({
-    candidate_id: candidateId,
-    source_slug: sourceSlug,
-    source_product_id: sourceProductId,
-    relation_type: relation,
-    candidate_tier: classifyTier(input),
-    candidate_name: name,
-    candidate_query: input.candidate_query || name,
-    candidate_ml_url: input.candidate_ml_url || '',
-    candidate_ml_id: input.candidate_ml_id || '',
-    affiliate_url: '',
-    target_slug: '',
-    status: 'pending',
-    priority_score: input.priority_score ?? 50,
-    reason: input.reason || '',
-    mentioned_in: input.mentioned_in || '',
-    created_at: now,
-    updated_at: now,
-    error_msg: '',
-  });
+    rows.push({
+      candidate_id: candidateId,
+      source_slug: sourceSlug,
+      source_product_id: sourceProductId,
+      relation_type: relation,
+      candidate_tier: classifyTier(input),
+      candidate_name: name,
+      candidate_query: cleanCandidateName(input.candidate_query || name) || name,
+      candidate_ml_url: input.candidate_ml_url || '',
+      candidate_ml_id: input.candidate_ml_id || '',
+      affiliate_url: '',
+      target_slug: '',
+      status: 'pending',
+      priority_score: input.priority_score ?? 50,
+      reason: input.reason || '',
+      mentioned_in: input.mentioned_in || '',
+      created_at: now,
+      updated_at: now,
+      error_msg: '',
+    });
+  }
 };
 
 for (const item of review.productos_similares_ml || []) {

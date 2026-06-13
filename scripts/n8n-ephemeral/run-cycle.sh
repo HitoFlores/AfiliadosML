@@ -26,6 +26,7 @@ mkdir -p "$WORK_DIR" "$N8N_USER_FOLDER" "$LOG_DIR"
   echo "Started: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
   echo "RUN_DAILY_SCHEDULER=${RUN_DAILY_SCHEDULER:-false}"
   echo "RUN_FRESHNESS=${RUN_FRESHNESS:-false}"
+  echo "RUN_CANDIDATE_CLEANUP=${RUN_CANDIDATE_CLEANUP:-false}"
   echo "RUN_CANDIDATE_BACKFILL=${RUN_CANDIDATE_BACKFILL:-false}"
   echo "MAIN_MAX_RUNS=${MAIN_MAX_RUNS:-3}"
   echo ""
@@ -92,6 +93,10 @@ fi
 
 if [[ "${RUN_FRESHNESS:-false}" == "true" ]]; then
   run_workflow "freshnessAfML2026" "Freshness"
+fi
+
+if [[ "${RUN_CANDIDATE_CLEANUP:-false}" == "true" ]]; then
+  run_workflow "candidateCleanupAfML2026" "Candidate Cleanup"
 fi
 
 if [[ "${RUN_CANDIDATE_BACKFILL:-false}" == "true" ]]; then

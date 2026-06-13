@@ -1,7 +1,13 @@
 import {
   buildBackfillCandidates,
+  canonicalCandidateKey,
   classifyCandidateTier,
+  cleanCandidateName,
+  isGenericCandidateName,
+  isSelfCandidate,
+  splitCompositeCandidateName,
 } from "./review-candidate-backfill.mjs";
+import { buildCandidateCleanupUpdates } from "./review-candidate-cleanup.mjs";
 
 function assertEqual(name, actual, expected) {
   const a = JSON.stringify(actual);
@@ -20,20 +26,45 @@ function assertIncludes(name, values, expected) {
 const rows = buildBackfillCandidates({ now: "2026-06-12T00:00:00.000Z" });
 const names = rows.map((row) => row.candidate_name);
 
-assertIncludes("MacBook backfill includes M2", names, "MacBook Air M2 (reacondicionado o segunda mano)");
-assertIncludes("MacBook backfill includes M3", names, "MacBook Air M3 con descuento");
-assertIncludes("MacBook backfill includes Pro", names, "MacBook Pro M5 Pro (14 pulgadas)");
-assertIncludes("MacBook backfill includes Windows alternative", names, "Laptop Windows con Intel Core Ultra o AMD Ryzen AI (gama alta)");
+assertIncludes("MacBook backfill includes clean Pro", names, "MacBook Pro M5 Pro 14 pulgadas");
+assertEqual("MacBook backfill removes commercial M2", names.includes("MacBook Air M2 (reacondicionado o segunda mano)"), false);
+assertEqual("MacBook backfill removes commercial M3", names.includes("MacBook Air M3 con descuento"), false);
+assertEqual("MacBook backfill skips generic Windows processor alternative", names.includes("Laptop Windows con Intel Core Ultra o AMD Ryzen AI (gama alta)"), false);
 assertIncludes("Switch backfill includes Lite", names, "Nintendo Switch Lite");
 assertIncludes("Switch backfill includes Switch 2", names, "Nintendo Switch 2");
-assertIncludes("Switch backfill includes Steam Deck", names, "Steam Deck (Valve)");
+assertIncludes("Switch backfill includes Steam Deck", names, "Steam Deck Valve");
 assertIncludes("Coffee backfill includes Arte", names, "De'Longhi La Specialista Arte EC9155M");
 assertIncludes("Coffee backfill includes Eletta", names, "De'Longhi Eletta Explore ECAM450.86.T");
-assertIncludes("Coffee backfill includes Sage", names, "Sage (Breville) Barista Touch Impress");
+assertIncludes("Coffee backfill includes Sage", names, "Sage Breville Barista Touch Impress");
 assertEqual(
   "garbage title is ignored",
   names.includes("Sin candidato real confiable identificado en ML"),
   false,
+);
+
+assertEqual(
+  "commercial suffix normalizes away",
+  cleanCandidateName("Apple Watch Series 10 (reacondicionado o en oferta)"),
+  "Apple Watch Series 10",
+);
+assertEqual(
+  "commercial duplicate shares canonical key",
+  canonicalCandidateKey("Apple Watch Series 10 (reacondicionado o en oferta)"),
+  canonicalCandidateKey("Apple Watch Series 10"),
+);
+assertEqual(
+  "composite candidate splits into clean models",
+  splitCompositeCandidateName("Samsung Galaxy Watch 7 o Garmin Forerunner serie 265"),
+  ["Samsung Galaxy Watch 7", "Garmin Forerunner 265"],
+);
+assertEqual("o similar candidate is generic", isGenericCandidateName("Samsung Galaxy Watch 7 o similar"), true);
+assertEqual(
+  "this model candidate is self candidate",
+  isSelfCandidate(
+    { candidate_name: "Apple Watch SE 3 (este modelo)" },
+    { meta: { slug: "apple-watch-se-3" }, producto: { display_title: "Apple Watch SE 3" } },
+  ),
+  true,
 );
 
 assertEqual("tier superior text", classifyCandidateTier({ tipo: "premium" }), "superior");
@@ -52,12 +83,15 @@ const syntheticEntries = [
           { tipo: "premium", titulo: "Duplicate Candidate", resumen: "same id" },
           { tipo: "premium", titulo: "Duplicate Candidate", resumen: "same id again" },
           { tipo: "premium", titulo: "Existing Name Candidate", resumen: "same name" },
+          { tipo: "premium", titulo: "Existing Name Candidate (reacondicionado o en oferta)", resumen: "same clean name" },
           { tipo: "premium", titulo: "", resumen: "empty" },
           { tipo: "premium", titulo: "Published Target", resumen: "already live" },
+          { tipo: "premium", titulo: "Samsung Galaxy Watch 7 o Garmin Forerunner serie 265", resumen: "split models" },
+          { tipo: "premium", titulo: "Samsung Galaxy Watch 7 o similar", resumen: "generic" },
         ],
       },
       productos_similares_ml: [
-        { id: "MLM999", titulo: "Future Similar Product", permalink: "https://www.mercadolibre.com.mx/p/MLM999" },
+        { id: "MLM999", titulo: "Future Similar Product 300", permalink: "https://www.mercadolibre.com.mx/p/MLM999" },
       ],
     },
   },
@@ -97,8 +131,64 @@ assertEqual(
 );
 assertEqual(
   "keeps stable candidate id from candidate name for ML similar products",
-  synthetic.find((row) => row.candidate_name === "Future Similar Product")?.candidate_id,
-  "source-review:future-similar-product",
+  synthetic.find((row) => row.candidate_name === "Future Product 300")?.candidate_id,
+  "source-review:future-product-300",
+);
+assertEqual(
+  "splits composite candidates",
+  synthetic
+    .filter((row) => ["Samsung Galaxy Watch 7", "Garmin Forerunner 265"].includes(row.candidate_name))
+    .map((row) => row.candidate_name),
+  ["Samsung Galaxy Watch 7", "Garmin Forerunner 265"],
+);
+assertEqual(
+  "does not keep generic o similar candidate",
+  synthetic.some((row) => row.candidate_name === "Samsung Galaxy Watch 7 o similar"),
+  false,
+);
+
+const cleanupRows = [
+  { row_number: 2, candidate_name: "Apple Watch Series 10", status: "ready", affiliate_url: "https://meli.la/ok" },
+  { row_number: 3, candidate_name: "Apple Watch Series 10 (reacondicionado o en oferta)", status: "pending" },
+  { row_number: 4, candidate_name: "Samsung Galaxy Watch 7 o Garmin Forerunner serie 265", status: "pending" },
+  { row_number: 5, candidate_name: "Apple Watch SE 3 (este modelo)", source_slug: "apple-watch-se-3", status: "pending" },
+  { row_number: 6, candidate_name: "Samsung Galaxy Watch 7 o similar", status: "pending" },
+  { row_number: 7, candidate_name: "Garmin Forerunner 265", status: "ready" },
+  { row_number: 8, candidate_name: "Historical Done (o similar)", status: "done" },
+];
+assertEqual(
+  "cleanup discards only pending bad rows",
+  buildCandidateCleanupUpdates({
+    rows: cleanupRows,
+    reviews: [{ meta: { slug: "apple-watch-se-3" }, producto: { display_title: "Apple Watch SE 3" } }],
+    now: "2026-06-12T00:00:00.000Z",
+  }),
+  [
+    {
+      row_number: 3,
+      status: "discarded",
+      updated_at: "2026-06-12T00:00:00.000Z",
+      error_msg: "cleanup: duplicate candidate",
+    },
+    {
+      row_number: 4,
+      status: "discarded",
+      updated_at: "2026-06-12T00:00:00.000Z",
+      error_msg: "cleanup: composite candidate",
+    },
+    {
+      row_number: 5,
+      status: "discarded",
+      updated_at: "2026-06-12T00:00:00.000Z",
+      error_msg: "cleanup: self candidate",
+    },
+    {
+      row_number: 6,
+      status: "discarded",
+      updated_at: "2026-06-12T00:00:00.000Z",
+      error_msg: "cleanup: generic candidate",
+    },
+  ],
 );
 
 console.log("Review candidate backfill test passed.");
