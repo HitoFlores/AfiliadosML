@@ -1,0 +1,414 @@
+{
+  "meta": {
+    "producto_id": "MLM15191031",
+    "slug": "nintendo-lite-switch-liteswitch-32gb",
+    "candidate_id": "nintendo-switch-oled-consola-64gb:nintendo-switch-lite",
+    "categoria": "MLM-GAME_CONSOLES",
+    "generado_en": "2026-06-13T21:27:58.517Z"
+  },
+  "producto": {
+    "nombre": "Nintendo LiteSwitch Lite 32GB Standard color turquesa 2017",
+    "display_title": "Nintendo Switch 32GB",
+    "nombre_original": "Nintendo LiteSwitch Lite 32GB Standard color turquesa 2017",
+    "marca": "Nintendo",
+    "modelo": "Switch",
+    "descripcion": "La Nintendo Switch Lite en color turquesa es la consola portátil ideal para los amantes de los videojuegos que buscan diversión en cualquier lugar. Con su diseño compacto y ligero, esta consola es perfecta para jugar en movimiento, ofreciendo una experiencia de juego inmersiva gracias a su pantalla de 5.5 pulgadas y una resolución de 1280 px x 720 px.\n\nEquipado con un potente procesador Nvidia Tegra y una GPU Nvidia Maxwell, la Switch Lite garantiza un rendimiento fluido y gráficos impresionantes, alcanzando hasta 60 FPS. Su capacidad de 32 GB permite almacenar una variedad de juegos, mientras que la memoria RAM de 4 GB asegura un funcionamiento eficiente y rápido.\n\nLa duración de la batería de hasta 7 horas te permite disfrutar de largas sesiones de juego sin interrupciones. Además, cuenta con conectividad Bluetooth 4.1 y Wi-Fi, lo que facilita la conexión con otros dispositivos y la descarga de juegos digitales.\n\nIncluye un adaptador de corriente para que puedas recargarla fácilmente. La Nintendo Switch Lite es compatible con una amplia gama de títulos, incluyendo el popular Animal Crossing: New Horizons, lo que la convierte en una excelente opción para jugadores de todas las edades.",
+    "caracteristicas_principales": [
+      "Pantalla táctil de 5.5 pulgadas con resolución de 1280 px x 720 px que ejecuta contenido a 60 FPS.",
+      "Batería de 3570 mAh con autonomía de 7 horas para sesiones de juego fuera de casa sin interrupciones.",
+      "Compatibilidad con tarjetas Micro-SD, Micro-SDXC y Micro-SDHC para expandir el almacenamiento de datos.",
+      "Procesador Nvidia Tegra de 8 núcleos con 4 GB de memoria RAM LPDDR4 que procesa títulos en modo portátil.",
+      "Conectividad Wi-Fi y Bluetooth 4.1 para descarga de juegos digitales y vinculación de accesorios de audio.",
+      "Diseño compacto con 1.4 cm de profundidad que permite transportar el equipo en bolsos o fundas reducidas."
+    ],
+    "specs": {
+      "Marca": "Nintendo",
+      "Línea": "Lite",
+      "Modelo": "Switch",
+      "Submodelo": "Lite",
+      "Edición": "Standard",
+      "Capacidad": "32 GB",
+      "Color": "Turquesa",
+      "Color principal": "Celeste",
+      "Modelo detallado": "Heavenly",
+      "Conectividad de red móvil": "4G",
+      "Tipo de consola": "Portátil",
+      "Con Wi-Fi": "Sí",
+      "Año de lanzamiento": "2017",
+      "Eficiencia energética": "A",
+      "Capacidad de la batería": "3570 mAh",
+      "Región de comercialización": "Brasilera",
+      "Fabricante": "Nintendo",
+      "Incluye accesorios": "Sí",
+      "Accesorios incluidos": "1 adaptador de corriente",
+      "Incluye controles": "Sí",
+      "Cantidad de controles incluidos": "1",
+      "Conectividades de los controles": "Integrado",
+      "Tipo de alimentación": "Batería",
+      "Tipo de batería": "Ion de litio",
+      "Tipos de tarjetas de memoria": "MMC",
+      "Tipos de memoria": "LPDDR4",
+      "Procesador": "Nvidia Tegra",
+      "CPU": "ARM Cortex-A57, ARM Cortex-A53",
+      "GPU": "Nvidia Maxwell",
+      "Con pantalla táctil": "Sí",
+      "Es emulador": "No",
+      "Con HDMI": "No",
+      "Con USB": "Sí",
+      "Con conector jack 3.5 mm": "Sí",
+      "Con S/PDIF": "No",
+      "Con Bluetooth": "Sí",
+      "Con display": "Sí",
+      "Incluye juegos": "No",
+      "Capacidad total del módulo de memoria RAM": "4 GB",
+      "Duración máxima de la batería": "7 h",
+      "Resoluciones máximas de las pantallas": "1280 px x 720 px",
+      "Tamaños de las pantallas": "5.5 \"",
+      "Resolución máxima de salida de video": "1920 px x 1080 px",
+      "Velocidad del procesador": "1.02 GHz",
+      "Peso": "277 g",
+      "Altura": "9 cm",
+      "Ancho": "20 cm",
+      "Profundidad": "1.4 cm",
+      "Versión de Bluetooth": "4.1",
+      "Cantidad máxima de FPS": "60",
+      "Cantidad de juegos incluidos": "0",
+      "Cantidad de núcleos de CPU": "8",
+      "Cantidad de puertos USB": "1",
+      "Cantidad de pantallas": "1",
+      "MPN": "HDHSBAZA1BRA"
+    },
+    "imagenes": [
+      "https://http2.mlstatic.com/D_NQ_NP_993695-MLA99938961443_112025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_875673-MLA99939097151_112025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_972030-MLA99938853415_112025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_789190-MLA99938863067_112025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_935039-MLA99939097159_112025-F.jpg"
+    ]
+  },
+  "precio": {
+    "actual": 3725.95,
+    "original": 5113.39,
+    "descuento_pct": 27,
+    "moneda": "MXN",
+    "envio_gratis": true,
+    "garantia": "Garantía del vendedor: 1 meses"
+  },
+  "vendedor": {
+    "item_id": "MLM3692083714",
+    "nombre": "ETECHPLAYZONMXF",
+    "reputacion": "5_green",
+    "power_seller": "platinum",
+    "transacciones": 14763
+  },
+  "link_afiliado": "https://meli.la/33xgBMh",
+  "reviews_ml": {
+    "total": 8339,
+    "con_comentario": 3041,
+    "calificacion_promedio": 4.8,
+    "destacadas": [
+      {
+        "titulo": "Estado físico al recibirla",
+        "contenido": "Los compradores coinciden en que la consola llega en perfectas condiciones, sin rayones ni daños visibles, lo que sugiere buena calidad de fabricación.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Satisfacción general con el producto",
+        "contenido": "Varios compradores indican que la consola cumple con lo esperado para uso cotidiano, sin mencionar fallas de funcionamiento.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Vigencia del modelo en 2025",
+        "contenido": "Dado que los videos disponibles cuestionan si la Switch Lite sigue siendo una compra inteligente frente a alternativas más nuevas, este es un punto que el comprador debe considerar seriamente.",
+        "sentimiento": "mixto"
+      }
+    ]
+  },
+  "videos_yt": [
+    {
+      "video_id": "jdA5DOrFfiI",
+      "titulo": "¿QUÉ NINTENDO SWITCH COMPRAR EN 2025? Switch OLED vs Lite vs SWITCH 2",
+      "canal": "Ray Bacon",
+      "url": "https://www.youtube.com/watch?v=jdA5DOrFfiI",
+      "thumbnail": "https://i.ytimg.com/vi/jdA5DOrFfiI/hqdefault.jpg",
+      "publicado": "2025-07-26",
+      "vistas": 431315,
+      "match_level": "exact",
+      "evidence_score": 26,
+      "evidence_reason": "brand|category:switch,nintendo|exact:Lite,Switch,Lite|tokens:nintendo,lite,switch|review: vs"
+    },
+    {
+      "video_id": "tdzop3l4IoA",
+      "titulo": "¿Sigue valiendo la pena la Nintendo Switch Lite? 😐",
+      "canal": "Ray Bacon",
+      "url": "https://www.youtube.com/watch?v=tdzop3l4IoA",
+      "thumbnail": "https://i.ytimg.com/vi/tdzop3l4IoA/hqdefault.jpg",
+      "publicado": "2024-09-15",
+      "vistas": 378207,
+      "match_level": "exact",
+      "evidence_score": 26,
+      "evidence_reason": "brand|category:switch,nintendo|exact:Lite,Switch,Lite|tokens:nintendo,lite,switch|review:vale la pena"
+    },
+    {
+      "video_id": "S5scGweoyvo",
+      "titulo": "Nintendo Switch Lite: Análisis",
+      "canal": "levelup.com",
+      "url": "https://www.youtube.com/watch?v=S5scGweoyvo",
+      "thumbnail": "https://i.ytimg.com/vi/S5scGweoyvo/hqdefault.jpg",
+      "publicado": "2019-10-08",
+      "vistas": 146756,
+      "match_level": "exact",
+      "evidence_score": 26,
+      "evidence_reason": "brand|category:switch,nintendo|exact:Lite,Switch,Lite|tokens:nintendo,lite,switch|review:analisis"
+    }
+  ],
+  "youtube_debug": {
+    "version": "v6",
+    "commercial_name": "Nintendo Switch",
+    "queries": [
+      "Nintendo Switch review",
+      "Nintendo Switch analisis",
+      "Nintendo Switch reseña",
+      "Nintendo Switch vale la pena",
+      "Nintendo Switch comparativa",
+      "Nintendo Lite Switch review",
+      "Nintendo Lite Switch analisis",
+      "Nintendo Lite Switch reseña"
+    ],
+    "query_log": [
+      {
+        "q": "Nintendo Switch review",
+        "count": 10
+      },
+      {
+        "q": "Nintendo Switch analisis",
+        "count": 10
+      },
+      {
+        "q": "Nintendo Switch reseña",
+        "count": 10
+      },
+      {
+        "q": "Nintendo Switch vale la pena",
+        "count": 10
+      },
+      {
+        "q": "Nintendo Switch comparativa",
+        "count": 10
+      },
+      {
+        "q": "Nintendo Lite Switch review",
+        "count": 10
+      },
+      {
+        "q": "Nintendo Lite Switch analisis",
+        "count": 10
+      },
+      {
+        "q": "Nintendo Lite Switch reseña",
+        "count": 10
+      }
+    ],
+    "source_count": 54,
+    "accepted_count": 3,
+    "rejected_sample": [
+      {
+        "title": "Is It Still Worth Buying a Switch in 2025?",
+        "score": 7,
+        "reason": "category:switch|exact:Switch|tokens:switch",
+        "match_level": "none"
+      },
+      {
+        "title": "Nintendo Switch Lite In 2026! (Still Worth It?) (Review)",
+        "score": -20,
+        "reason": "cross_category:iphone"
+      }
+    ],
+    "category": "console",
+    "identity_tokens": [
+      "nintendo",
+      "lite",
+      "switch",
+      "liteswitch",
+      "32gb",
+      "standard",
+      "turquesa",
+      "2017"
+    ]
+  },
+  "ml_search_debug": {
+    "source": "Get Similar Products",
+    "query": null,
+    "received_count": 0,
+    "valid_count": 0,
+    "saved_count": 0,
+    "empty_reason": "ml_returned_no_results",
+    "error_msg": null
+  },
+  "editorial": {
+    "score": 8.2,
+    "score_justificacion": "La Nintendo Switch Lite es una consola portátil sólida con especificaciones bien documentadas, sin quejas de producto en las opiniones disponibles, aunque su naturaleza exclusivamente portátil y la llegada de la Switch 2 limitan su valor a largo plazo.",
+    "sub_scores": [
+      {
+        "dimension": "Pantalla",
+        "score": 8,
+        "justificacion": "Pantalla táctil de 5.5 pulgadas a 720p es adecuada para uso portátil; el tamaño reducido respecto a la Switch original es un compromiso real según el análisis de levelup.com."
+      },
+      {
+        "dimension": "Rendimiento",
+        "score": 7.5,
+        "justificacion": "El procesador Nvidia Tegra con 4 GB de RAM LPDDR4 ofrece el mismo rendimiento que la Switch original en modo portátil; no hay mejora generacional respecto al modelo estándar."
+      },
+      {
+        "dimension": "Batería",
+        "score": 7.8,
+        "justificacion": "La batería de 3570 mAh con autonomía declarada de hasta 7 horas es competente para sesiones portátiles, aunque el dato es el máximo del fabricante y varía según el juego."
+      },
+      {
+        "dimension": "Diseño y ergonomía",
+        "score": 8.5,
+        "justificacion": "El diseño compacto de 1.4 cm de profundidad y el color turquesa son bien recibidos; los compradores no reportan problemas físicos con la unidad recibida."
+      },
+      {
+        "dimension": "Conectividad",
+        "score": 7.5,
+        "justificacion": "Wi-Fi y Bluetooth 4.1 cubren lo básico; la ausencia de salida de video es una limitación estructural del modelo Lite frente a la Switch estándar."
+      },
+      {
+        "dimension": "Almacenamiento",
+        "score": 7,
+        "justificacion": "32 GB internos son insuficientes para una biblioteca digital amplia; la compatibilidad con microSD es el salvavidas, pero implica un gasto adicional."
+      }
+    ],
+    "veredicto_corto": "La Nintendo Switch Lite es una consola portátil funcional y bien construida, ideal para quien juega exclusivamente en modo handheld. Sin embargo, con la Switch 2 ya disponible, conviene evaluar bien si este modelo justifica la inversión en 2025.",
+    "compralo_si": [
+      "Juegas exclusivamente en modo portátil",
+      "Buscas una consola compacta y ligera",
+      "Tienes presupuesto ajustado frente a Switch OLED",
+      "Quieres acceso a la biblioteca de Switch"
+    ],
+    "saltatelo_si": [
+      "Quieres jugar en TV o modo sobremesa",
+      "Buscas la mejor tecnología Nintendo disponible",
+      "Planeas jugar títulos de Switch 2 en el futuro"
+    ],
+    "pros": [
+      "Diseño compacto y ligero, fácil de transportar en bolso o mochila",
+      "Pantalla táctil de 5.5 pulgadas adecuada para uso portátil",
+      "Almacenamiento expandible vía microSD, microSDHC y microSDXC",
+      "Acceso a una biblioteca amplia de títulos de Nintendo Switch",
+      "Autonomía declarada de hasta 7 horas, suficiente para viajes"
+    ],
+    "contras": [
+      "No se puede conectar a televisor: modo dock inexistente en este modelo",
+      "Los controles Joy-Con no son desmontables, lo que limita modos de juego y dificulta reparaciones",
+      "32 GB internos se quedan cortos rápidamente con juegos modernos; la microSD es prácticamente obligatoria",
+      "Con la Nintendo Switch 2 ya en el mercado, este modelo queda como tecnología de generación anterior",
+      "Bluetooth 4.1 no soporta todos los auriculares inalámbricos de forma nativa sin apps de terceros"
+    ],
+    "fuentes_citadas": [
+      {
+        "tipo": "compradores",
+        "autor": "Compradores ML",
+        "aporte": "Confirmaron que las unidades llegan en buen estado físico y sin defectos visibles; no reportaron fallas de producto."
+      },
+      {
+        "tipo": "video",
+        "autor": "Ray Bacon",
+        "aporte": "Comparativa entre modelos Switch en 2024-2025 que cuestiona la vigencia de la Lite frente a la OLED y la Switch 2."
+      },
+      {
+        "tipo": "video",
+        "autor": "levelup.com",
+        "aporte": "Análisis del Switch Lite que identifica en qué aspectos es mejor y peor que el modelo original."
+      }
+    ],
+    "faq": [
+      {
+        "pregunta": "¿La Nintendo Switch Lite puede conectarse a la televisión?",
+        "respuesta": "No. La Switch Lite es exclusivamente portátil y no incluye salida de video ni soporte para el dock. Si quieres jugar en TV, necesitas la Switch estándar o la Switch OLED."
+      },
+      {
+        "pregunta": "¿Los 32 GB internos son suficientes?",
+        "respuesta": "Para una o dos cartuchos físicos pueden bastar, pero si planeas comprar juegos digitales, los 32 GB se agotan rápido. Se recomienda adquirir una tarjeta microSD desde el inicio."
+      },
+      {
+        "pregunta": "¿Es compatible con todos los juegos de Nintendo Switch?",
+        "respuesta": "La mayoría de los títulos son compatibles, pero algunos juegos que requieren los Joy-Con separados o el modo TV no funcionan en la Lite. Conviene verificar la compatibilidad de cada juego antes de comprarlo."
+      },
+      {
+        "pregunta": "¿Vale la pena comprarla con la Nintendo Switch 2 ya disponible?",
+        "respuesta": "Depende del presupuesto. La Switch 2 ofrece mayor potencia y compatibilidad futura, pero tiene un precio significativamente mayor. La Lite sigue siendo funcional para quien busca una entrada económica al ecosistema Nintendo en modo portátil."
+      },
+      {
+        "pregunta": "¿Qué tan duradera es la batería en la práctica?",
+        "respuesta": "El fabricante declara hasta 7 horas, pero ese dato corresponde a condiciones ideales. Con juegos exigentes como Zelda o Mario Kart, la autonomía real suele ser menor. Para viajes cortos es suficiente; para viajes largos conviene llevar el cargador."
+      }
+    ],
+    "precio_valor": "La Switch Lite se ubica en un rango de precio accesible dentro del ecosistema Nintendo, lo que la hace atractiva como punto de entrada. Sin embargo, con la Switch 2 ya en el mercado, pagar por tecnología de 2019 requiere una justificación clara: básicamente, que el presupuesto no alcance para el modelo superior. Si el precio es competitivo y el uso es exclusivamente portátil, la relación valor-precio es razonable; si la diferencia con la Switch OLED es pequeña, conviene estirar el presupuesto.",
+    "alternativas": [
+      {
+        "tipo": "Opción más económica",
+        "descripcion": "Una Nintendo Switch Lite de segunda mano o reacondicionada en buen estado puede encontrarse a menor precio. Se sacrifica la garantía y la certeza del estado interno, pero las especificaciones son idénticas. Ideal si el presupuesto es muy ajustado y se compra a un vendedor con buena reputación."
+      },
+      {
+        "tipo": "Opción premium",
+        "descripcion": "La Nintendo Switch OLED ofrece pantalla de 7 pulgadas con tecnología OLED, mayor brillo y contraste, además de modo TV y Joy-Con desmontables. Vale la pena el gasto extra si se planea jugar también en televisor o si la calidad de imagen es prioritaria."
+      }
+    ],
+    "riesgos_compra_ml": [
+      "`Versión de región: verificar que la consola sea para América Latina o América del Norte para asegurar compatibilidad con la eShop mexicana y el idioma español.",
+      "Modelo exacto: confirmar que se trata de la Switch Lite y no de una Switch estándar o una versión modificada (flasheada), lo que puede invalidar servicios en línea.",
+      "Garantía oficial: Nintendo México ofrece garantía limitada; verificar si el vendedor es distribuidor autorizado o si la garantía aplica en México.",
+      "Accesorios incluidos: la descripción menciona solo el adaptador de corriente; confirmar que no faltan componentes como el cable USB-C antes de pagar.",
+      "Autenticidad: existen réplicas en el mercado; revisar número de serie y comprar a vendedores con historial verificado en ML."
+    ],
+    "checklist_antes_de_comprar": [
+      "Verificar en la publicación que la región de la consola es América (no Asia/Europa) para compatibilidad con la eShop MX.",
+      "Revisar el historial y reputación del vendedor en Mercado Libre antes de confirmar la compra.",
+      "Confirmar qué accesorios están incluidos: al menos adaptador de corriente USB-C y, si es nueva, que venga sellada de fábrica.",
+      "Decidir si necesitas modo TV: si la respuesta es sí, este modelo no es para ti.",
+      "Comparar el precio con la Switch OLED en ML; si la diferencia es menor a 1,500 MXN, considera el modelo superior."
+    ],
+    "comparativa_editorial": [
+      {
+        "tipo": "mejor valor",
+        "titulo": "Nintendo Switch estándar (con dock)",
+        "resumen": "Por un precio mayor pero razonable, la Switch estándar agrega modo TV, Joy-Con desmontables y mayor versatilidad. Para muchos usuarios es el mejor equilibrio entre precio y funcionalidad."
+      },
+      {
+        "tipo": "premium",
+        "titulo": "Nintendo Switch OLED",
+        "resumen": "La Switch OLED ofrece pantalla de 7 pulgadas con tecnología OLED, mejor audio integrado y dock con puerto LAN. Es la mejor opción dentro de la generación actual si el presupuesto lo permite."
+      },
+      {
+        "tipo": "alternativa fuera del ecosistema",
+        "titulo": "Steam Deck (Valve)",
+        "resumen": "Para usuarios que priorizan la biblioteca de PC y mayor potencia gráfica, el Steam Deck es una alternativa portátil fuera del ecosistema Nintendo. Tiene un precio más alto y una curva de aprendizaje mayor, pero accede a miles de títulos de Steam."
+      }
+    ],
+    "mejor_alternativa": {
+      "tipo": "mejor valor",
+      "titulo": "Nintendo Switch estándar (con dock)",
+      "razon": "Agrega modo TV y Joy-Con desmontables por una diferencia de precio que suele justificarse si el usuario no juega exclusivamente en modo portátil."
+    },
+    "keyword_targets": [
+      "nintendo switch lite turquesa precio mexico 2026",
+      "switch lite vs switch oled cual comprar",
+      "nintendo switch lite mercado libre mexico",
+      "switch lite 32gb vale la pena 2026",
+      "consola portatil nintendo switch lite barata"
+    ],
+    "evidencia_limitaciones": "Este análisis cruza las especificaciones oficiales del fabricante, las opiniones de compradores verificados en Mercado Libre y el contexto editorial de canales independientes como Ray Bacon y levelup.com; no incluye pruebas de laboratorio propias.",
+    "seo_title": "Nintendo Switch Lite Turquesa 2026: ¿Vale la pena?",
+    "seo_description": "Análisis honesto de la Nintendo Switch Lite turquesa 32GB: pros, contras, comparativa con Switch OLED y Switch 2. ¿Conviene comprarla en México en 2026?",
+    "articulo_html": "<h2>Veredicto rápido: ¿qué es la Nintendo Switch Lite y para quién tiene sentido?</h2>\n<p>La Nintendo Switch Lite es la versión compacta y exclusivamente portátil de la consola híbrida de Nintendo. Llegó al mercado en 2019 con un precio menor al modelo estándar, sacrificando la capacidad de conectarse a la televisión y los Joy-Con desmontables. En 2025, con la Nintendo Switch 2 ya disponible, comprar una Switch Lite requiere una justificación clara: básicamente, que el presupuesto no alcance para los modelos superiores y que el uso sea <strong>exclusivamente en modo handheld</strong>.</p>\n<p>Los compradores en Mercado Libre no reportan fallas de producto; las unidades llegan en buen estado y la consola funciona como se espera. Pero eso no significa que sea la mejor compra para todos.</p>\n\n<h2>Qué ofrece y qué no ofrece este modelo</h2>\n<p>La Switch Lite monta una pantalla táctil de <strong>5.5 pulgadas a 720p</strong>, un procesador Nvidia Tegra de 8 núcleos y 4 GB de RAM LPDDR4. En términos de rendimiento, es equivalente a la Switch estándar en modo portátil: no hay mejora generacional. Según el análisis de levelup.com, el modelo es mejor que el original en algunos aspectos —tamaño, peso, precio— pero peor en otros, principalmente la versatilidad.</p>\n<p>Lo que <strong>no tiene</strong> es igual de importante: sin salida de video, sin dock, sin Joy-Con separables. Si en algún momento querés jugar en TV o prestar los controles, este modelo no lo permite. Tampoco hay mejora en el procesador respecto a la Switch original, algo que el canal Ray Bacon señala al comparar los modelos disponibles en 2024-2025.</p>\n\n<h2>Lo bueno: dónde cumple</h2>\n<ul>\n<li><strong>Portabilidad real:</strong> con 1.4 cm de profundidad y un peso reducido, cabe en bolsos pequeños sin problema.</li>\n<li><strong>Pantalla adecuada para el uso:</strong> 5.5 pulgadas a 720p es suficiente para una pantalla que se usa a corta distancia. No es una pantalla OLED, pero cumple para el formato portátil.</li>\n<li><strong>Biblioteca amplia:</strong> accede a la mayoría de los títulos de Nintendo Switch, incluyendo franquicias como Mario, Zelda y Pokémon.</li>\n<li><strong>Almacenamiento expandible:</strong> la compatibilidad con microSD, microSDHC y microSDXC es indispensable dado que los 32 GB internos se quedan cortos rápido.</li>\n<li><strong>Autonomía aceptable:</strong> el fabricante declara hasta 7 horas; en la práctica varía según el juego, pero es suficiente para trayectos y sesiones fuera de casa.</li>\n</ul>\n\n<h2>Lo malo: puntos concretos a considerar</h2>\n<ul>\n<li><strong>Sin modo TV:</strong> es la limitación más importante. No hay dock, no hay salida HDMI. Si querés jugar en pantalla grande, este modelo no es para vos.</li>\n<li><strong>Joy-Con integrados:</strong> al estar soldados al cuerpo, no se pueden separar para jugar en distintos modos. Además, si desarrollan el conocido problema de drift, la reparación es más complicada y costosa.</li>\n<li><strong>32 GB se agotan rápido:</strong> un solo juego moderno puede ocupar entre 6 y 15 GB. La microSD es prácticamente obligatoria desde el primer día, lo que implica un gasto adicional.</li>\n<li><strong>Tecnología de 2019:</strong> con la Switch 2 en el mercado, este hardware ya es de generación anterior. No recibirá los títulos exclusivos de la nueva consola.</li>\n<li><strong>Bluetooth 4.1 con limitaciones:</strong> la conectividad de audio inalámbrico nativa es limitada; algunos auriculares Bluetooth requieren adaptadores o aplicaciones de terceros.</li>\n</ul>\n\n<h2>Comparativa: ¿qué más podés comprar con ese presupuesto?</h2>\n<p>Antes de confirmar la compra, vale la pena comparar con otras opciones dentro y fuera del ecosistema Nintendo:</p>\n<ul>\n<li><strong>Nintendo Switch estándar:</strong> agrega modo TV, Joy-Con desmontables y mayor versatilidad. Si la diferencia de precio es menor a 1,500 MXN, el modelo estándar suele ser mejor inversión.</li>\n<li><strong>Nintendo Switch OLED:</strong> pantalla de 7 pulgadas con tecnología OLED, mejor audio y dock con puerto LAN. Es la mejor opción dentro de la generación actual si el presupuesto lo permite.</li>\n<li><strong>Steam Deck (fuera del ecosistema):</strong> para usuarios que priorizan la biblioteca de PC y mayor potencia, el Steam Deck es una alternativa portátil con acceso a miles de títulos de Steam. Precio más alto y curva de aprendizaje mayor, pero más potente.</li>\n</ul>\n\n<h2>Para quién sí tiene sentido y para quién no</h2>\n<h3>Comprala si:</h3>\n<ul>\n<li>Jugás exclusivamente en modo portátil y no te interesa conectarla a la TV.</li>\n<li>Buscás el precio de entrada más bajo al ecosistema Nintendo Switch.</li>\n<li>Es para un niño o adolescente que jugará en movimiento.</li>\n<li>Ya tenés una Switch estándar u OLED y querés una segunda consola portátil.</li>\n</ul>\n<h3>Saltátela si:</h3>\n<ul>\n<li>Querés jugar en televisor aunque sea ocasionalmente.</li>\n<li>Planeas comprar títulos exclusivos de Nintendo Switch 2 en el futuro.</li>\n<li>La diferencia de precio con la Switch OLED es pequeña en el momento de comprar.</li>\n</ul>\n\n<h2>Conclusión: una consola sólida con un contexto que complica la decisión</h2>\n<p>La Nintendo Switch Lite en color turquesa es un producto bien construido, sin fallas reportadas por los compradores y con una biblioteca de juegos amplia. El problema no es el producto en sí, sino el momento: en 2025, con la Switch 2 disponible y la Switch OLED como alternativa dentro de la misma generación, la Lite solo tiene sentido si el presupuesto es el factor determinante y el uso es estrictamente portátil.</p>\n<p>Si esas condiciones aplican a tu caso, es una compra razonable. Si tenés dudas sobre el modo de juego o el presupuesto permite algo más, revisá primero las alternativas antes de confirmar.</p>\n<p><em>Podés encontrar la Nintendo Switch Lite turquesa 32GB en Mercado Libre. Antes de pagar, verificá la región de la consola, los accesorios incluidos y la reputación del vendedor.</em></p>"
+  },
+  "productos_similares_ml": [],
+  "autoria": {
+    "nombre": "Hito Flores",
+    "tagline": "Análisis independiente de productos en Mercado Libre México",
+    "metodologia": "Este análisis sintetiza 0 reseñas en video de creadores independientes y 8339 opiniones de compradores verificados de Mercado Libre.",
+    "actualizado": "2026-06-13"
+  }
+}
