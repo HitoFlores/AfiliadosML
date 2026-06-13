@@ -1420,8 +1420,30 @@ function patchSchedulerReviewCandidates(workflow) {
   if (workflow.nodes.some((node) => node.name === "Leer Review Candidates")) return;
 
   const leerSheet = findNode(workflow, "Leer Sheet");
+  const determinar = findNode(workflow, "Determinar Estado");
   const crearWaiting = findNode(workflow, "Crear waiting_link");
   const pedir = findNode(workflow, "Pedir Articulo del Dia");
+
+  determinar.parameters.jsCode = `const rows = $input.all().map(i => i.json);
+
+// Activo = cola manual/candidato con datos suficientes para procesar.
+// Filas "processing" vacias pueden quedar por corridas interrumpidas y no deben bloquear candidatos.
+const hasActive = rows.some(r => {
+  const s = (r.estatus || '').toLowerCase().trim();
+  if (!s || ['done', 'error', 'waiting_link'].includes(s)) return false;
+  if (s === 'processing') {
+    return Boolean(r.articulo || r.referido || r.candidate_id || r.link_sugerido);
+  }
+  return true;
+});
+if (hasActive) return [{ json: { estado: 'activo' } }];
+
+// Solo waiting_link -> actualizar timestamp, sin mandar Telegram de nuevo si no hay candidatos.
+const wl = rows.find(r => (r.estatus || '').toLowerCase().trim() === 'waiting_link');
+if (wl) return [{ json: { estado: 'esperando', row_number: wl.row_number } }];
+
+// Todo done/error o sheet vacio -> crear nuevo ciclo.
+return [{ json: { estado: 'nuevo' } }];`;
 
   workflow.nodes.push(
     {
