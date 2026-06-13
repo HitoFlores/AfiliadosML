@@ -2786,6 +2786,16 @@ const linea     = getAttr('Línea') || getAttr('Linea');
 
 function buildEditorialSlug() {
   const fullName = item.name || '';
+  const storage = (fullName.match(/\\b(\\d+)\\s*(gb|tb)\\b/i) || []).slice(1).join('').toLowerCase();
+  const isSwitch = /\\bswitch\\b/i.test([fullName, linea, modelo, submodelo].join(' '));
+  if (isSwitch) {
+    const variant = /\\boled\\b/i.test([fullName, linea, modelo, submodelo].join(' '))
+      ? 'oled'
+      : /\\blite\\b/i.test([fullName, linea, modelo, submodelo].join(' '))
+      ? 'lite'
+      : '';
+    return ['nintendo', 'switch', variant, storage].filter(Boolean).join('-');
+  }
   const appleWatchSeries = /\\bapple\\b/i.test(fullName) && /\\bwatch\\b/i.test(fullName)
     ? fullName.match(/\\bseries\\s+(\\d+)\\b/i)?.[1]
     : null;
@@ -2825,9 +2835,9 @@ function buildEditorialSlug() {
     const sizeToken = size.replace('.', '-');
     if (!parts.includes(sizeToken)) parts.push(sizeToken);
   }
-  const storage = (item.name || '').match(/\\b(\\d+)\\s*(gb|tb)\\b/i);
-  if (storage) {
-    const token = (storage[1] + storage[2]).toLowerCase();
+  const storageMatch = (item.name || '').match(/\\b(\\d+)\\s*(gb|tb)\\b/i);
+  if (storageMatch) {
+    const token = (storageMatch[1] + storageMatch[2]).toLowerCase();
     if (!parts.includes(token)) parts.push(token);
   }
   return parts.join('-').replace(/-+/g, '-').slice(0, 70);
@@ -2866,7 +2876,7 @@ function buildDisplayTitle() {
   let title = '';
   if (/macbook/i.test([name, linea, modelo].join(' '))) title = ['Apple', linea || 'MacBook Air', sizeIn, chip, storage].filter(Boolean).join(' ');
   else if (watchSeries) title = ['Apple Watch', watchSeries.replace(/^apple\\s+watch\\s+/i, ''), watchSize].filter(Boolean).join(' ');
-  else if (/switch/i.test([name, linea, modelo].join(' '))) title = ['Nintendo Switch', /oled/i.test(name + ' ' + linea + ' ' + modelo) ? 'OLED' : '', storage].filter(Boolean).join(' ');
+  else if (/switch/i.test([name, linea, modelo, submodelo].join(' '))) title = ['Nintendo Switch', /oled/i.test(name + ' ' + linea + ' ' + modelo + ' ' + submodelo) ? 'OLED' : /lite/i.test(name + ' ' + linea + ' ' + modelo + ' ' + submodelo) ? 'Lite' : '', storage].filter(Boolean).join(' ');
   else if (/cafetera|espresso|coffee/i.test([name, linea, modelo].join(' '))) title = [marca || fabricante || 'DeLonghi', linea || modelo, modelo && !String(linea).includes(modelo) ? modelo : ''].filter(Boolean).join(' ');
   else title = [fabricante || marca, linea, modelo, submodelo].filter(Boolean).join(' ');
   title = cleanSpec(title || name).replace(/\\b(cpu|gpu|nucleos|neural engine|color|caja|correa)\\b/gi, '').replace(/\\s+/g, ' ').trim();
