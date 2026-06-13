@@ -60,14 +60,27 @@ console.log(`Prepared ${files.length + 2} workflows in ${path.relative(root, out
 
 function readPublishedReviewMeta() {
   const dataDir = path.join(root, "data");
-  const meta = { slugs: [], candidateIds: [] };
+  const meta = { slugs: [], candidateIds: [], productIds: [], reviews: [] };
   if (!fs.existsSync(dataDir)) return meta;
 
   for (const file of fs.readdirSync(dataDir).filter((entry) => entry.endsWith(".json"))) {
     try {
       const review = JSON.parse(fs.readFileSync(path.join(dataDir, file), "utf8").replace(/^\uFEFF/, ""));
-      if (review?.meta?.slug) meta.slugs.push(String(review.meta.slug));
-      if (review?.meta?.candidate_id) meta.candidateIds.push(String(review.meta.candidate_id));
+      const slug = review?.meta?.slug ? String(review.meta.slug) : "";
+      const candidateId = review?.meta?.candidate_id ? String(review.meta.candidate_id) : "";
+      const productId = review?.meta?.producto_id ? String(review.meta.producto_id) : "";
+      const title = [review?.producto?.display_title, review?.producto?.nombre].filter(Boolean).join(" ");
+      if (slug) meta.slugs.push(slug);
+      if (candidateId) meta.candidateIds.push(candidateId);
+      if (productId) meta.productIds.push(productId);
+      if (slug) {
+        meta.reviews.push({
+          slug,
+          candidate_id: candidateId,
+          product_id: productId,
+          title,
+        });
+      }
     } catch {
       // Ignore draft or malformed local files; audit scripts report those separately.
     }
@@ -76,6 +89,8 @@ function readPublishedReviewMeta() {
   return {
     slugs: [...new Set(meta.slugs)].sort(),
     candidateIds: [...new Set(meta.candidateIds)].sort(),
+    productIds: [...new Set(meta.productIds)].sort(),
+    reviews: meta.reviews.sort((a, b) => a.slug.localeCompare(b.slug)),
   };
 }
 
@@ -308,6 +323,117 @@ function buildSheetSchemaWorkflow(mainWorkflow) {
         },
         credentials: markDone.credentials,
       },
+      {
+        id: "sheet-schema-get-candidates",
+        name: "Get Review Candidates",
+        type: "n8n-nodes-base.googleSheets",
+        typeVersion: 4.5,
+        position: [480, 0],
+        continueOnFail: true,
+        alwaysOutputData: true,
+        parameters: {
+          documentId: markDone.parameters.documentId,
+          sheetName: reviewCandidatesSheetName(),
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "sheet-schema-reconcile-published",
+        name: "Reconcile Published Candidates",
+        type: "n8n-nodes-base.code",
+        typeVersion: 2,
+        position: [720, 0],
+        parameters: {
+          jsCode: `const published = ${JSON.stringify(publishedReviewMeta.reviews)};
+const norm = (value) => String(value || '')
+  .toLowerCase()
+  .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+  .replace(/[^a-z0-9\\s]/g, ' ')
+  .replace(/\\s+/g, ' ')
+  .trim();
+const meaningful = (value) => norm(value).split(' ').filter(token => token.length > 2).join(' ');
+const titleMatches = (candidateName, reviewTitle) => {
+  const candidate = meaningful(candidateName);
+  const title = meaningful(reviewTitle);
+  if (!candidate || !title || candidate.length < 10 || title.length < 10) return false;
+  return title.includes(candidate.slice(0, 80)) || candidate.includes(title.slice(0, 80));
+};
+const activeStatuses = new Set(['pending', 'ready', 'processing']);
+const out = [];
+
+for (const row of $input.all().map(i => i.json).filter(r => !r.error)) {
+  const status = String(row.status || '').toLowerCase().trim();
+  if (!row.row_number || !activeStatuses.has(status)) continue;
+
+  const match = published.find(review => {
+    if (row.candidate_id && review.candidate_id && row.candidate_id === review.candidate_id) return true;
+    if (row.target_slug && row.target_slug === review.slug) return true;
+    if (row.candidate_ml_id && review.product_id && String(row.candidate_ml_id).toUpperCase() === String(review.product_id).toUpperCase()) return true;
+    return titleMatches(row.candidate_name, review.title);
+  });
+  if (!match) continue;
+
+  out.push({
+    json: {
+      row_number: row.row_number,
+      candidate_id: row.candidate_id || match.candidate_id || '',
+      candidate_name: row.candidate_name || match.title || '',
+      target_slug: match.slug,
+      status: 'done',
+      updated_at: new Date().toISOString(),
+      error_msg: '',
+    },
+  });
+}
+
+return out;`,
+        },
+      },
+      {
+        id: "sheet-schema-mark-published",
+        name: "Mark Published Candidate Done",
+        type: "n8n-nodes-base.googleSheets",
+        typeVersion: 4.5,
+        position: [960, 0],
+        parameters: {
+          operation: "update",
+          documentId: markDone.parameters.documentId,
+          sheetName: reviewCandidatesSheetName(),
+          columns: {
+            mappingMode: "defineBelow",
+            value: {
+              row_number: "={{ $json.row_number }}",
+              status: "done",
+              target_slug: "={{ $json.target_slug }}",
+              updated_at: "={{ $json.updated_at }}",
+              error_msg: "",
+            },
+            matchingColumns: ["row_number"],
+            schema: [],
+            attemptToConvertTypes: false,
+            convertFieldsToString: true,
+          },
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "sheet-schema-notify-published",
+        name: "Notify Reconciled Candidate",
+        type: "n8n-nodes-base.httpRequest",
+        typeVersion: 4.2,
+        position: [1200, 0],
+        parameters: {
+          method: "POST",
+          url: "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+          sendBody: true,
+          contentType: "raw",
+          rawContentType: "application/json",
+          body: "={{ JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: '✅ Candidato reconciliado con review ya publicada\\n\\n' + ($json.candidate_name || $json.candidate_id || $json.target_slug) + '\\nslug: ' + $json.target_slug }) }}",
+          options: {},
+        },
+      },
     ],
     connections: {
       "Ephemeral Execute Trigger": {
@@ -318,6 +444,18 @@ function buildSheetSchemaWorkflow(mainWorkflow) {
       },
       "Build Candidate Headers": {
         main: [[{ node: "Save Candidate Headers", type: "main", index: 0 }]],
+      },
+      "Save Candidate Headers": {
+        main: [[{ node: "Get Review Candidates", type: "main", index: 0 }]],
+      },
+      "Get Review Candidates": {
+        main: [[{ node: "Reconcile Published Candidates", type: "main", index: 0 }]],
+      },
+      "Reconcile Published Candidates": {
+        main: [[{ node: "Mark Published Candidate Done", type: "main", index: 0 }]],
+      },
+      "Mark Published Candidate Done": {
+        main: [[{ node: "Notify Reconciled Candidate", type: "main", index: 0 }]],
       },
     },
     settings: {
@@ -748,6 +886,8 @@ function patchSchedulerReviewCandidates(workflow) {
 const rows = $input.all().map(i => i.json).filter(r => !r.error);
 const publishedSlugs = new Set(${JSON.stringify(publishedReviewMeta.slugs)});
 const publishedCandidateIds = new Set(${JSON.stringify(publishedReviewMeta.candidateIds)});
+const publishedProductIds = new Set(${JSON.stringify(publishedReviewMeta.productIds)});
+const publishedReviews = ${JSON.stringify(publishedReviewMeta.reviews)};
 const hiddenStatuses = new Set(['done', 'ready', 'processing', 'discarded']);
 const tierRank = (tier) => {
   const t = String(tier || 'unknown').toLowerCase().trim();
@@ -756,11 +896,22 @@ const tierRank = (tier) => {
   if (t === 'similar') return 2;
   return 3;
 };
+const norm = (value) => String(value || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9\\s]/g, ' ').replace(/\\s+/g, ' ').trim();
+const isPublishedName = (candidateName) => {
+  const candidate = norm(candidateName);
+  if (!candidate || candidate.length < 10) return false;
+  return publishedReviews.some(review => {
+    const title = norm(review.title);
+    return title && (title.includes(candidate.slice(0, 80)) || candidate.includes(title.slice(0, 80)));
+  });
+};
 const pending = rows
   .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
   .filter(r => !hiddenStatuses.has(String(r.status || '').toLowerCase().trim()))
   .filter(r => !publishedSlugs.has(String(r.target_slug || '').trim()))
   .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
+  .filter(r => !publishedProductIds.has(String(r.candidate_ml_id || '').trim()))
+  .filter(r => !isPublishedName(r.candidate_name))
   .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)))
   .slice(0, 3);
 
@@ -1162,6 +1313,8 @@ const sd = $getWorkflowStaticData('global');
 const rows = $input.all().map(i => i.json).filter(r => !r.error);
 const publishedSlugs = new Set(${JSON.stringify(publishedReviewMeta.slugs)});
 const publishedCandidateIds = new Set(${JSON.stringify(publishedReviewMeta.candidateIds)});
+const publishedProductIds = new Set(${JSON.stringify(publishedReviewMeta.productIds)});
+const publishedReviews = ${JSON.stringify(publishedReviewMeta.reviews)};
 const hiddenStatuses = new Set(['done', 'ready', 'processing', 'discarded']);
 const tierRank = (tier) => {
   const t = String(tier || 'unknown').toLowerCase().trim();
@@ -1170,23 +1323,33 @@ const tierRank = (tier) => {
   if (t === 'similar') return 2;
   return 3;
 };
-const pending = rows
-  .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
-  .filter(r => !hiddenStatuses.has(String(r.status || '').toLowerCase().trim()))
-  .filter(r => !publishedSlugs.has(String(r.target_slug || '').trim()))
-  .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
-  .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)));
-const snapshot = Array.isArray(sd.review_candidate_snapshot) ? sd.review_candidate_snapshot : [];
-const shownRows = rows
-  .filter(r => String(r.shown_batch_id || '').trim() && Number(r.shown_index || 0) > 0)
-  .sort((a, b) => Date.parse(b.shown_at || '') - Date.parse(a.shown_at || ''));
-const latestShownBatch = String(shownRows[0]?.shown_batch_id || '').trim();
 const norm = (value) => String(value || '')
   .toLowerCase()
   .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
   .replace(/[^a-z0-9\\s]/g, ' ')
   .replace(/\\s+/g, ' ')
   .trim();
+const isPublishedName = (candidateName) => {
+  const candidate = norm(candidateName);
+  if (!candidate || candidate.length < 10) return false;
+  return publishedReviews.some(review => {
+    const title = norm(review.title);
+    return title && (title.includes(candidate.slice(0, 80)) || candidate.includes(title.slice(0, 80)));
+  });
+};
+const pending = rows
+  .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
+  .filter(r => !hiddenStatuses.has(String(r.status || '').toLowerCase().trim()))
+  .filter(r => !publishedSlugs.has(String(r.target_slug || '').trim()))
+  .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
+  .filter(r => !publishedProductIds.has(String(r.candidate_ml_id || '').trim()))
+  .filter(r => !isPublishedName(r.candidate_name))
+  .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)));
+const snapshot = Array.isArray(sd.review_candidate_snapshot) ? sd.review_candidate_snapshot : [];
+const shownRows = rows
+  .filter(r => String(r.shown_batch_id || '').trim() && Number(r.shown_index || 0) > 0)
+  .sort((a, b) => Date.parse(b.shown_at || '') - Date.parse(a.shown_at || ''));
+const latestShownBatch = String(shownRows[0]?.shown_batch_id || '').trim();
 const matchesHint = (row, hint) => {
   const h = norm(hint).replace(/\\s+\\.\\.\\.$/, '').trim();
   if (!h || h.length < 6) return false;

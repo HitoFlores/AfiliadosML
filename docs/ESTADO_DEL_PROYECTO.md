@@ -1,6 +1,6 @@
 # AfiliadosML - Estado del proyecto
 
-Ultima actualizacion: 2026-06-10.
+Ultima actualizacion: 2026-06-12.
 
 Proyecto: pipeline automatico de reviews editoriales para productos de Mercado Libre Mexico. Un humano sigue aportando links afiliados; el sistema automatiza descubrimiento, cola, generacion, publicacion, relaciones, rankings y freshness.
 
@@ -8,12 +8,13 @@ Proyecto: pipeline automatico de reviews editoriales para productos de Mercado L
 
 - Web: Next.js export estatico en Cloudflare Pages. El deploy ocurre por push a GitHub; no se usa un workflow Cloudflare propio.
 - Automatizacion: GitHub Actions `Free ephemeral n8n` levanta n8n efimero, importa credenciales/workflows, corre Scheduler/Poll/Freshness/Main y termina.
-- Reviews activos en `data/`: 5.
+- Reviews activos en `data/`: 6.
   - `apple-macbook-air-13-m5-512gb`
   - `apple-watch-se-gps-smartwatch`
   - `apple-watch-series-11-46mm`
   - `delonghi-specialista-touch-ec9445m-cafetera`
   - `nintendo-switch-oled-consola-64gb`
+  - `samsung-galaxy-watch7-44mm-reloj`
 - Audit local: `rtk npm run review:audit` debe quedar en 0 warnings.
 - Build local: `rtk npm run build` debe exportar reviews, rankings y comparadores.
 - Archivos de estudio viejos: movidos a `public/archive/`.
@@ -42,14 +43,15 @@ GitHub:
 
 ## Flujo Operativo
 
-1. Scheduler diario lee `review_candidates`.
-2. Si hay candidatos `pending`, manda maximo 3 por Telegram priorizando `candidate_tier`: `superior`, `economico`, `similar`, `unknown`; dentro de cada tier ordena por `priority_score`.
-3. Humano responde con una linea por candidato: `1 - https://meli.la/...` para aprobar o `1 - descartar` para eliminarlo.
-4. Poll resuelve los numeros contra el snapshot estable del Scheduler. Links validos marcan el candidato `ready`, guardan `affiliate_url` y crean fila `articulos` con `candidate_id`; descartes marcan `discarded` sin crear fila.
-5. Main toma filas `ready`/`pending`, genera review, commitea JSON y marca la fila `done`.
-6. Si venia de candidato, marca `review_candidates.status=done`, llena `target_slug` y avisa por Telegram. Si `candidate_id` se perdio en `articulos`, intenta cerrar el candidato por link afiliado, producto ML o nombre.
-7. Web muestra reviews relacionados, comparadores y rankings.
-8. Freshness diario revisa precios/disponibilidad y sube prioridad de candidatos si un origen queda stale.
+1. Sheet Schema asegura headers y reconcilia candidatos activos contra `data/*.json`; si encuentra un review ya publicado, marca el candidato `done`, llena `target_slug` y avisa por Telegram.
+2. Scheduler diario lee `review_candidates`.
+3. Si hay candidatos `pending`, manda maximo 3 por Telegram priorizando `candidate_tier`: `superior`, `economico`, `similar`, `unknown`; dentro de cada tier ordena por `priority_score`.
+4. Humano responde con una linea por candidato: `1 - https://meli.la/...` para aprobar o `1 - descartar` para eliminarlo.
+5. Poll resuelve los numeros contra el snapshot estable del Scheduler. Links validos marcan el candidato `ready`, guardan `affiliate_url` y crean fila `articulos` con `candidate_id`; descartes marcan `discarded` sin crear fila.
+6. Main toma filas `ready`/`pending`, genera review, commitea JSON y marca la fila `done`.
+7. Si venia de candidato, marca `review_candidates.status=done`, llena `target_slug` y avisa por Telegram. Si `candidate_id` se perdio en `articulos`, intenta cerrar el candidato por link afiliado, producto ML o nombre.
+8. Web muestra reviews relacionados, comparadores y rankings.
+9. Freshness diario revisa precios/disponibilidad y sube prioridad de candidatos si un origen queda stale.
 
 ## Campos Importantes
 
@@ -62,7 +64,7 @@ Estados principales:
 `review_candidates`:
 `candidate_id`, `source_slug`, `source_product_id`, `relation_type`, `candidate_tier`, `candidate_name`, `candidate_query`, `candidate_ml_url`, `candidate_ml_id`, `affiliate_url`, `target_slug`, `status`, `priority_score`, `reason`, `mentioned_in`, `shown_batch_id`, `shown_index`, `shown_at`, `created_at`, `updated_at`, `error_msg`
 
-Scheduler asegura automaticamente los headers requeridos en Google Sheets antes de leer candidatos. Esto incluye `candidate_tier`, `shown_batch_id`, `shown_index` y `shown_at`.
+Sheet Schema asegura automaticamente los headers requeridos en Google Sheets antes del ciclo. Esto incluye `candidate_tier`, `shown_batch_id`, `shown_index` y `shown_at`. Tambien reconcilia candidatos `pending`, `ready` o `processing` contra reviews ya publicados por `candidate_id`, `target_slug`, producto ML o nombre normalizado.
 
 ## Plan Maestro: Escala Automatica
 
@@ -98,6 +100,7 @@ Fixes importantes:
 - No confunde links afiliados de candidatos con el flujo manual normal.
 - El runner procesa hasta `MAIN_MAX_RUNS=3` filas por ciclo.
 - Persiste snapshot `shown_batch_id + shown_index -> candidate_id` en `review_candidates` para que `1`, `2`, `3` resuelvan contra el ultimo lote mostrado aunque Telegram conserve un draft/reply viejo.
+- Sheet Schema cierra candidatos huerfanos si el JSON ya existe pero el `candidate_id` no quedo en `meta`, por ejemplo por corrida manual o perdida del dato en `articulos`.
 - Acepta multiples acciones en un solo mensaje:
   `1 - https://meli.la/...`
   `2 - descartar`

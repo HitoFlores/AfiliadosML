@@ -69,6 +69,8 @@ Cada corrida:
 Sheet Schema:
 - Corre al inicio de cada ciclo.
 - Asegura headers nuevos en `review_candidates` usando Google Sheets API con la credencial n8n.
+- Revisa `review_candidates` contra `data/*.json` y cierra candidatos `pending`, `ready` o `processing` que ya tienen review publicado aunque el `candidate_id` se haya perdido.
+- Puede ejecutarse solo con `schema_only=true` para reconciliar Google Sheets sin correr Freshness, Scheduler, Poll ni Main.
 
 Freshness:
 - Consulta Mercado Libre con OAuth.
@@ -79,7 +81,7 @@ Freshness:
 Scheduler:
 - Manda hasta 3 candidatos `pending`, priorizando `candidate_tier`: `superior > economico > similar > unknown`.
 - Formato Telegram: una linea por candidato, `1 - Articulo`, `2 - Articulo`, `3 - Articulo`.
-- Excluye candidatos ya publicados y estados `done`, `ready`, `processing`, `discarded`.
+- Excluye candidatos ya publicados por `target_slug`, `candidate_id`, producto ML o nombre normalizado, y estados `done`, `ready`, `processing`, `discarded`.
 - Guarda `shown_batch_id`, `shown_index` y `shown_at` en `review_candidates` para que los numeros respondidos apunten al ultimo lote mostrado aunque Telegram conserve un draft/reply viejo.
 - Antes de leer candidatos, asegura automaticamente los headers nuevos de `review_candidates`.
 - Si el usuario responde `1 - https://meli.la/...`, el Poll lo procesa en la siguiente corrida disponible.

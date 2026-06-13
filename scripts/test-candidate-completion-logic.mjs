@@ -45,6 +45,42 @@ function findCompletedCandidate({ route, review, rows }) {
   return row || null;
 }
 
+function reconcilePublishedCandidates(rows, published) {
+  const titleMatches = (candidateName, reviewTitle) => {
+    const candidate = norm(candidateName)
+      .split(" ")
+      .filter((token) => token.length > 2)
+      .join(" ");
+    const title = norm(reviewTitle)
+      .split(" ")
+      .filter((token) => token.length > 2)
+      .join(" ");
+    if (!candidate || !title || candidate.length < 10 || title.length < 10) return false;
+    return title.includes(candidate.slice(0, 80)) || candidate.includes(title.slice(0, 80));
+  };
+  const activeStatuses = new Set(["pending", "ready", "processing"]);
+  const out = [];
+
+  for (const row of rows) {
+    const status = String(row.status || "").toLowerCase().trim();
+    if (!row.row_number || !activeStatuses.has(status)) continue;
+    const match = published.find((review) => {
+      if (row.candidate_id && review.candidate_id && row.candidate_id === review.candidate_id) return true;
+      if (row.target_slug && row.target_slug === review.slug) return true;
+      if (
+        row.candidate_ml_id &&
+        review.product_id &&
+        String(row.candidate_ml_id).toUpperCase() === String(review.product_id).toUpperCase()
+      ) {
+        return true;
+      }
+      return titleMatches(row.candidate_name, review.title);
+    });
+    if (match) out.push({ row_number: row.row_number, target_slug: match.slug, status: "done" });
+  }
+  return out;
+}
+
 function assertEqual(name, actual, expected) {
   const a = JSON.stringify(actual);
   const e = JSON.stringify(expected);
@@ -93,6 +129,29 @@ assertEqual(
   "title fallback closes orphan candidate",
   findCompletedCandidate({ route: {}, review, rows })?.candidate_id,
   "source:macbook-air-m5",
+);
+
+assertEqual(
+  "schema reconciliation closes published orphan by title",
+  reconcilePublishedCandidates(
+    [
+      {
+        row_number: 9,
+        candidate_id: "source:macbook-air-m5",
+        candidate_name: "Apple MacBook Air 13 M5 512 GB",
+        status: "ready",
+      },
+    ],
+    [
+      {
+        slug: "apple-macbook-air-13-m5-512gb",
+        candidate_id: "",
+        product_id: "MLM1066159881",
+        title: "Apple MacBook Air 13\" M5 512 GB MacBook Air de 13 pulgadas chip M5",
+      },
+    ],
+  ),
+  [{ row_number: 9, target_slug: "apple-macbook-air-13-m5-512gb", status: "done" }],
 );
 
 console.log("Candidate completion logic test passed.");
