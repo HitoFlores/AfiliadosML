@@ -45,7 +45,7 @@ GitHub:
 
 1. Sheet Schema asegura headers y reconcilia candidatos activos contra `data/*.json`; si encuentra un review ya publicado, marca el candidato `done`, llena `target_slug` y avisa por Telegram.
 2. Scheduler diario lee `review_candidates`.
-3. Si hay candidatos `pending`, manda maximo 3 por Telegram priorizando `candidate_tier`: `superior`, `economico`, `similar`, `unknown`; dentro de cada tier ordena por `priority_score`.
+3. Si hay candidatos `pending`, manda maximo 3 por Telegram priorizando `candidate_tier`: `superior`, `economico`, `similar`, `unknown`; dentro de cada tier ordena por `priority_score` e intenta mezclar hasta 3 `source_slug` distintos antes de rellenar con la misma fuente.
 4. Humano responde con una linea por candidato: `1 - https://meli.la/...` para aprobar o `1 - descartar` para eliminarlo.
 5. Poll resuelve los numeros contra el snapshot estable del Scheduler. Links validos marcan el candidato `ready`, guardan `affiliate_url` y crean fila `articulos` con `candidate_id`; descartes marcan `discarded` sin crear fila.
 6. Main toma filas `ready`/`pending`, genera review, commitea JSON y marca la fila `done`.
@@ -65,6 +65,8 @@ Estados principales:
 `candidate_id`, `source_slug`, `source_product_id`, `relation_type`, `candidate_tier`, `candidate_name`, `candidate_query`, `candidate_ml_url`, `candidate_ml_id`, `affiliate_url`, `target_slug`, `status`, `priority_score`, `reason`, `mentioned_in`, `shown_batch_id`, `shown_index`, `shown_at`, `created_at`, `updated_at`, `error_msg`
 
 Sheet Schema asegura automaticamente los headers requeridos en Google Sheets antes del ciclo. Esto incluye `candidate_tier`, `shown_batch_id`, `shown_index` y `shown_at`. Tambien reconcilia candidatos `pending`, `ready` o `processing` contra reviews ya publicados por `candidate_id`, `target_slug`, producto ML o nombre normalizado.
+
+Candidate Backfill es un workflow temporal/manual (`run_candidate_backfill=true`) para poblar `review_candidates` desde reviews viejos en `data/*.json` que no sembraron candidatos al publicarse. Genera candidatos desde `editorial.comparativa_editorial`, `editorial.mejor_alternativa`, `editorial.alternativas` con titulo real y `productos_similares_ml` si existen; deduplica contra la hoja y contra reviews ya publicados; descarta nombres vacios, genericos o `Sin candidato real confiable identificado en ML`.
 
 ## Plan Maestro: Escala Automatica
 
@@ -93,7 +95,7 @@ Deduplica por `candidate_id` y solo agrega candidatos nuevos. Cada candidato gua
 
 ### [x] P3 Flujo Diario de Candidatos
 
-Scheduler manda candidatos pendientes por Telegram en formato `1 - Articulo`, hasta 3 lineas. Prioriza `superior`, rellena con `economico` y despues usa `similar`/`unknown`; excluye candidatos publicados, `done`, `ready`, `processing` y `discarded`. Poll acepta una o varias respuestas en formato `numero - link` o `numero - descartar`, marca links como `ready` y crea filas en `articulos`; los descartes quedan como `discarded`.
+Scheduler manda candidatos pendientes por Telegram en formato `1 - Articulo`, hasta 3 lineas. Prioriza `superior`, rellena con `economico` y despues usa `similar`/`unknown`; intenta mezclar fuentes para no mandar todo de una sola categoria cuando hay alternativas; excluye candidatos publicados, `done`, `ready`, `processing` y `discarded`. Poll acepta una o varias respuestas en formato `numero - link` o `numero - descartar`, marca links como `ready` y crea filas en `articulos`; los descartes quedan como `discarded`.
 
 Fixes importantes:
 - No crea `WAITING_LINK` si ya hay candidatos pendientes.

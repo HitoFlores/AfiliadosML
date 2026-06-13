@@ -180,7 +180,7 @@ function sameProductText(current, candidate) {
     "aluminio",
     "correa",
   ]);
-  const tokens = current.split(" ").filter((t) => t.length > 2 && !stop.has(t));
+  const tokens = [...new Set(current.split(" ").filter((t) => t.length > 2 && !stop.has(t)))];
   if (tokens.length < 3) return false;
   const hits = tokens.filter((t) => candidate.includes(t)).length;
   return hits >= Math.min(tokens.length, 5);

@@ -29,6 +29,10 @@ const required = [
     nodes: ["Get Candidate Headers", "Build Candidate Headers", "Save Candidate Headers"],
   },
   {
+    fileIncludes: "Candidate Backfill",
+    nodes: ["Get Candidate Headers", "Build Candidate Headers", "Save Candidate Headers", "Get Review Candidates", "Build Backfill Candidates", "Append Backfill Candidates"],
+  },
+  {
     fileIncludes: "Scheduler 7am",
     nodes: [
       "Get Candidate Headers",

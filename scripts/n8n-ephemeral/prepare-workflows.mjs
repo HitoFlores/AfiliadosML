@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { buildBackfillCandidates, readPublishedReviews } from "../review-candidate-backfill.mjs";
 
 const root = process.cwd();
 const sourceDir = path.join(root, "n8n-backup");
@@ -56,7 +57,14 @@ fs.writeFileSync(
   JSON.stringify(sheetSchemaWorkflow, null, 2),
 );
 
-console.log(`Prepared ${files.length + 2} workflows in ${path.relative(root, outDir)}`);
+const candidateBackfillWorkflow = buildCandidateBackfillWorkflow(mainSourceWorkflow);
+sanitizeWorkflowForImport(candidateBackfillWorkflow);
+fs.writeFileSync(
+  path.join(outDir, "candidate_backfill_AfiliadosML - Candidate Backfill.json"),
+  JSON.stringify(candidateBackfillWorkflow, null, 2),
+);
+
+console.log(`Prepared ${files.length + 3} workflows in ${path.relative(root, outDir)}`);
 
 function readPublishedReviewMeta() {
   const dataDir = path.join(root, "data");
@@ -456,6 +464,193 @@ return out;`,
       },
       "Mark Published Candidate Done": {
         main: [[{ node: "Notify Reconciled Candidate", type: "main", index: 0 }]],
+      },
+    },
+    settings: {
+      executionOrder: "v1",
+    },
+  };
+}
+
+function buildCandidateBackfillWorkflow(mainWorkflow) {
+  const markDone = findNode(mainWorkflow, "Mark Done");
+  const candidates = buildBackfillCandidates({ entries: readPublishedReviews() });
+
+  return {
+    id: "candidateBackfillAfML2026",
+    name: "AfiliadosML - Candidate Backfill",
+    active: false,
+    nodes: [
+      {
+        id: "candidate-backfill-trigger",
+        name: "Ephemeral Execute Trigger",
+        type: "n8n-nodes-base.executeWorkflowTrigger",
+        typeVersion: 1,
+        position: [-480, 0],
+        parameters: {},
+      },
+      {
+        id: "candidate-backfill-get-headers",
+        name: "Get Candidate Headers",
+        type: "n8n-nodes-base.httpRequest",
+        typeVersion: 4.2,
+        position: [-240, 0],
+        parameters: {
+          authentication: "predefinedCredentialType",
+          nodeCredentialType: "googleSheetsOAuth2Api",
+          url: `=https://sheets.googleapis.com/v4/spreadsheets/${markDone.parameters.documentId.value}/values/{{ encodeURIComponent('review_candidates!1:1') }}`,
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "candidate-backfill-build-headers",
+        name: "Build Candidate Headers",
+        type: "n8n-nodes-base.code",
+        typeVersion: 2,
+        position: [0, 0],
+        parameters: {
+          jsCode: buildCandidateHeaderCode(),
+        },
+      },
+      {
+        id: "candidate-backfill-save-headers",
+        name: "Save Candidate Headers",
+        type: "n8n-nodes-base.httpRequest",
+        typeVersion: 4.2,
+        position: [240, 0],
+        parameters: {
+          method: "PUT",
+          authentication: "predefinedCredentialType",
+          nodeCredentialType: "googleSheetsOAuth2Api",
+          url: `=https://sheets.googleapis.com/v4/spreadsheets/${markDone.parameters.documentId.value}/values/{{ encodeURIComponent('review_candidates!A1') }}?valueInputOption=RAW`,
+          sendBody: true,
+          contentType: "raw",
+          rawContentType: "application/json",
+          body: "={{ JSON.stringify({ values: [ $json.headers ] }) }}",
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "candidate-backfill-read",
+        name: "Get Review Candidates",
+        type: "n8n-nodes-base.googleSheets",
+        typeVersion: 4.5,
+        position: [480, 0],
+        continueOnFail: true,
+        alwaysOutputData: true,
+        parameters: {
+          documentId: markDone.parameters.documentId,
+          sheetName: reviewCandidatesSheetName(),
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+      {
+        id: "candidate-backfill-build",
+        name: "Build Backfill Candidates",
+        type: "n8n-nodes-base.code",
+        typeVersion: 2,
+        position: [720, 0],
+        parameters: {
+          jsCode: `// Temporal: run this when older published reviews need to seed review_candidates.
+const generated = ${JSON.stringify(candidates, null, 2)};
+const norm = (value) => String(value || '')
+  .toLowerCase()
+  .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+  .replace(/[^a-z0-9\\s]/g, ' ')
+  .replace(/\\s+/g, ' ')
+  .trim();
+const meaningfulName = (value) => norm(value).split(' ').filter(token => token.length > 2 || /^[0-9]+$/.test(token)).join(' ');
+const existing = new Set(
+  $input.all()
+    .map(i => String(i.json?.candidate_id || '').trim())
+    .filter(Boolean)
+);
+const existingNames = new Set(
+  $input.all()
+    .map(i => meaningfulName(i.json?.candidate_name))
+    .filter(Boolean)
+);
+const now = new Date().toISOString();
+return generated
+  .filter(row => row.candidate_id && !existing.has(row.candidate_id))
+  .filter(row => !existingNames.has(meaningfulName(row.candidate_name)))
+  .map(row => ({
+    json: {
+      ...row,
+      status: 'pending',
+      created_at: now,
+      updated_at: now,
+    },
+  }));`,
+        },
+      },
+      {
+        id: "candidate-backfill-append",
+        name: "Append Backfill Candidates",
+        type: "n8n-nodes-base.googleSheets",
+        typeVersion: 4.5,
+        position: [960, 0],
+        continueOnFail: true,
+        parameters: {
+          operation: "append",
+          documentId: markDone.parameters.documentId,
+          sheetName: reviewCandidatesSheetName(),
+          columns: {
+            mappingMode: "defineBelow",
+            value: {
+              candidate_id: "={{ $json.candidate_id }}",
+              source_slug: "={{ $json.source_slug }}",
+              source_product_id: "={{ $json.source_product_id }}",
+              relation_type: "={{ $json.relation_type }}",
+              candidate_tier: "={{ $json.candidate_tier }}",
+              candidate_name: "={{ $json.candidate_name }}",
+              candidate_query: "={{ $json.candidate_query }}",
+              candidate_ml_url: "={{ $json.candidate_ml_url }}",
+              candidate_ml_id: "={{ $json.candidate_ml_id }}",
+              affiliate_url: "={{ $json.affiliate_url }}",
+              target_slug: "={{ $json.target_slug }}",
+              status: "={{ $json.status }}",
+              priority_score: "={{ $json.priority_score }}",
+              reason: "={{ $json.reason }}",
+              mentioned_in: "={{ $json.mentioned_in }}",
+              shown_batch_id: "={{ $json.shown_batch_id }}",
+              shown_index: "={{ $json.shown_index }}",
+              shown_at: "={{ $json.shown_at }}",
+              created_at: "={{ $json.created_at }}",
+              updated_at: "={{ $json.updated_at }}",
+              error_msg: "={{ $json.error_msg }}",
+            },
+            matchingColumns: [],
+            schema: [],
+            attemptToConvertTypes: false,
+            convertFieldsToString: true,
+          },
+          options: {},
+        },
+        credentials: markDone.credentials,
+      },
+    ],
+    connections: {
+      "Ephemeral Execute Trigger": {
+        main: [[{ node: "Get Candidate Headers", type: "main", index: 0 }]],
+      },
+      "Get Candidate Headers": {
+        main: [[{ node: "Build Candidate Headers", type: "main", index: 0 }]],
+      },
+      "Build Candidate Headers": {
+        main: [[{ node: "Save Candidate Headers", type: "main", index: 0 }]],
+      },
+      "Save Candidate Headers": {
+        main: [[{ node: "Get Review Candidates", type: "main", index: 0 }]],
+      },
+      "Get Review Candidates": {
+        main: [[{ node: "Build Backfill Candidates", type: "main", index: 0 }]],
+      },
+      "Build Backfill Candidates": {
+        main: [[{ node: "Append Backfill Candidates", type: "main", index: 0 }]],
       },
     },
     settings: {
@@ -905,15 +1100,28 @@ const isPublishedName = (candidateName) => {
     return title && (title.includes(candidate.slice(0, 80)) || candidate.includes(title.slice(0, 80)));
   });
 };
-const pending = rows
+const sorted = rows
   .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
   .filter(r => !hiddenStatuses.has(String(r.status || '').toLowerCase().trim()))
   .filter(r => !publishedSlugs.has(String(r.target_slug || '').trim()))
   .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
   .filter(r => !publishedProductIds.has(String(r.candidate_ml_id || '').trim()))
   .filter(r => !isPublishedName(r.candidate_name))
-  .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)))
-  .slice(0, 3);
+  .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)));
+const pending = [];
+const seenSources = new Set();
+for (const row of sorted) {
+  const source = String(row.source_slug || '').trim() || String(row.candidate_id || '').split(':')[0] || 'unknown';
+  if (seenSources.has(source)) continue;
+  pending.push(row);
+  seenSources.add(source);
+  if (pending.length >= 3) break;
+}
+for (const row of sorted) {
+  if (pending.length >= 3) break;
+  if (pending.some(entry => entry.candidate_id === row.candidate_id)) continue;
+  pending.push(row);
+}
 
 const base = 'Candidatos para el siguiente review';
 if (!pending.length) {

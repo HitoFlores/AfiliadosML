@@ -12,7 +12,7 @@ function tierRank(tier) {
 function selectCandidates(rows, published = { slugs: [], candidateIds: [] }) {
   const publishedSlugs = new Set(published.slugs || []);
   const publishedCandidateIds = new Set(published.candidateIds || []);
-  return rows
+  const sorted = rows
     .filter((row) => String(row.status || "").toLowerCase().trim() === "pending")
     .filter((row) => !hiddenStatuses.has(String(row.status || "").toLowerCase().trim()))
     .filter((row) => !publishedSlugs.has(String(row.target_slug || "").trim()))
@@ -21,8 +21,22 @@ function selectCandidates(rows, published = { slugs: [], candidateIds: [] }) {
       (a, b) =>
         tierRank(a.candidate_tier) - tierRank(b.candidate_tier) ||
         Number(b.priority_score || 0) - Number(a.priority_score || 0),
-    )
-    .slice(0, 3);
+    );
+  const selected = [];
+  const seenSources = new Set();
+  for (const row of sorted) {
+    const source = String(row.source_slug || "").trim() || String(row.candidate_id || "").split(":")[0] || "unknown";
+    if (seenSources.has(source)) continue;
+    selected.push(row);
+    seenSources.add(source);
+    if (selected.length >= 3) break;
+  }
+  for (const row of sorted) {
+    if (selected.length >= 3) break;
+    if (selected.some((entry) => entry.candidate_id === row.candidate_id)) continue;
+    selected.push(row);
+  }
+  return selected;
 }
 
 function norm(value) {
@@ -160,10 +174,10 @@ function assertEqual(name, actual, expected) {
 }
 
 const rows = [
-  { candidate_id: "src:economico-1", candidate_tier: "economico", status: "pending", priority_score: 95 },
-  { candidate_id: "src:similar-1", candidate_tier: "similar", status: "pending", priority_score: 99 },
-  { candidate_id: "src:superior-1", candidate_tier: "superior", status: "pending", priority_score: 50 },
-  { candidate_id: "src:economico-2", candidate_tier: "economico", status: "pending", priority_score: 70 },
+  { candidate_id: "src:economico-1", source_slug: "src", candidate_tier: "economico", status: "pending", priority_score: 95 },
+  { candidate_id: "src:similar-1", source_slug: "src", candidate_tier: "similar", status: "pending", priority_score: 99 },
+  { candidate_id: "src:superior-1", source_slug: "src", candidate_tier: "superior", status: "pending", priority_score: 50 },
+  { candidate_id: "src:economico-2", source_slug: "src", candidate_tier: "economico", status: "pending", priority_score: 70 },
   { candidate_id: "src:unknown-1", candidate_tier: "", status: "pending", priority_score: 100 },
   { candidate_id: "src:ready-1", candidate_tier: "superior", status: "ready", priority_score: 100 },
   { candidate_id: "src:published-1", candidate_tier: "superior", status: "pending", priority_score: 100 },
@@ -180,9 +194,22 @@ const selected = selectCandidates(rows, {
   candidateIds: ["src:published-1"],
 });
 assertEqual(
-  "selects max 3 with tier priority and economico fill",
+  "single source still fills up to 3 with tier priority",
   selected.map((row) => row.candidate_id),
   ["src:superior-1", "src:economico-1", "src:economico-2"],
+);
+
+const diverseSelected = selectCandidates([
+  { candidate_id: "watch:premium", source_slug: "watch", candidate_tier: "superior", status: "pending", priority_score: 100 },
+  { candidate_id: "watch:economico", source_slug: "watch", candidate_tier: "economico", status: "pending", priority_score: 100 },
+  { candidate_id: "mac:premium", source_slug: "mac", candidate_tier: "superior", status: "pending", priority_score: 90 },
+  { candidate_id: "switch:similar", source_slug: "switch", candidate_tier: "similar", status: "pending", priority_score: 99 },
+  { candidate_id: "coffee:unknown", source_slug: "coffee", candidate_tier: "unknown", status: "pending", priority_score: 99 },
+]);
+assertEqual(
+  "mixes sources while preserving tier priority",
+  diverseSelected.map((row) => row.candidate_id),
+  ["watch:premium", "mac:premium", "switch:similar"],
 );
 
 assertEqual(

@@ -40,6 +40,7 @@ Dispatch manual:
 - `force_regen_slug`: regenera un slug especifico si existe en Sheet.
 - `main_max_runs`: limite de ejecuciones Main en ese ciclo. Default: `3`.
 - `schema_only`: asegura schema de Google Sheets y termina sin correr Freshness, Scheduler, Poll ni Main.
+- `run_candidate_backfill`: backfill temporal/manual para poblar `review_candidates` desde los reviews ya publicados en `data/*.json`.
 
 Cada corrida:
 1. Checkout del repo.
@@ -48,15 +49,16 @@ Cada corrida:
 4. Importa credenciales n8n desde `N8N_CREDENTIALS_JSON_B64`.
 5. Importa workflows generados en `.tmp/n8n-ephemeral/workflows`.
 6. Si toca ciclo diario, ejecuta Freshness.
-7. Si toca ciclo diario, ejecuta Scheduler.
-8. Ejecuta Telegram Poll.
-9. Ejecuta Main hasta `MAIN_MAX_RUNS`.
-10. Escribe resumen en GitHub Step Summary.
-11. Si es ciclo diario, manda resumen Telegram.
+7. Si `run_candidate_backfill=true`, ejecuta Candidate Backfill.
+8. Si toca ciclo diario, ejecuta Scheduler.
+9. Ejecuta Telegram Poll.
+10. Ejecuta Main hasta `MAIN_MAX_RUNS`.
+11. Escribe resumen en GitHub Step Summary.
+12. Si es ciclo diario, manda resumen Telegram.
 
 ## Workflows Generados
 
-`scripts/n8n-ephemeral/prepare-workflows.mjs` genera/importa 8 workflows:
+`scripts/n8n-ephemeral/prepare-workflows.mjs` genera/importa 9 workflows:
 - `AfiliadosML`
 - `AfiliadosML - Telegram Poll`
 - `AfiliadosML - Scheduler 7am` (nombre historico; se ejecuta a las 9am)
@@ -65,6 +67,7 @@ Cada corrida:
 - `AfiliadosML - Recordatorios`
 - `AfiliadosML - Freshness`
 - `AfiliadosML - Sheet Schema`
+- `AfiliadosML - Candidate Backfill`
 
 Sheet Schema:
 - Corre al inicio de cada ciclo.
@@ -78,8 +81,15 @@ Freshness:
 - Manda alerta Telegram solo si `stale_count > 0`.
 - Reprioriza candidatos relacionados si un review queda stale.
 
+Candidate Backfill:
+- Workflow temporal/manual. Se corre con `run_candidate_backfill=true` cuando hay reviews viejos que nunca sembraron candidatos.
+- Lee `data/*.json` al preparar workflows y genera candidatos desde `editorial.comparativa_editorial`, `editorial.mejor_alternativa`, `editorial.alternativas` con titulo real y `productos_similares_ml` si existen.
+- Deduplica contra `review_candidates`, omite candidatos ya publicados y descarta textos basura como `Sin candidato real confiable identificado en ML`.
+- Inserta los faltantes como `pending` con `candidate_id` estable `{source_slug}:{slugify(candidate_name)}`.
+
 Scheduler:
 - Manda hasta 3 candidatos `pending`, priorizando `candidate_tier`: `superior > economico > similar > unknown`.
+- Intenta mezclar hasta 3 `source_slug` distintos antes de rellenar con la misma fuente; si solo existe una fuente disponible, manda hasta 3 de esa fuente.
 - Formato Telegram: una linea por candidato, `1 - Articulo`, `2 - Articulo`, `3 - Articulo`.
 - Excluye candidatos ya publicados por `target_slug`, `candidate_id`, producto ML o nombre normalizado, y estados `done`, `ready`, `processing`, `discarded`.
 - Guarda `shown_batch_id`, `shown_index` y `shown_at` en `review_candidates` para que los numeros respondidos apunten al ultimo lote mostrado aunque Telegram conserve un draft/reply viejo.
