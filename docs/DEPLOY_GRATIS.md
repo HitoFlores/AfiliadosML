@@ -41,6 +41,8 @@ Dispatch manual:
 - `main_max_runs`: limite de ejecuciones Main en ese ciclo. Default: `3`.
 - `schema_only`: asegura schema de Google Sheets y termina sin correr Freshness, Scheduler, Poll ni Main.
 - `run_candidate_backfill`: backfill temporal/manual para poblar `review_candidates` desde los reviews ya publicados en `data/*.json`.
+- `run_candidate_cleanup`: crea respaldo de `review_candidates` y descarta candidatos `pending` problematicos.
+- `restore_candidate_rows`: filas de `review_candidates` separadas por coma para reabrir despues de un cleanup.
 
 Cada corrida:
 1. Checkout del repo.
@@ -49,16 +51,18 @@ Cada corrida:
 4. Importa credenciales n8n desde `N8N_CREDENTIALS_JSON_B64`.
 5. Importa workflows generados en `.tmp/n8n-ephemeral/workflows`.
 6. Si toca ciclo diario, ejecuta Freshness.
-7. Si `run_candidate_backfill=true`, ejecuta Candidate Backfill.
-8. Si toca ciclo diario, ejecuta Scheduler.
-9. Ejecuta Telegram Poll.
-10. Ejecuta Main hasta `MAIN_MAX_RUNS`.
-11. Escribe resumen en GitHub Step Summary.
-12. Si es ciclo diario, manda resumen Telegram.
+7. Si `run_candidate_cleanup=true`, ejecuta Candidate Cleanup.
+8. Si `restore_candidate_rows` tiene filas, ejecuta Candidate Restore.
+9. Si `run_candidate_backfill=true`, ejecuta Candidate Backfill.
+10. Si toca ciclo diario, ejecuta Scheduler.
+11. Ejecuta Telegram Poll.
+12. Ejecuta Main hasta `MAIN_MAX_RUNS`.
+13. Escribe resumen en GitHub Step Summary.
+14. Si es ciclo diario, manda resumen Telegram.
 
 ## Workflows Generados
 
-`scripts/n8n-ephemeral/prepare-workflows.mjs` genera/importa 9 workflows:
+`scripts/n8n-ephemeral/prepare-workflows.mjs` genera/importa 11 workflows:
 - `AfiliadosML`
 - `AfiliadosML - Telegram Poll`
 - `AfiliadosML - Scheduler 7am` (nombre historico; se ejecuta a las 9am)
@@ -68,6 +72,8 @@ Cada corrida:
 - `AfiliadosML - Freshness`
 - `AfiliadosML - Sheet Schema`
 - `AfiliadosML - Candidate Backfill`
+- `AfiliadosML - Candidate Cleanup`
+- `AfiliadosML - Candidate Restore`
 
 Sheet Schema:
 - Corre al inicio de cada ciclo.
@@ -86,6 +92,16 @@ Candidate Backfill:
 - Lee `data/*.json` al preparar workflows y genera candidatos desde `editorial.comparativa_editorial`, `editorial.mejor_alternativa`, `editorial.alternativas` con titulo real y `productos_similares_ml` si existen.
 - Deduplica contra `review_candidates`, omite candidatos ya publicados y descarta textos basura como `Sin candidato real confiable identificado en ML`.
 - Inserta los faltantes como `pending` con `candidate_id` estable `{source_slug}:{slugify(candidate_name)}`.
+
+Candidate Cleanup:
+- Workflow manual. Se corre con `run_candidate_cleanup=true`.
+- Antes de tocar filas crea una pestana de respaldo `review_candidates_backup_<timestamp>`.
+- Marca como `discarded` solo candidatos `pending` problematicos: nombres genericos, self-candidates, textos basura, duplicados por clave canonica o candidatos ya publicados.
+- No cambia candidatos `ready`, `done`, `processing` ni `discarded`.
+
+Candidate Restore:
+- Workflow manual. Se corre al mandar `restore_candidate_rows` con filas separadas por coma, por ejemplo `12,16`.
+- Reabre filas especificas marcandolas como `pending` si fueron descartadas por cleanup y limpia el error operativo del descarte.
 
 Scheduler:
 - Manda hasta 3 candidatos `pending`, priorizando `candidate_tier`: `superior > economico > similar > unknown`.

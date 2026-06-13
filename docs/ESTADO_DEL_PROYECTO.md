@@ -1,6 +1,6 @@
 # AfiliadosML - Estado del proyecto
 
-Ultima actualizacion: 2026-06-12.
+Ultima actualizacion: 2026-06-13.
 
 Proyecto: pipeline automatico de reviews editoriales para productos de Mercado Libre Mexico. Un humano sigue aportando links afiliados; el sistema automatiza descubrimiento, cola, generacion, publicacion, relaciones, rankings y freshness.
 
@@ -19,6 +19,9 @@ Proyecto: pipeline automatico de reviews editoriales para productos de Mercado L
 - Build local: `rtk npm run build` debe exportar reviews, rankings y comparadores.
 - Archivos de estudio viejos: movidos a `public/archive/`.
 - CI viejo de Cloudflare: no existe en `.github/workflows`; el unico workflow versionado es `free-ephemeral-n8n.yml`.
+- Candidatos futuros: se normalizan por modelo limpio y se deduplican por clave canonica, conservando tokens de modelo como `M2`, `M3` y `SE`.
+- Cleanup de candidatos ya ejecutado: respaldo `review_candidates_backup_20260613043736`; descartes finales filas `3, 5, 7, 9, 13, 15`; restore correctivo filas `12, 16`.
+- Candidatos `MacBook Air M2` y `MacBook Air M3 con descuento` quedaron `pending`.
 
 ## Arquitectura
 
@@ -35,6 +38,9 @@ n8n workflows:
 - `AfiliadosML - Token Refresh` (`PhRg6OJo47YcvsDo`): refresca token ML.
 - `AfiliadosML - Recordatorios` (`7uVW6atEBK8fuoHV`): recordatorios opcionales.
 - `AfiliadosML - Freshness` (`freshnessAfML2026`): generado por `scripts/n8n-ephemeral/prepare-workflows.mjs`.
+- `AfiliadosML - Candidate Backfill` (`candidateBackfillAfML2026`): backfill manual de candidatos desde reviews publicados.
+- `AfiliadosML - Candidate Cleanup` (`candidateCleanupAfML2026`): cleanup manual con respaldo de candidatos `pending` problematicos.
+- `AfiliadosML - Candidate Restore` (`candidateRestoreAfML2026`): restore manual de filas especificas descartadas por cleanup.
 
 GitHub:
 - Repo: `HitoFlores/AfiliadosML`.
@@ -68,6 +74,12 @@ Sheet Schema asegura automaticamente los headers requeridos en Google Sheets ant
 
 Candidate Backfill es un workflow temporal/manual (`run_candidate_backfill=true`) para poblar `review_candidates` desde reviews viejos en `data/*.json` que no sembraron candidatos al publicarse. Genera candidatos desde `editorial.comparativa_editorial`, `editorial.mejor_alternativa`, `editorial.alternativas` con titulo real y `productos_similares_ml` si existen; deduplica contra la hoja y contra reviews ya publicados; descarta nombres vacios, genericos o `Sin candidato real confiable identificado en ML`.
 
+Normalizacion de candidatos: antes de crear o limpiar filas se eliminan sufijos comerciales (`oferta`, `descuento`, `similar`, `segunda mano`, `reacondicionado`) sin perder senales de modelo. La clave canonica conserva tokens cortos relevantes como `M2`, `M3` y `SE`, y se usa para deduplicar nombres equivalentes sin confundir modelos distintos.
+
+Candidate Cleanup es manual (`run_candidate_cleanup=true`). Crea una pestana `review_candidates_backup_<timestamp>` antes de tocar datos, descarta solo filas `pending` problematicas y no cambia `ready`, `done`, `processing` ni `discarded`. La ejecucion correctiva registrada dejo backup `review_candidates_backup_20260613043736`, descartes finales filas `3, 5, 7, 9, 13, 15`, y reabrio filas `12, 16` con Candidate Restore.
+
+Candidate Restore es manual (`restore_candidate_rows=12,16` o filas equivalentes). Reabre filas especificas que cleanup marco como `discarded` y las regresa a `pending` cuando el descarte fue un falso positivo.
+
 ## Plan Maestro: Escala Automatica
 
 ### [x] P0 Docs
@@ -92,6 +104,8 @@ Se creo la pestana `review_candidates`. El main genera candidatos desde:
 - `mejor_alternativa`
 
 Deduplica por `candidate_id` y solo agrega candidatos nuevos. Cada candidato guarda `candidate_tier` (`superior`, `economico`, `similar`, `unknown`) inferido desde `relation_type`, `comparativa_editorial.tipo`, `mejor_alternativa`, texto editorial y precio relativo cuando existe.
+
+Los nombres se limpian antes de generar IDs y claves canonicas: se quitan calificadores comerciales o ambiguos, se separan nombres compuestos y se conservan tokens de modelo como `M2`, `M3` y `SE`. Esto evita duplicados reales sin descartar modelos validos de Apple Watch SE o MacBook Air M2/M3.
 
 ### [x] P3 Flujo Diario de Candidatos
 
@@ -196,31 +210,39 @@ Si faltan candidatos:
    - Revisa precio/disponibilidad de reviews publicados.
    - Escribe `freshness` en JSON via GitHub.
    - Si hay stale, manda alerta Telegram y reprioriza candidatos relacionados.
-4. Si es ciclo diario, corre Scheduler:
+4. Si `run_candidate_cleanup=true`, corre Candidate Cleanup:
+   - Crea respaldo `review_candidates_backup_<timestamp>`.
+   - Descarta solo candidatos `pending` problematicos.
+   - No toca estados `ready`, `done`, `processing` ni `discarded`.
+5. Si `restore_candidate_rows` tiene filas, corre Candidate Restore:
+   - Reabre filas especificas descartadas por cleanup y las deja `pending`.
+6. Si `run_candidate_backfill=true`, corre Candidate Backfill:
+   - Puebla `review_candidates` desde reviews publicados y deduplica contra la hoja actual.
+7. Si es ciclo diario, corre Scheduler:
    - Lee `review_candidates`.
    - Si hay candidatos `pending`, manda hasta 3 por Telegram priorizando `superior > economico > similar > unknown`.
    - Excluye candidatos ya publicados y estados `done`, `ready`, `processing`, `discarded`.
    - Guarda `shown_batch_id`, `shown_index` y `shown_at` para resolver indices en Poll.
    - Si no hay candidatos, pide articulo manual.
-5. Corre Telegram Poll:
+8. Corre Telegram Poll:
    - Lee respuestas.
    - Si recibe `1 - https://meli.la/...`, marca candidato `ready`.
    - Si recibe `1 - descartar`, marca candidato `discarded`.
    - Crea fila `articulos` con `candidate_id` solo para candidatos `ready`.
-6. Corre Main hasta `MAIN_MAX_RUNS` veces:
+9. Corre Main hasta `MAIN_MAX_RUNS` veces:
    - Toma `ready`, `pending` o candidato recuperable en `processing`.
    - Genera review con Abacus.
    - Commimea `data/{slug}.json`.
    - Cierra fila `articulos`.
    - Si venia de candidato, cierra `review_candidates` con `target_slug` y manda aviso `Review de candidato publicada`.
-7. Cloudflare Pages despliega al recibir push en GitHub.
-8. La web muestra:
+10. Cloudflare Pages despliega al recibir push en GitHub.
+11. La web muestra:
    - Review nuevo.
    - Reviews relacionados.
    - Comparador si hay par cerrado.
    - Rankings.
    - `/estado` con resumen operativo.
-9. El runner manda resumen Telegram del ciclo diario.
+12. El runner manda resumen Telegram del ciclo diario.
 
 Horario actual:
 - Freshness/Scheduler diario: 9:07 AM Chihuahua nominal (`7 16 * * *` UTC).
