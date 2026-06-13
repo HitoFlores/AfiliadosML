@@ -1,0 +1,465 @@
+{
+  "meta": {
+    "producto_id": "MLM1054139851",
+    "slug": "apple-macbook-pro-m5-16gb-14",
+    "candidate_id": "apple-macbook-air-13-m5-512gb:macbook-pro-m5-pro-14-pulgadas",
+    "categoria": "MLM-NOTEBOOKS",
+    "generado_en": "2026-06-13T21:00:38.098Z"
+  },
+  "producto": {
+    "nombre": "Apple 2025 MacBook Pro (de 14 pulgadas, Chip M5 de Apple con CPU de 10 núcleos y GPU de 10 núcleos, 16GB Memoria unificada, 512 GB) - Negro espacial - Distribuidor Autorizado",
+    "display_title": "Apple MacBook 14\" M5 16GB",
+    "nombre_original": "Apple 2025 MacBook Pro (de 14 pulgadas, Chip M5 de Apple con CPU de 10 núcleos y GPU de 10 núcleos, 16GB Memoria unificada, 512 GB) - Negro espacial - Distribuidor Autorizado",
+    "marca": "Apple",
+    "modelo": "Pro",
+    "descripcion": "La MacBook Pro de 14 pulgadas con chip M5 te ofrece una velocidad de otra dimensión y poderosas capacidades de IA en el dispositivo para tus tareas personales, profesionales y creativas de todos los días. Tiene hasta 24 horas de batería y una impresionante pantalla Liquid Retina XDR.¹\n\n• CON LOS SUPERPODERES DEL CHIP M5 — Además de un CPU y una memoria unificada más rápidos, el chip M5 incluye un GPU más potente con un Neural Accelerator integrado en cada núcleo que dispara el rendimiento de la IA. Así, podrás trabajar en proyectos exigentes a mil por hora.\n\n• DISEÑADA PARA APPLE INTELLIGENCE — Apple Intelligence es un sistema de inteligencia personal que te ayuda a escribir, expresarte y hacer de todo con mucha facilidad. Y sus avanzadas protecciones de privacidad te dan la tranquilidad de saber que nadie más podrá acceder a tus datos. Ni siquiera Apple.²\n\n• HASTA 24 HORAS DE BATERÍA — La MacBook Pro de 14 pulgadas ofrece el mismo rendimiento increíble tanto si está conectada a la corriente como funcionando con la batería.¹\n\n• LAS APPS VUELAN CON EL CHIP DE APPLE — Tus apps favoritas, como Microsoft 365 y Adobe Creative Cloud, se ejecutan a toda velocidad en macOS.³\n\n• SI TE GUSTA EL IPHONE, TE VA A ENCANTAR LA MAC — La Mac se lleva de maravilla con todos tus dispositivos Apple. Consulta y controla el contenido de tu iPhone desde tu Mac con Duplicación del iPhone. Copia algo en el iPhone y pégalo en la Mac. Y envía mensajes de texto con Mensajes o usa tu Mac para hacer y responder llamadas de FaceTime.\n\n• UNA PANTALLA PRO DESLUMBRANTE — La pantalla Liquid Retina XDR de 14.2 pulgadas tiene un pico de brillo de 1,600 nits, hasta 1,000 nits de brillo constante y relación de contraste 1,000,000:1.\n\n• CÁMARA Y AUDIO AVANZADOS — Sé siempre el centro de atención gracias a la cámara Center Stage de 12 MP, los tres micrófonos con calidad de estudio y las seis bocinas con Audio Espacial compatibles con Dolby Atmos.\n\n• CONÉCTATE CON TODO — La MacBook Pro viene con tres puertos Thunderbolt 4 y un puerto de carga MagSafe 3, ranura para tarjeta SDXC, puerto HDMI y entrada para audífonos. Y te permite conectar hasta dos monitores externos.\n\n• PRIVACIDAD Y SEGURIDAD INTEGRADAS — Cada Mac trae la mejor protección frente a virus y malware. La app Encontrar te ayuda a recuperarla si la pierdes o te la roban, FileVault se asegura de que tus archivos estén encriptados para que nadie más pueda acceder a ellos y las actualizaciones de seguridad gratuitas ayudan a proteger tu Mac.\n\nAviso legal\nHay distintas opciones de configuración. No todas las configuraciones están disponibles en todos los países o distribuidores autorizados. Las afirmaciones sobre el rendimiento varían según el modelo y la configuración.\n1. La duración de la batería varía según el uso y la configuración. Para obtener más información, visita apple.com/mx/batteries.\n2. Apple Intelligence está disponible en versión beta. Algunas funcionalidades podrían no estar disponibles en todas las regiones o idiomas. Consulta support.apple.com/es-mx/121115 para obtener más información sobre la disponibilidad de funcionalidades e idiomas y los requisitos del sistema.\n3. Las apps están disponibles en el App Store. El software y el contenido podrían venderse por separado. La disponibilidad de títulos está sujeta a cambios.\n4. Disponible en computadoras Mac con chip de Apple y computadoras Mac con procesador Intel y el chip de seguridad T2 de Apple. Requiere que hayas iniciado sesión en tu iPhone y tu Mac con la misma Cuenta de Apple mediante autenticación de dos factores, tu iPhone y tu Mac estén cerca uno del otro y tengan el Bluetooth y Wi-Fi activados, y tu Mac no esté usando AirPlay ni Sidecar. Algunas funcionalidades del iPhone (como la cámara y el micrófono) no son compatibles con Duplicación del iPhone.\n5. FaceTime no está disponible en todos los países o regiones.\n6. La pantalla de la MacBook Pro de 14 pulgadas tiene esquinas redondeadas en la parte superior. Si se mide en forma de rectángulo estándar, la pantalla tiene 14.2 pulgadas en diagonal (el área real de visualización es menor).\n7. Pico de brillo de hasta 1,600 nits a temperaturas inferiores a 25 °C.",
+    "caracteristicas_principales": [
+      "Con los superpoderes del chip M5.",
+      "Diseñada para Apple Intelligence.",
+      "Hasta 24 horas de batería.",
+      "Las apps vuelan con el chip de Apple.",
+      "Si te gusta el iPhone, te va a encantar la Mac.",
+      "Una pantalla pro deslumbrante.",
+      "Cámara y audio avanzados.",
+      "Conéctate con todo.",
+      "Privacidad y seguridad integradas."
+    ],
+    "specs": {
+      "Marca": "Apple",
+      "Línea": "MacBook",
+      "Modelo": "Pro",
+      "Modelo alfanumérico": "A3434",
+      "Color": "Negro espacial",
+      "Capacidad total del módulo de memoria RAM": "16 GB",
+      "Capacidad de disco SSD": "512 GB",
+      "Resolución de la pantalla": "3024 px x 1964 px",
+      "Marca del procesador": "Apple",
+      "Línea del procesador": "M",
+      "Modelo del procesador": "M5",
+      "Nombre del sistema operativo": "macOS",
+      "Color principal": "Negro",
+      "Con Bluetooth": "Sí",
+      "Con cámara web": "Sí",
+      "Con micrófono": "Sí",
+      "Con salida para audífonos": "Sí",
+      "Con pad numérico": "No",
+      "Con pantalla retina": "Sí",
+      "Tipo de pantalla": "Liquid Retina XDR",
+      "Accesorios incluidos": "Adaptador de corriente USB-C de 70 W, Cable de USB-C a MagSafe 3 (2 m)",
+      "Duración máxima de la batería": "1 días",
+      "Año de lanzamiento": "2025",
+      "Idioma del teclado": "Español",
+      "Fabricante": "Apple",
+      "Tamaño de la pantalla": "14 \"",
+      "Ancho": "31.26 cm",
+      "Profundidad": "22.12 cm",
+      "Altura": "1.5 cm",
+      "Peso": "1.55 kg",
+      "Tipo de batería": "Litio",
+      "Homologación Anatel Nº": "120512101993",
+      "Con Wi-Fi": "Sí",
+      "MPN": "MDE04E/A, MDE04CI/A, MDE04BZ/A"
+    },
+    "imagenes": [
+      "https://http2.mlstatic.com/D_NQ_NP_802299-MLA104126662394_012026-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_969178-MLA95060965214_102025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_818309-MLA95060974972_102025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_691908-MLA95497005495_102025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_764388-MLA95496742793_102025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_644081-MLA95496859663_102025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_604006-MLA95496899165_102025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_637715-MLA95496869543_102025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_673191-MLA95496899197_102025-F.jpg"
+    ]
+  },
+  "precio": {
+    "actual": 37999,
+    "original": 37999,
+    "descuento_pct": 0,
+    "moneda": "MXN",
+    "envio_gratis": true,
+    "garantia": "Garantía de fábrica: 12 meses"
+  },
+  "vendedor": {
+    "item_id": "MLM2519950691",
+    "nombre": "MERCADOLIBRE ELECTRONICA_MX",
+    "reputacion": "5_green",
+    "power_seller": "platinum",
+    "transacciones": 2829567
+  },
+  "link_afiliado": "https://meli.la/1k9bJ8C",
+  "reviews_ml": {
+    "total": 26,
+    "con_comentario": 17,
+    "calificacion_promedio": 4.8,
+    "destacadas": [
+      {
+        "titulo": "Rendimiento general",
+        "contenido": "Varios compradores coinciden en que el equipo supera sus expectativas en velocidad y fluidez, especialmente en tareas que antes requerían esperar tiempos de procesamiento notables.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Uso profesional creativo",
+        "contenido": "Quienes trabajan con fotografía y video reportan que los procesos que antes tomaban tiempo considerable ahora se completan de forma notablemente más rápida con el chip M5.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Calidad y confiabilidad de la marca",
+        "contenido": "Los compradores perciben la línea Mac como sinónimo de durabilidad y consistencia, lo que reduce la incertidumbre al momento de invertir en un equipo de este precio.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Relación precio-valor",
+        "contenido": "Aunque nadie se quejó explícitamente del precio en las opiniones disponibles, el costo elevado es un factor implícito que el comprador debe evaluar frente a alternativas Windows de menor costo.",
+        "sentimiento": "mixto"
+      }
+    ]
+  },
+  "videos_yt": [
+    {
+      "video_id": "dsQjIfSfu0A",
+      "titulo": "The Macbook Pro M5 Review - It Changes EVERYTHING",
+      "canal": "Hardware Canucks",
+      "url": "https://www.youtube.com/watch?v=dsQjIfSfu0A",
+      "thumbnail": "https://i.ytimg.com/vi/dsQjIfSfu0A/hqdefault.jpg",
+      "publicado": "2026-02-15",
+      "vistas": 150624,
+      "match_level": "exact",
+      "evidence_score": 22,
+      "evidence_reason": "brand|category:macbook,laptop|exact:MacBook,Pro|tokens:apple,macbook,pro|review:review"
+    },
+    {
+      "video_id": "iPVLx2D3Fnk",
+      "titulo": "MACBOOK PRO vs LAPTOP GAMER i9 ¿CUÁL GANA?",
+      "canal": "YANPOL",
+      "url": "https://www.youtube.com/watch?v=iPVLx2D3Fnk",
+      "thumbnail": "https://i.ytimg.com/vi/iPVLx2D3Fnk/hqdefault.jpg",
+      "publicado": "2025-10-26",
+      "vistas": 1060952,
+      "match_level": "exact",
+      "evidence_score": 21,
+      "evidence_reason": "brand|category:macbook,laptop|exact:MacBook,Pro|tokens:apple,macbook,pro|review: vs"
+    },
+    {
+      "video_id": "uZVEWHAdhWw",
+      "titulo": "MacBook Air M5 vs MacBook Pro M5 🆚 ¿Cuál vale más la pena?",
+      "canal": "TuAppleMundo",
+      "url": "https://www.youtube.com/watch?v=uZVEWHAdhWw",
+      "thumbnail": "https://i.ytimg.com/vi/uZVEWHAdhWw/hqdefault.jpg",
+      "publicado": "2026-04-02",
+      "vistas": 32095,
+      "match_level": "exact",
+      "evidence_score": 20,
+      "evidence_reason": "brand|category:macbook|exact:MacBook,Pro|tokens:apple,macbook,pro|review: vs"
+    }
+  ],
+  "youtube_debug": {
+    "version": "v6",
+    "commercial_name": "Apple Macbook M5",
+    "queries": [
+      "Apple Macbook M5 review",
+      "Apple Macbook M5 analisis",
+      "Apple Macbook M5 reseña",
+      "Apple Macbook M5 vale la pena",
+      "Apple Macbook M5 comparativa",
+      "Apple MacBook Pro review",
+      "Apple MacBook Pro analisis",
+      "Apple MacBook Pro reseña"
+    ],
+    "query_log": [
+      {
+        "q": "Apple Macbook M5 review",
+        "count": 10
+      },
+      {
+        "q": "Apple Macbook M5 analisis",
+        "count": 10
+      },
+      {
+        "q": "Apple Macbook M5 reseña",
+        "count": 10
+      },
+      {
+        "q": "Apple Macbook M5 vale la pena",
+        "count": 10
+      },
+      {
+        "q": "Apple Macbook M5 comparativa",
+        "count": 10
+      },
+      {
+        "q": "Apple MacBook Pro review",
+        "count": 10
+      },
+      {
+        "q": "Apple MacBook Pro analisis",
+        "count": 10
+      },
+      {
+        "q": "Apple MacBook Pro reseña",
+        "count": 10
+      }
+    ],
+    "source_count": 41,
+    "accepted_count": 3,
+    "rejected_sample": [
+      {
+        "title": "Slim 7x Review: I Ditched My MacBook for This",
+        "score": 13,
+        "reason": "category:macbook,laptop|exact:MacBook|tokens:macbook|review:review",
+        "match_level": "none"
+      },
+      {
+        "title": "I Edited 4K Video On M5 Macbook Air - Here’s What Happened",
+        "score": 9,
+        "reason": "category:macbook,laptop|exact:MacBook|tokens:macbook",
+        "match_level": "none"
+      },
+      {
+        "title": "MacBook Air M5 Review: Is It Worth It?!",
+        "score": 10,
+        "reason": "category:macbook|exact:MacBook|tokens:macbook|review:review",
+        "match_level": "none"
+      },
+      {
+        "title": "MacBook Air M5 Review 🔥 Olvídate del MacBook Neo... ¡Esto es CALIDAD PRECIO!",
+        "score": 10,
+        "reason": "category:macbook|exact:MacBook|tokens:macbook|review:review",
+        "match_level": "none"
+      },
+      {
+        "title": "¡LA VERDAD DUELE! 🛑 Un mes con el MacBook Air M5 🍎💻 ¿Ha sido un error? 🤐",
+        "score": 10,
+        "reason": "category:macbook|exact:MacBook|tokens:macbook|review:opinion",
+        "match_level": "none"
+      },
+      {
+        "title": "MacBook Air M5 vs M4: 31 minutos de PURAS COMPARATIVAS",
+        "score": 10,
+        "reason": "category:macbook|exact:MacBook|tokens:macbook|review:comparativa",
+        "match_level": "none"
+      },
+      {
+        "title": "MacBook Neo vs MacBook Air M5 🆚 ¿Cual COMPRAR?",
+        "score": 10,
+        "reason": "category:macbook|exact:MacBook|tokens:macbook|review: vs",
+        "match_level": "none"
+      },
+      {
+        "title": "M4 Max MacBook Pro: I&#39;m Convinced!",
+        "score": -12,
+        "reason": "generation_mismatch:m4,m1"
+      },
+      {
+        "title": "This might convince me to switch  - M5 Pro MacBook Pro",
+        "score": -20,
+        "reason": "cross_category:switch"
+      },
+      {
+        "title": "La VERDAD del MacBook Pro M4 Pro para Programar | 6 Meses Después",
+        "score": -12,
+        "reason": "generation_mismatch:m4"
+      },
+      {
+        "title": "🚀  MacBook Pro M4 Pro 🔥 El 99% NO lo Necesita (Análisis completo)",
+        "score": -12,
+        "reason": "generation_mismatch:m4"
+      },
+      {
+        "title": "30 Días con la laptop más cara de Apple: MacBook Pro M4 | Review en Español",
+        "score": -12,
+        "reason": "generation_mismatch:m4"
+      }
+    ],
+    "category": "laptop",
+    "identity_tokens": [
+      "apple",
+      "macbook",
+      "pro",
+      "2025",
+      "16gb",
+      "memoria",
+      "unificada",
+      "512",
+      "espacial"
+    ]
+  },
+  "ml_search_debug": {
+    "source": "Get Similar Products",
+    "query": null,
+    "received_count": 0,
+    "valid_count": 0,
+    "saved_count": 0,
+    "empty_reason": "ml_returned_no_results",
+    "error_msg": null
+  },
+  "editorial": {
+    "score": 8.6,
+    "score_justificacion": "El MacBook Pro M5 de 14 pulgadas ofrece un salto generacional real en rendimiento y eficiencia energética, respaldado por compradores satisfechos y el historial probado de Apple Silicon, aunque su precio elevado y las mejoras incrementales respecto al M4 limitan el entusiasmo para quienes ya tienen hardware reciente.",
+    "sub_scores": [
+      {
+        "dimension": "Rendimiento",
+        "score": 9,
+        "justificacion": "Los compradores lo describen como un equipo excepcionalmente potente para fotografía, video y programación; el chip M5 con CPU de 10 núcleos representa una mejora real sobre generaciones anteriores."
+      },
+      {
+        "dimension": "Pantalla",
+        "score": 9.2,
+        "justificacion": "La pantalla Liquid Retina XDR de 14.2 pulgadas con pico de 1,600 nits y relación de contraste 1,000,000:1 está documentada en las especificaciones oficiales de Apple."
+      },
+      {
+        "dimension": "Batería",
+        "score": 8.5,
+        "justificacion": "Apple declara hasta 24 horas de autonomía; aunque el dato real varía según uso, la arquitectura Apple Silicon tiene historial comprobado de eficiencia energética superior a la competencia x86."
+      },
+      {
+        "dimension": "Construcción y diseño",
+        "score": 9,
+        "justificacion": "Los compradores destacan la calidad de construcción como característica diferenciadora de la línea Mac; el chasis de aluminio y el acabado Negro espacial son consistentes con la línea Pro."
+      },
+      {
+        "dimension": "Audio y cámara",
+        "score": 8.5,
+        "justificacion": "Las especificaciones incluyen seis bocinas con Dolby Atmos, tres micrófonos y cámara de 12 MP con Center Stage, configuración que la línea Pro ha mantenido con buena recepción en generaciones anteriores."
+      },
+      {
+        "dimension": "Conectividad",
+        "score": 8.8,
+        "justificacion": "Tres puertos Thunderbolt 4, MagSafe 3, HDMI, ranura SDXC y soporte para dos monitores externos es una dotación de puertos sólida para un portátil profesional."
+      }
+    ],
+    "veredicto_corto": "El MacBook Pro M5 de 14 pulgadas es una máquina sólida para trabajo creativo y profesional exigente. Si vienes de un M1 o M2, el salto es notable; si tienes un M4, la diferencia es más difícil de justificar. El precio es alto, pero el ecosistema y la eficiencia energética lo sostienen.",
+    "compralo_si": [
+      "Vienes de Mac con chip M1, M2 o anterior",
+      "Trabajas con video, foto o código intensivo",
+      "Necesitas autonomía real todo el día",
+      "Usas el ecosistema Apple de forma profunda"
+    ],
+    "saltatelo_si": [
+      "Ya tienes un MacBook Pro M4 o M4 Pro",
+      "Tu presupuesto es ajustado y usas apps básicas",
+      "Necesitas Windows nativo sin compromiso",
+      "Prefieres gaming con GPU dedicada"
+    ],
+    "pros": [
+      "Chip M5 con mejoras reales en CPU, GPU y Neural Engine respecto a M4",
+      "Pantalla Liquid Retina XDR con 1,600 nits de pico y contraste excepcional",
+      "Autonomía declarada de hasta 24 horas, consistente con el historial de Apple Silicon",
+      "Conectividad completa: Thunderbolt 4, HDMI, SDXC y MagSafe en un solo equipo",
+      "Construcción premium en aluminio con acabado Negro espacial",
+      "Rendimiento destacado para fotografía, video y programación según compradores verificados",
+      "Soporte para dos monitores externos sin dongles adicionales"
+    ],
+    "contras": [
+      "Precio significativamente más alto que la competencia Windows con especificaciones similares en papel",
+      "La mejora sobre el M4 es incremental; no justifica actualización si ya tienes esa generación",
+      "Apple Intelligence sigue en beta y con disponibilidad limitada por idioma y región en México",
+      "16 GB de RAM unificada es el mínimo de la línea Pro; para flujos de trabajo muy pesados puede quedarse corto",
+      "El ecosistema cerrado de macOS limita compatibilidad con software especializado de nicho que solo existe en Windows"
+    ],
+    "fuentes_citadas": [
+      {
+        "tipo": "compradores",
+        "autor": "Compradores ML",
+        "aporte": "Confirmaron rendimiento sobresaliente para programación, fotografía y video; destacaron calidad y garantía de la marca"
+      },
+      {
+        "tipo": "video",
+        "autor": "Hardware Canucks",
+        "aporte": "Reseña del MacBook Pro M5; solo disponible descripción, sin transcripción completa"
+      },
+      {
+        "tipo": "video",
+        "autor": "TuAppleMundo",
+        "aporte": "Comparativa MacBook Air M5 vs MacBook Pro M5; orientativa para entender diferencias dentro de la línea"
+      },
+      {
+        "tipo": "video",
+        "autor": "YANPOL",
+        "aporte": "Comparativa MacBook Pro vs laptop gamer con i9 y RTX 5060; contexto de valor frente a alternativas Windows gaming"
+      }
+    ],
+    "faq": [
+      {
+        "pregunta": "¿Vale la pena el M5 si ya tengo un MacBook Pro M4?",
+        "respuesta": "En la mayoría de los casos, no. El salto entre M4 y M5 es real pero incremental: mejoras en CPU, GPU y el Neural Engine son medibles en benchmarks, pero en uso cotidiano la diferencia es difícil de percibir. La actualización tiene más sentido si vienes de M1, M2 o un chip Intel."
+      },
+      {
+        "pregunta": "¿16 GB de RAM unificada es suficiente para trabajo profesional?",
+        "respuesta": "Para la mayoría de flujos de trabajo creativos —edición de fotos, video en resoluciones hasta 4K, programación, diseño— 16 GB funcionan bien gracias a la arquitectura de memoria unificada de Apple. Sin embargo, si trabajas con video en 8K, modelos 3D complejos o varias aplicaciones pesadas simultáneas, considera la configuración de 24 GB."
+      },
+      {
+        "pregunta": "¿Funciona Apple Intelligence en México y en español?",
+        "respuesta": "Apple Intelligence sigue en beta y su disponibilidad por idioma y región es limitada. Al momento de esta publicación, las funciones más avanzadas no están disponibles en español de México. Es una característica a futuro, no una razón de compra inmediata."
+      },
+      {
+        "pregunta": "¿Puedo usar este MacBook Pro para gaming?",
+        "respuesta": "macOS tiene una biblioteca de juegos mucho más reducida que Windows. El chip M5 tiene capacidad gráfica real, pero si el gaming es una prioridad, una laptop Windows con GPU dedicada ofrece más títulos y mejor rendimiento en ese uso específico."
+      },
+      {
+        "pregunta": "¿Qué tan buena es la autonomía en uso real?",
+        "respuesta": "Apple declara hasta 24 horas, una cifra de uso ideal. En trabajo real con pantalla brillante, videoconferencias y apps activas, la autonomía será menor, pero el historial de Apple Silicon en eficiencia energética es consistentemente superior al de laptops Windows equivalentes. Espera jornadas completas sin cargador en uso moderado."
+      }
+    ],
+    "precio_valor": "El MacBook Pro M5 de 14 pulgadas es un equipo caro, sin rodeos. Sin embargo, lo que ofrece —rendimiento sostenido, autonomía real, pantalla de alta calidad y conectividad completa sin dongles— justifica parte de esa prima para usuarios que lo van a exigir profesionalmente. Si tu uso es básico o semi-profesional, el precio es difícil de defender frente a alternativas Windows más económicas. Para creativos y desarrolladores que viven en el ecosistema Apple, el costo tiene respaldo concreto.",
+    "alternativas": [
+      {
+        "tipo": "Opción más económica",
+        "descripcion": "Si el presupuesto es una restricción real, considera el MacBook Air M4 o M3, que ofrece el mismo ecosistema macOS y rendimiento suficiente para la mayoría de tareas creativas y de productividad, sacrificando la pantalla ProMotion de 120 Hz, los puertos adicionales y el rendimiento sostenido bajo carga prolongada."
+      },
+      {
+        "tipo": "Opción premium",
+        "descripcion": "Si tu trabajo requiere más potencia sostenida, considera el MacBook Pro de 14 pulgadas con chip M4 Pro o M5 Pro, que añade más núcleos de CPU y GPU, mayor ancho de banda de memoria y mejor rendimiento en cargas de trabajo profesionales intensas como renderizado 3D o edición de video en resoluciones muy altas."
+      }
+    ],
+    "riesgos_compra_ml": [
+      "Verificar que el vendedor sea Distribuidor Autorizado Apple México para garantía oficial de un año con soporte local",
+      "Confirmar que el modelo listado corresponde exactamente al M5 base (10 núcleos CPU + 10 núcleos GPU) y no a una versión M4 o importada con especificaciones distintas",
+      "Revisar si el teclado y el sistema operativo están configurados para México (español latinoamericano) o si es una importación con layout diferente",
+      "Confirmar que los 16 GB de RAM y 512 GB de almacenamiento corresponden al SKU exacto, ya que en ML pueden coexistir configuraciones distintas bajo el mismo anuncio",
+      "Asegurarse de que el precio incluye IVA y no tiene cargos ocultos por importación o internación, especialmente en vendedores no autorizados"
+    ],
+    "checklist_antes_de_comprar": [
+      "Busca el sello de Distribuidor Autorizado Apple en el perfil del vendedor y verifica en apple.com/mx que aparezca como reseller oficial",
+      "Compara el número de modelo (Model Number) en la descripción del anuncio con el que aparece en apple.com/mx para confirmar que es la versión para México",
+      "Revisa las preguntas y respuestas del anuncio para confirmar si incluye cargador MagSafe o si se vende por separado",
+      "Consulta la reputación del vendedor en ML: busca calificación mayor a 4.5 y al menos 50 ventas en la categoría de computadoras",
+      "Verifica que el precio esté dentro del rango de mercado para este modelo; precios muy por debajo del promedio son señal de alerta sobre autenticidad o versión del producto"
+    ],
+    "comparativa_editorial": [
+      {
+        "tipo": "modelo anterior o inferior",
+        "titulo": "MacBook Air M4 (13 o 15 pulgadas)",
+        "resumen": "Cuesta menos y ofrece el mismo ecosistema macOS con rendimiento suficiente para la mayoría de usuarios. Sacrifica la pantalla ProMotion de 120 Hz, los puertos adicionales y el rendimiento sostenido bajo carga continua. Ideal para quien no necesita la potencia completa de la línea Pro."
+      },
+      {
+        "tipo": "alternativa fuera del ecosistema",
+        "titulo": "Laptop Windows con Intel Core Ultra o AMD Ryzen AI (gama profesional)",
+        "resumen": "Por un precio similar o menor, laptops como las de la línea ThinkPad X1 Carbon o Dell XPS ofrecen Windows nativo, mayor compatibilidad con software especializado y opciones de GPU dedicada. Pierden en autonomía y optimización del ecosistema, pero ganan en flexibilidad y acceso a juegos."
+      }
+    ],
+    "mejor_alternativa": {
+      "tipo": "modelo anterior o inferior",
+      "titulo": "MacBook Air M4",
+      "razon": "Para la mayoría de usuarios que no necesitan el rendimiento sostenido bajo carga prolongada ni la pantalla ProMotion, el MacBook Air M4 ofrece el mismo ecosistema y experiencia macOS a un precio considerablemente menor."
+    },
+    "keyword_targets": [
+      "MacBook Pro M5 14 pulgadas precio México",
+      "MacBook Pro M5 vs M4 vale la pena",
+      "comprar MacBook Pro M5 Mercado Libre México",
+      "MacBook Pro M5 para programación y diseño",
+      "MacBook Pro 14 M5 Negro espacial distribuidor autorizado México"
+    ],
+    "evidencia_limitaciones": "Este análisis cruza las especificaciones oficiales de Apple, opiniones de compradores verificados en Mercado Libre y descripciones de reseñas en video independientes; no incluye pruebas de laboratorio propias ni mediciones instrumentales directas del equipo.",
+    "seo_title": "MacBook Pro M5 14\" 2026: ¿Vale la pena en México?",
+    "seo_description": "Análisis honesto del MacBook Pro M5 de 14 pulgadas: rendimiento real, autonomía, conectividad y si justifica su precio en México. Lee antes de comprar.",
+    "articulo_html": "<h2>Veredicto rápido: potente, caro y difícil de ignorar</h2>\n<p>El MacBook Pro de 14 pulgadas con chip M5 es un equipo que cumple lo que promete para usuarios profesionales. Si vienes de un Mac con chip M1, M2 o Intel, el salto es real y se nota en el día a día. Si ya tienes un M4, la historia es diferente: las mejoras existen, pero son incrementales y difíciles de justificar económicamente. El precio es alto, sin rodeos, y eso es lo primero que hay que tener claro.</p>\n\n<h2>Qué es y qué cambió respecto al modelo anterior</h2>\n<p>El MacBook Pro M5 de 14 pulgadas es la actualización anual de Apple a su línea profesional de portátiles. El chip M5 trae mejoras en CPU, GPU y especialmente en el Neural Engine, que ahora integra un acelerador de IA en cada núcleo de GPU. Esto se traduce en mayor velocidad en tareas de procesamiento de imágenes, video y modelos de lenguaje locales.</p>\n<p>Comparado con el M4, el salto es real pero moderado. Comparado con el M3 o M2, la diferencia es más perceptible. El diseño exterior no cambia: mismo chasis de aluminio, misma pantalla Liquid Retina XDR de 14.2 pulgadas, misma dotación de puertos. Lo que evoluciona está adentro.</p>\n\n<h2>Lo bueno: donde este equipo realmente destaca</h2>\n<h3>Rendimiento para trabajo creativo</h3>\n<p>Los compradores que ya lo tienen en sus manos coinciden en que el equipo maneja sin esfuerzo flujos de trabajo exigentes. Quienes trabajan con fotografía y video reportan que procesos que antes requerían esperar ahora se completan de forma notablemente más rápida. Para programación, la experiencia es igualmente fluida.</p>\n<h3>Pantalla y audio</h3>\n<p>La pantalla Liquid Retina XDR de 14.2 pulgadas con pico de 1,600 nits y relación de contraste de 1,000,000:1 es una de las mejores en cualquier portátil del mercado. Las seis bocinas con soporte Dolby Atmos y los tres micrófonos completan una experiencia multimedia que pocas laptops igualan en este tamaño.</p>\n<h3>Conectividad sin dongles</h3>\n<p>Tres puertos Thunderbolt 4, MagSafe 3, HDMI nativo, ranura SDXC y soporte para dos monitores externos. Para un portátil de 14 pulgadas, esta dotación de puertos es generosa y elimina la necesidad de hubs adicionales en la mayoría de configuraciones de escritorio.</p>\n<h3>Autonomía</h3>\n<p>Apple declara hasta 24 horas, una cifra de uso ideal. En condiciones reales con pantalla brillante y varias aplicaciones activas, la autonomía será menor, pero el historial de Apple Silicon en eficiencia energética es consistentemente superior al de laptops Windows equivalentes. Jornadas completas sin cargador son realistas en uso moderado.</p>\n\n<h2>Lo malo y lo que hay que tener en cuenta</h2>\n<ul>\n<li><strong>El salto desde M4 es pequeño.</strong> Si ya tienes un MacBook Pro M4, actualizar al M5 base es difícil de justificar. Las mejoras son reales en benchmarks, pero en uso cotidiano la diferencia es marginal.</li>\n<li><strong>16 GB puede quedarse corto en flujos muy pesados.</strong> Para edición de video en 8K, modelado 3D complejo o muchas aplicaciones pesadas simultáneas, la configuración base de 16 GB de RAM unificada puede ser un cuello de botella. La memoria no es ampliable después de la compra.</li>\n<li><strong>Apple Intelligence sigue siendo promesa.</strong> Las funciones de IA más avanzadas están en beta y con disponibilidad limitada por idioma y región. En México, en español, muchas de estas características no están disponibles todavía. No compres este equipo por Apple Intelligence hoy.</li>\n<li><strong>El ecosistema cerrado tiene costos.</strong> macOS es excelente, pero si tu flujo de trabajo depende de software que solo existe en Windows, o si el gaming es una prioridad, este equipo no es la respuesta correcta.</li>\n<li><strong>El precio es alto.</strong> Frente a laptops Windows con especificaciones similares en papel, el MacBook Pro cuesta considerablemente más. La diferencia se justifica en optimización, autonomía y ecosistema, pero no en todos los casos de uso.</li>\n</ul>\n\n<h2>Comparativa de compra</h2>\n<h3>Contra el MacBook Air M4 (mejor valor)</h3>\n<p>El MacBook Air M4 ofrece el mismo ecosistema macOS y rendimiento suficiente para la mayoría de tareas creativas y de productividad a un precio menor. Sacrifica la pantalla ProMotion de 120 Hz, los puertos adicionales y el rendimiento sostenido bajo carga prolongada. Para usuarios que no exigen el equipo de forma continua, el Air es la compra más inteligente.</p>\n<h3>Contra el MacBook Pro con M5 Pro (opción premium)</h3>\n<p>Si tu trabajo involucra renderizado 3D, compilación de proyectos grandes o edición de video en resoluciones muy altas de forma constante, el M5 Pro añade núcleos adicionales y mayor ancho de banda de memoria. Ese sí es un salto que se siente en cargas de trabajo profesionales intensas.</p>\n<h3>Contra laptops Windows profesionales (fuera del ecosistema)</h3>\n<p>Según el canal YANPOL, una laptop gaming con Intel i9 y RTX 5060 a la mitad del precio puede superar al MacBook Pro en gaming y en software que aprovecha GPU dedicada. Si el gaming o el software exclusivo de Windows son prioritarios, la comparativa cambia radicalmente a favor de la alternativa Windows.</p>\n\n<h2>¿Para quién sí y para quién no?</h2>\n<h3>Cómpralo si:</h3>\n<ul>\n<li>Vienes de un Mac con chip M1, M2 o Intel y quieres un salto real de rendimiento</li>\n<li>Tu trabajo diario involucra fotografía, video, diseño o programación exigente</li>\n<li>Necesitas autonomía real durante jornadas largas sin acceso a cargador</li>\n<li>Ya estás integrado en el ecosistema Apple y aprovechas la continuidad entre dispositivos</li>\n</ul>\n<h3>Evítalo si:</h3>\n<ul>\n<li>Ya tienes un MacBook Pro M4 y buscas una mejora notable</li>\n<li>Tu presupuesto es ajustado y tu uso es básico o semi-profesional</li>\n<li>El gaming o el software exclusivo de Windows son parte central de tu flujo de trabajo</li>\n<li>Necesitas más de 16 GB de RAM y no puedes costear la configuración superior</li>\n</ul>\n\n<h2>Conclusión</h2>\n<p>El MacBook Pro M5 de 14 pulgadas es un equipo bien construido, con rendimiento real para trabajo profesional y una de las mejores pantallas en su categoría. No es una compra para todos, y su precio lo pone en una categoría donde la decisión debe ser deliberada. Si encajas en el perfil de usuario correcto, es difícil encontrar algo mejor en este tamaño dentro del ecosistema Apple.</p>\n<p>Si estás listo para comprarlo, verifica que el vendedor sea Distribuidor Autorizado Apple México antes de pagar. Puedes encontrarlo en Mercado Libre, pero confirma el SKU exacto y la garantía oficial antes de cerrar la compra.</p>"
+  },
+  "productos_similares_ml": [],
+  "autoria": {
+    "nombre": "Hito Flores",
+    "tagline": "Análisis independiente de productos en Mercado Libre México",
+    "metodologia": "Este análisis sintetiza 0 reseñas en video de creadores independientes y 26 opiniones de compradores verificados de Mercado Libre.",
+    "actualizado": "2026-06-13"
+  }
+}
