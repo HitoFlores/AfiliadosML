@@ -422,18 +422,18 @@
     "actualizado": "2026-06-13"
   },
   "freshness": {
-    "checked_at": "2026-06-13T21:25:50.204Z",
+    "checked_at": "2026-06-14T17:41:11.710Z",
     "item_id": "MLM2921336233",
     "catalog_product_id": "MLM2076962190",
-    "status": "active_inferred",
-    "is_available": true,
-    "stale": false,
-    "stale_reason": "",
+    "status": "exception",
+    "is_available": false,
+    "stale": true,
+    "stale_reason": "exception",
     "price_previous": 42083.31,
-    "price_current": 42083.31,
-    "price_delta_pct": 0,
+    "price_current": null,
+    "price_delta_pct": null,
     "available_quantity": null,
     "permalink": null,
-    "error_msg": null
+    "error_msg": "Request failed with status code 404"
   }
 }
