@@ -576,17 +576,28 @@ const norm = (value) => String(value || '')
   .replace(/[^a-z0-9\\s]/g, ' ')
   .replace(/\\s+/g, ' ')
   .trim();
+const isSpecOnlyCandidate = (value) => {
+  const text = norm(value);
+  if (!text) return true;
+  const tokens = text.split(' ').filter(Boolean);
+  if (!tokens.length) return true;
+  const specWords = new Set(['pulgada','pulgadas','inch','inches','cm','mm','gb','tb','ssd','ram','cpu','gpu','nucleos','core','cores','hz','mah','w','litro','litros','ml','color','negro','blanco','azul','rojo','plata','plateado','gris','nuevo','nueva','no','o','y']);
+  return tokens.every(token => /^[0-9]+(?:\\.[0-9]+)?$/.test(token) || specWords.has(token));
+};
 const cleanCandidateName = (value) => {
   let name = String(value || '').replace(/\\s+/g, ' ').trim();
   if (!name) return '';
   name = name.replace(/\\(([^)]*)\\)/g, (_, content) => {
     const text = norm(content);
-    if (!text || /reacondicionado|segunda mano|usad[oa]?|oferta|descuento|similar|este modelo|si se consigue/.test(text)) return ' ';
+    if (!text || /reacondicionad[oa]|segunda mano|usad[oa]?|oferta|descuento|similar|este modelo|si se consigue/.test(text) || isSpecOnlyCandidate(text)) return ' ';
     return ' ' + content + ' ';
   });
   return name
     .replace(/\\bserie\\s+(\\d+)/gi, '$1')
     .replace(/\\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\\b/gi, ' ')
+    .replace(/\\bnuev[oa]\\s+no\\s+reacondicionad[oa]\\b/gi, ' ')
+    .replace(/\\bno\\s+reacondicionad[oa]\\b/gi, ' ')
+    .replace(/\\bnuev[oa]\\b/gi, ' ')
     .replace(/\\b(en oferta|con descuento|descuento|oferta)\\b/gi, ' ')
     .replace(/\\bsi se consigue\\b.*$/gi, ' ')
     .replace(/\\beste modelo\\b/gi, ' ')
@@ -806,17 +817,28 @@ return [{
 const rows = $input.all().map(i => i.json).filter(r => !r.error);
 const publishedReviews = ${JSON.stringify(publishedReviewMeta.reviews)};
 const norm = (value) => String(value || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9\\s]/g, ' ').replace(/\\s+/g, ' ').trim();
+const isSpecOnlyCandidate = (value) => {
+  const text = norm(value);
+  if (!text) return true;
+  const tokens = text.split(' ').filter(Boolean);
+  if (!tokens.length) return true;
+  const specWords = new Set(['pulgada','pulgadas','inch','inches','cm','mm','gb','tb','ssd','ram','cpu','gpu','nucleos','core','cores','hz','mah','w','litro','litros','ml','color','negro','blanco','azul','rojo','plata','plateado','gris','nuevo','nueva','no','o','y']);
+  return tokens.every(token => /^[0-9]+(?:\\.[0-9]+)?$/.test(token) || specWords.has(token));
+};
 const cleanCandidateName = (value) => {
   let name = String(value || '').replace(/\\s+/g, ' ').trim();
   if (!name) return '';
   name = name.replace(/\\(([^)]*)\\)/g, (_, content) => {
     const text = norm(content);
-    if (!text || /reacondicionado|segunda mano|usad[oa]?|oferta|descuento|similar|este modelo|si se consigue/.test(text)) return ' ';
+    if (!text || /reacondicionad[oa]|segunda mano|usad[oa]?|oferta|descuento|similar|este modelo|si se consigue/.test(text) || isSpecOnlyCandidate(text)) return ' ';
     return ' ' + content + ' ';
   });
   return name
     .replace(/\\bserie\\s+(\\d+)/gi, '$1')
     .replace(/\\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\\b/gi, ' ')
+    .replace(/\\bnuev[oa]\\s+no\\s+reacondicionad[oa]\\b/gi, ' ')
+    .replace(/\\bno\\s+reacondicionad[oa]\\b/gi, ' ')
+    .replace(/\\bnuev[oa]\\b/gi, ' ')
     .replace(/\\b(en oferta|con descuento|descuento|oferta)\\b/gi, ' ')
     .replace(/\\bsi se consigue\\b.*$/gi, ' ')
     .replace(/\\beste modelo\\b/gi, ' ')
@@ -830,7 +852,7 @@ const canonicalCandidateKey = (value) => norm(cleanCandidateName(value)).split('
 const isGenericCandidateName = (value) => {
   const rawText = norm(value);
   const text = norm(cleanCandidateName(value));
-  if (!text || text.length < 6 || /sin candidato real confiable/.test(text) || /\\bo similar\\b/.test(rawText)) return true;
+  if (!text || text.length < 6 || /sin candidato real confiable/.test(text) || /\\bo similar\\b/.test(rawText) || isSpecOnlyCandidate(text)) return true;
   const tokens = text.split(' ').filter(Boolean);
   const meaningful = tokens.filter(token => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se');
   if (meaningful.length < 2) return true;
@@ -1526,8 +1548,19 @@ const tierRank = (tier) => {
   return 3;
 };
 const norm = (value) => String(value || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9\\s]/g, ' ').replace(/\\s+/g, ' ').trim();
+const isSpecOnlyCandidate = (value) => {
+  const text = norm(value);
+  if (!text) return true;
+  const tokens = text.split(' ').filter(Boolean);
+  if (!tokens.length) return true;
+  const specWords = new Set(['pulgada','pulgadas','inch','inches','cm','mm','gb','tb','ssd','ram','cpu','gpu','nucleos','core','cores','hz','mah','w','litro','litros','ml','color','negro','blanco','azul','rojo','plata','plateado','gris','nuevo','nueva','no','o','y']);
+  return tokens.every(token => /^[0-9]+(?:\\.[0-9]+)?$/.test(token) || specWords.has(token));
+};
 const cleanCandidateName = (value) => String(value || '')
   .replace(/\\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\\b/gi, ' ')
+  .replace(/\\bnuev[oa]\\s+no\\s+reacondicionad[oa]\\b/gi, ' ')
+  .replace(/\\bno\\s+reacondicionad[oa]\\b/gi, ' ')
+  .replace(/\\bnuev[oa]\\b/gi, ' ')
   .replace(/\\b(en oferta|con descuento|descuento|oferta)\\b/gi, ' ')
   .replace(/\\bo similar\\b.*$/gi, ' ')
   .replace(/\\bsimilar\\b/gi, ' ')
@@ -1556,6 +1589,7 @@ const sorted = rows
   .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
   .filter(r => !publishedProductIds.has(String(r.candidate_ml_id || '').trim()))
   .filter(r => !isPublishedName(r.candidate_name))
+  .filter(r => !isSpecOnlyCandidate(cleanCandidateName(r.candidate_name)))
   .filter(r => !preferredKeys.has(canonicalCandidateKey(r.candidate_name)))
   .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)));
 const pending = [];
@@ -3096,17 +3130,28 @@ const norm = (s) => String(s || '')
   .replace(/\\s+/g, ' ')
   .trim();
 const slugify = (s) => norm(s).replace(/\\s+/g, '-').slice(0, 80);
+const isSpecOnlyCandidate = (value) => {
+  const text = norm(value);
+  if (!text) return true;
+  const tokens = text.split(' ').filter(Boolean);
+  if (!tokens.length) return true;
+  const specWords = new Set(['pulgada','pulgadas','inch','inches','cm','mm','gb','tb','ssd','ram','cpu','gpu','nucleos','core','cores','hz','mah','w','litro','litros','ml','color','negro','blanco','azul','rojo','plata','plateado','gris','nuevo','nueva','no','o','y']);
+  return tokens.every(token => /^[0-9]+(?:\\.[0-9]+)?$/.test(token) || specWords.has(token));
+};
 const cleanCandidateName = (value) => {
   let name = String(value || '').replace(/\\s+/g, ' ').trim();
   if (!name) return '';
   name = name.replace(/\\(([^)]*)\\)/g, (_, content) => {
     const text = norm(content);
-    if (!text || /reacondicionado|segunda mano|usad[oa]?|oferta|descuento|similar|este modelo|si se consigue/.test(text)) return ' ';
+    if (!text || /reacondicionad[oa]|segunda mano|usad[oa]?|oferta|descuento|similar|este modelo|si se consigue/.test(text) || isSpecOnlyCandidate(text)) return ' ';
     return ' ' + content + ' ';
   });
   return name
     .replace(/\\bserie\\s+(\\d+)/gi, '$1')
     .replace(/\\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\\b/gi, ' ')
+    .replace(/\\bnuev[oa]\\s+no\\s+reacondicionad[oa]\\b/gi, ' ')
+    .replace(/\\bno\\s+reacondicionad[oa]\\b/gi, ' ')
+    .replace(/\\bnuev[oa]\\b/gi, ' ')
     .replace(/\\b(en oferta|con descuento|descuento|oferta)\\b/gi, ' ')
     .replace(/\\bsi se consigue\\b.*$/gi, ' ')
     .replace(/\\beste modelo\\b/gi, ' ')
@@ -3123,7 +3168,7 @@ const canonicalCandidateKey = (value) => norm(cleanCandidateName(value))
 const isGenericCandidateName = (value) => {
   const rawText = norm(value);
   const text = norm(cleanCandidateName(value));
-  if (!text || text.length < 6 || /sin candidato real confiable/.test(text) || /\\bo similar\\b/.test(rawText)) return true;
+  if (!text || text.length < 6 || /sin candidato real confiable/.test(text) || /\\bo similar\\b/.test(rawText) || isSpecOnlyCandidate(text)) return true;
   const tokens = text.split(' ').filter(Boolean);
   const meaningful = tokens.filter(token => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se');
   if (meaningful.length < 2) return true;

@@ -57,6 +57,17 @@ assertEqual(
   splitCompositeCandidateName("Samsung Galaxy Watch 7 o Garmin Forerunner serie 265"),
   ["Samsung Galaxy Watch 7", "Garmin Forerunner 265"],
 );
+assertEqual("standalone size is generic", isGenericCandidateName("15 pulgadas"), true);
+assertEqual(
+  "condition words are removed from candidate name",
+  cleanCandidateName("De'Longhi Eletta Explore nueva (no reacondicionada)"),
+  "De'Longhi Eletta Explore",
+);
+assertEqual(
+  "size alternative in parentheses does not create stray candidate",
+  splitCompositeCandidateName("MacBook Air M4 (13 o 15 pulgadas)"),
+  ["MacBook Air M4"],
+);
 assertEqual("o similar candidate is generic", isGenericCandidateName("Samsung Galaxy Watch 7 o similar"), true);
 assertEqual(
   "this model candidate is self candidate",

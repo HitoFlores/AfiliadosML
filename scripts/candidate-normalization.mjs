@@ -27,7 +27,8 @@ export function cleanCandidateName(value) {
     const text = norm(content);
     if (
       !text ||
-      /reacondicionado|segunda mano|usad[oa]?|oferta|descuento|similar|este modelo|si se consigue/.test(text)
+      /reacondicionad[oa]|segunda mano|usad[oa]?|oferta|descuento|similar|este modelo|si se consigue/.test(text) ||
+      isSpecOnlyCandidate(text)
     ) {
       return " ";
     }
@@ -37,6 +38,9 @@ export function cleanCandidateName(value) {
   name = name
     .replace(/\bserie\s+(\d+)/gi, "$1")
     .replace(/\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\b/gi, " ")
+    .replace(/\bnuev[oa]\s+no\s+reacondicionad[oa]\b/gi, " ")
+    .replace(/\bno\s+reacondicionad[oa]\b/gi, " ")
+    .replace(/\bnuev[oa]\b/gi, " ")
     .replace(/\b(en oferta|con descuento|descuento|oferta)\b/gi, " ")
     .replace(/\bsi se consigue\b.*$/gi, " ")
     .replace(/\beste modelo\b/gi, " ")
@@ -74,6 +78,50 @@ export function canonicalCandidateKey(value) {
   return meaningfulName(cleanCandidateName(value));
 }
 
+export function isSpecOnlyCandidate(value) {
+  const text = norm(value);
+  if (!text) return true;
+  const tokens = text.split(" ").filter(Boolean);
+  if (!tokens.length) return true;
+  const specWords = new Set([
+    "pulgada",
+    "pulgadas",
+    "inch",
+    "inches",
+    "cm",
+    "mm",
+    "gb",
+    "tb",
+    "ssd",
+    "ram",
+    "cpu",
+    "gpu",
+    "nucleos",
+    "core",
+    "cores",
+    "hz",
+    "mah",
+    "w",
+    "litro",
+    "litros",
+    "ml",
+    "color",
+    "negro",
+    "blanco",
+    "azul",
+    "rojo",
+    "plata",
+    "plateado",
+    "gris",
+    "nuevo",
+    "nueva",
+    "no",
+    "o",
+    "y",
+  ]);
+  return tokens.every((token) => /^[0-9]+(?:\.[0-9]+)?$/.test(token) || specWords.has(token));
+}
+
 export function isGenericCandidateName(value) {
   const raw = String(value || "");
   const clean = cleanCandidateName(raw);
@@ -82,6 +130,7 @@ export function isGenericCandidateName(value) {
   if (!text || text.length < 6) return true;
   if (/sin candidato real confiable/.test(text)) return true;
   if (/\bo similar\b/.test(rawText)) return true;
+  if (isSpecOnlyCandidate(text)) return true;
 
   const tokens = text.split(" ").filter(Boolean);
   const meaningful = tokens.filter((token) => token.length > 2 || /^[0-9]+$/.test(token));
