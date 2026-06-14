@@ -1,6 +1,6 @@
 # AfiliadosML - Estado del proyecto
 
-Ultima actualizacion: 2026-06-13.
+Ultima actualizacion: 2026-06-14.
 
 Proyecto: pipeline automatico de reviews editoriales para productos de Mercado Libre Mexico. Un humano sigue aportando links afiliados; el sistema automatiza descubrimiento, cola, generacion, publicacion, relaciones, rankings y freshness.
 
@@ -23,13 +23,19 @@ Proyecto: pipeline automatico de reviews editoriales para productos de Mercado L
 - Archivos de estudio viejos: movidos a `public/archive/`.
 - CI viejo de Cloudflare: no existe en `.github/workflows`; el unico workflow versionado es `free-ephemeral-n8n.yml`.
 - Candidatos futuros: se normalizan por modelo limpio y se deduplican por clave canonica, conservando tokens de modelo como `M2`, `M3` y `SE`.
-- Cleanup de candidatos ya ejecutado: respaldo `review_candidates_backup_20260613043736`; descartes finales filas `3, 5, 7, 9, 13, 15`; restore correctivo filas `12, 16`.
+- Cleanup de candidatos ya ejecutado:
+  - 2026-06-13: respaldo `review_candidates_backup_20260613043736`; descartes finales filas `3, 5, 7, 9, 13, 15`; restore correctivo filas `12, 16`.
+  - 2026-06-14: run `27511727934`, commit `7a59d74`; respaldo `review_candidates_backup_20260614205439` con 30 filas; descartes filas `12`, `16`, `25` (`15 pulgadas`) y `26` (`De'Longhi Eletta Explore nueva no`).
 - Ultima prueba manual 2026-06-13: Scheduler mando 3 candidatos, Poll acepto 3 links y Main publico `apple-macbook-pro-m5-16gb-14`, `espresso-machine-longhi-eletta-explore` y `nintendo-switch-lite-32gb`.
 - Fixes operativos 2026-06-13:
   - Scheduler ya no queda bloqueado por `WAITING_LINK` viejo ni por filas `processing` vacias en `articulos`.
   - Poll ya no manda `Candidato listo... undefined`; toma `candidate_name` desde `Filter Candidate Queue Adds`.
   - YouTube stats limita IDs a 50 para evitar HTTP 400 en `videos`.
   - Slug/display title de Switch normaliza casos raros de ML como `LiteSwitch` a `nintendo-switch-lite-32gb` / `Nintendo Switch Lite 32GB`.
+- Fixes operativos 2026-06-14:
+  - Normalizacion de candidatos descarta specs sueltas como `15 pulgadas`.
+  - Limpia calificadores de condicion como `nueva`, `nuevo`, `no reacondicionado` y `no reacondicionada` antes de crear claves canonicas.
+  - Parentesis con specs alternativas como `(13 o 15 pulgadas)` ya no se separan como candidatos independientes.
 
 ## Arquitectura
 
@@ -82,11 +88,11 @@ Sheet Schema asegura automaticamente los headers requeridos en Google Sheets ant
 
 Candidate Backfill es un workflow temporal/manual (`run_candidate_backfill=true`) para poblar `review_candidates` desde reviews viejos en `data/*.json` que no sembraron candidatos al publicarse. Genera candidatos desde `editorial.comparativa_editorial`, `editorial.mejor_alternativa`, `editorial.alternativas` con titulo real y `productos_similares_ml` si existen; deduplica contra la hoja y contra reviews ya publicados; descarta nombres vacios, genericos o `Sin candidato real confiable identificado en ML`.
 
-Normalizacion de candidatos: antes de crear o limpiar filas se eliminan sufijos comerciales (`oferta`, `descuento`, `similar`, `segunda mano`, `reacondicionado`) sin perder senales de modelo. La clave canonica conserva tokens cortos relevantes como `M2`, `M3` y `SE`, y se usa para deduplicar nombres equivalentes sin confundir modelos distintos.
+Normalizacion de candidatos: antes de crear o limpiar filas se eliminan sufijos comerciales (`oferta`, `descuento`, `similar`, `segunda mano`, `reacondicionado`) y calificadores de condicion (`nuevo`, `nueva`, `no reacondicionado`, `no reacondicionada`) sin perder senales de modelo. La clave canonica conserva tokens cortos relevantes como `M2`, `M3` y `SE`, y se usa para deduplicar nombres equivalentes sin confundir modelos distintos. Tambien descarta candidatos que son solo especificaciones, por ejemplo `15 pulgadas`, y limpia parentesis de specs como `(13 o 15 pulgadas)` sin crear candidatos basura.
 
 Slug/display title editorial: `Build Final JSON` genera slugs desde familia comercial y specs distintivas, no desde todo el titulo ML. Casos especiales cubiertos: Apple Watch (`apple-watch-series-11-46mm`), Nintendo Switch (`nintendo-switch-lite-32gb` / `nintendo-switch-oled-64gb`) y DeLonghi (`delonghi`). Esto evita duplicados raros de Mercado Libre como `LiteSwitch`.
 
-Candidate Cleanup es manual (`run_candidate_cleanup=true`). Crea una pestana `review_candidates_backup_<timestamp>` antes de tocar datos, descarta solo filas `pending` problematicas y no cambia `ready`, `done`, `processing` ni `discarded`. La ejecucion correctiva registrada dejo backup `review_candidates_backup_20260613043736`, descartes finales filas `3, 5, 7, 9, 13, 15`, y reabrio filas `12, 16` con Candidate Restore.
+Candidate Cleanup es manual (`run_candidate_cleanup=true`). Crea una pestana `review_candidates_backup_<timestamp>` antes de tocar datos, descarta solo filas `pending` problematicas y no cambia `ready`, `done`, `processing` ni `discarded`. Ejecuciones correctivas registradas: `review_candidates_backup_20260613043736` descarto filas `3, 5, 7, 9, 13, 15` y luego reabrio `12, 16`; `review_candidates_backup_20260614205439` descarto filas `12`, `16`, `25` (`15 pulgadas`) y `26` (`De'Longhi Eletta Explore nueva no`).
 
 Candidate Restore es manual (`restore_candidate_rows=12,16` o filas equivalentes). Reabre filas especificas que cleanup marco como `discarded` y las regresa a `pending` cuando el descarte fue un falso positivo.
 
@@ -116,6 +122,7 @@ Se creo la pestana `review_candidates`. El main genera candidatos desde:
 Deduplica por `candidate_id` y solo agrega candidatos nuevos. Cada candidato guarda `candidate_tier` (`superior`, `economico`, `similar`, `unknown`) inferido desde `relation_type`, `comparativa_editorial.tipo`, `mejor_alternativa`, texto editorial y precio relativo cuando existe.
 
 Los nombres se limpian antes de generar IDs y claves canonicas: se quitan calificadores comerciales o ambiguos, se separan nombres compuestos y se conservan tokens de modelo como `M2`, `M3` y `SE`. Esto evita duplicados reales sin descartar modelos validos de Apple Watch SE o MacBook Air M2/M3.
+Desde 2026-06-14 tambien se descartan candidatos specs-only (`15 pulgadas`, medidas, memoria, color u otros atributos sin marca/modelo) y se limpian condiciones (`nueva`, `no reacondicionada`) para evitar candidatos falsos en Telegram.
 
 ### [x] P3 Flujo Diario de Candidatos
 

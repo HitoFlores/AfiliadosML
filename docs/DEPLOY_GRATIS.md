@@ -91,12 +91,14 @@ Candidate Backfill:
 - Workflow temporal/manual. Se corre con `run_candidate_backfill=true` cuando hay reviews viejos que nunca sembraron candidatos.
 - Lee `data/*.json` al preparar workflows y genera candidatos desde `editorial.comparativa_editorial`, `editorial.mejor_alternativa`, `editorial.alternativas` con titulo real y `productos_similares_ml` si existen.
 - Deduplica contra `review_candidates`, omite candidatos ya publicados y descarta textos basura como `Sin candidato real confiable identificado en ML`.
+- Descarta candidatos specs-only, por ejemplo `15 pulgadas`, y limpia calificadores de condicion como `nueva` o `no reacondicionada`.
 - Inserta los faltantes como `pending` con `candidate_id` estable `{source_slug}:{slugify(candidate_name)}`.
 
 Candidate Cleanup:
 - Workflow manual. Se corre con `run_candidate_cleanup=true`.
 - Antes de tocar filas crea una pestana de respaldo `review_candidates_backup_<timestamp>`.
 - Marca como `discarded` solo candidatos `pending` problematicos: nombres genericos, self-candidates, textos basura, duplicados por clave canonica o candidatos ya publicados.
+- Tambien descarta specs sueltas como `15 pulgadas`; cada corrida crea backup antes de tocar filas. Ejemplo real: `review_candidates_backup_20260614205439` antes de descartar filas `12`, `16`, `25` y `26`.
 - No cambia candidatos `ready`, `done`, `processing` ni `discarded`.
 
 Candidate Restore:
@@ -108,6 +110,7 @@ Scheduler:
 - Intenta mezclar hasta 3 `source_slug` distintos antes de rellenar con la misma fuente; si solo existe una fuente disponible, manda hasta 3 de esa fuente.
 - Formato Telegram: una linea por candidato, `1 - Articulo`, `2 - Articulo`, `3 - Articulo`.
 - Excluye candidatos ya publicados por `target_slug`, `candidate_id`, producto ML o nombre normalizado, y estados `done`, `ready`, `processing`, `discarded`.
+- Excluye specs-only ya existentes en Sheet, asi atributos como `15 pulgadas` no vuelven a salir en Telegram aunque una fila vieja siga `pending`.
 - Guarda `shown_batch_id`, `shown_index` y `shown_at` en `review_candidates` para que los numeros respondidos apunten al ultimo lote mostrado aunque Telegram conserve un draft/reply viejo.
 - Antes de leer candidatos, asegura automaticamente los headers nuevos de `review_candidates`.
 - Un `WAITING_LINK` viejo no impide leer candidatos.
