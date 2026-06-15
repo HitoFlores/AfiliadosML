@@ -1,6 +1,6 @@
 # AfiliadosML - Estado del proyecto
 
-Ultima actualizacion: 2026-06-14.
+Ultima actualizacion: 2026-06-15.
 
 Proyecto: pipeline automatico de reviews editoriales para productos de Mercado Libre Mexico. Un humano sigue aportando links afiliados; el sistema automatiza descubrimiento, cola, generacion, publicacion, relaciones, rankings y freshness.
 
@@ -36,6 +36,12 @@ Proyecto: pipeline automatico de reviews editoriales para productos de Mercado L
   - Normalizacion de candidatos descarta specs sueltas como `15 pulgadas`.
   - Limpia calificadores de condicion como `nueva`, `nuevo`, `no reacondicionado` y `no reacondicionada` antes de crear claves canonicas.
   - Parentesis con specs alternativas como `(13 o 15 pulgadas)` ya no se separan como candidatos independientes.
+- Fixes operativos 2026-06-15:
+  - `n8n:verify` prepara workflows frescos antes de validar y revisa conexiones rotas, nodos duplicados y nodos criticos faltantes.
+  - `findNode()` reporta workflow, nodo faltante y nodos disponibles para diagnosticar cambios en exports n8n.
+  - Poll acepta `borrar`, `borra` y `descartado` como sinonimos de descarte.
+  - Si el usuario descarta N candidatos, Poll ofrece hasta N reemplazos `pending`; si no quedan candidatos, avisa por Telegram.
+  - Se instalo `graphify` local del proyecto y el grafo vive en `graphify-out/`.
 
 ## Arquitectura
 
@@ -67,7 +73,7 @@ GitHub:
 2. Scheduler diario lee `review_candidates`.
 3. Si hay candidatos `pending`, manda maximo 3 por Telegram priorizando `candidate_tier`: `superior`, `economico`, `similar`, `unknown`; dentro de cada tier ordena por `priority_score` e intenta mezclar hasta 3 `source_slug` distintos antes de rellenar con la misma fuente.
 4. Humano responde con una linea por candidato: `1 - https://meli.la/...` para aprobar o `1 - descartar` para eliminarlo.
-5. Poll resuelve los numeros contra el snapshot estable del Scheduler. Links validos marcan el candidato `ready`, guardan `affiliate_url` y crean fila `articulos` con `candidate_id`; descartes marcan `discarded` sin crear fila.
+5. Poll resuelve los numeros contra el snapshot estable del Scheduler. Links validos marcan el candidato `ready`, guardan `affiliate_url` y crean fila `articulos` con `candidate_id`; descartes marcan `discarded` sin crear fila. Si hubo N descartes, Poll manda hasta N candidatos nuevos y guarda otro snapshot para la siguiente respuesta.
 6. Main toma filas `ready`/`pending`, genera review, commitea JSON y marca la fila `done`.
 7. Si venia de candidato, marca `review_candidates.status=done`, llena `target_slug` y avisa por Telegram. Si `candidate_id` se perdio en `articulos`, intenta cerrar el candidato por link afiliado, producto ML o nombre.
 8. Web muestra reviews relacionados, comparadores y rankings.
@@ -126,7 +132,7 @@ Desde 2026-06-14 tambien se descartan candidatos specs-only (`15 pulgadas`, medi
 
 ### [x] P3 Flujo Diario de Candidatos
 
-Scheduler manda candidatos pendientes por Telegram en formato `1 - Articulo`, hasta 3 lineas. Prioriza `superior`, rellena con `economico` y despues usa `similar`/`unknown`; intenta mezclar fuentes para no mandar todo de una sola categoria cuando hay alternativas; excluye candidatos publicados, `done`, `ready`, `processing` y `discarded`. Poll acepta una o varias respuestas en formato `numero - link` o `numero - descartar`, marca links como `ready` y crea filas en `articulos`; los descartes quedan como `discarded`.
+Scheduler manda candidatos pendientes por Telegram en formato `1 - Articulo`, hasta 3 lineas. Prioriza `superior`, rellena con `economico` y despues usa `similar`/`unknown`; intenta mezclar fuentes para no mandar todo de una sola categoria cuando hay alternativas; excluye candidatos publicados, `done`, `ready`, `processing` y `discarded`. Poll acepta una o varias respuestas en formato `numero - link` o `numero - descartar`, marca links como `ready` y crea filas en `articulos`; los descartes quedan como `discarded`. Si el usuario descarta candidatos, Poll repone la misma cantidad cuando quedan `pending` disponibles.
 
 Fixes importantes:
 - No crea `WAITING_LINK` si ya hay candidatos pendientes.
@@ -137,6 +143,9 @@ Fixes importantes:
 - El runner procesa hasta `MAIN_MAX_RUNS=3` filas por ciclo.
 - Persiste snapshot `shown_batch_id + shown_index -> candidate_id` en `review_candidates` para que `1`, `2`, `3` resuelvan contra el ultimo lote mostrado aunque Telegram conserve un draft/reply viejo.
 - Sheet Schema cierra candidatos huerfanos si el JSON ya existe pero el `candidate_id` no quedo en `meta`, por ejemplo por corrida manual o perdida del dato en `articulos`.
+- `descartar`, `descartado`, `eliminar`, `borrar`, `borra`, `basura`, `drop` y `delete` cuentan como descarte.
+- Si se descarta 1, 2 o 3 candidatos, Poll manda 1, 2 o 3 reemplazos nuevos y persiste un nuevo snapshot para esa respuesta.
+- Si se acaban los candidatos, Poll avisa por Telegram que ya no quedan pendientes para reemplazar descartes.
 - Acepta multiples acciones en un solo mensaje:
   `1 - https://meli.la/...`
   `2 - descartar`

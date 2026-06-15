@@ -1,5 +1,5 @@
 const hiddenStatuses = new Set(["done", "ready", "processing", "discarded"]);
-const discardWords = new Set(["descartar", "eliminar", "basura", "drop", "delete"]);
+const discardWords = new Set(["descartar", "descartado", "eliminar", "borrar", "borra", "basura", "drop", "delete"]);
 
 function tierRank(tier) {
   const value = String(tier || "unknown").toLowerCase().trim();
@@ -57,6 +57,69 @@ function selectCandidates(rows, published = { slugs: [], candidateIds: [] }) {
   }
   for (const row of sorted) {
     if (selected.length >= 3) break;
+    if (selected.some((entry) => entry.candidate_id === row.candidate_id)) continue;
+    selected.push(row);
+  }
+  return selected;
+}
+
+function selectReplacementCandidates(rows, actions, published = { slugs: [], candidateIds: [], productIds: [] }) {
+  const needed = actions.filter((action) => action.status === "discarded").length;
+  if (!needed) return [];
+
+  const cleanCandidateName = (value) =>
+    String(value || "")
+      .replace(/\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\b/gi, " ")
+      .replace(/\b(en oferta|con descuento|descuento|oferta)\b/gi, " ")
+      .replace(/\bo similar\b.*$/gi, " ")
+      .replace(/\bsimilar\b/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  const canonicalCandidateKey = (value) =>
+    norm(cleanCandidateName(value))
+      .split(" ")
+      .filter((token) => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se')
+      .join(" ");
+  const actedIds = new Set(actions.map((action) => String(action.candidate_id || "").trim()).filter(Boolean));
+  const publishedSlugs = new Set(published.slugs || []);
+  const publishedCandidateIds = new Set(published.candidateIds || []);
+  const publishedProductIds = new Set(published.productIds || []);
+  const preferredKeys = new Set(
+    rows
+      .filter(
+        (row) =>
+          ["ready", "done", "processing"].includes(String(row.status || "").toLowerCase().trim()) ||
+          String(row.affiliate_url || "").trim(),
+      )
+      .map((row) => canonicalCandidateKey(row.candidate_name))
+      .filter(Boolean),
+  );
+
+  const sorted = rows
+    .filter((row) => String(row.status || "").toLowerCase().trim() === "pending")
+    .filter((row) => !hiddenStatuses.has(String(row.status || "").toLowerCase().trim()))
+    .filter((row) => !actedIds.has(String(row.candidate_id || "").trim()))
+    .filter((row) => !publishedSlugs.has(String(row.target_slug || "").trim()))
+    .filter((row) => !publishedCandidateIds.has(String(row.candidate_id || "").trim()))
+    .filter((row) => !publishedProductIds.has(String(row.candidate_ml_id || "").trim()))
+    .filter((row) => !preferredKeys.has(canonicalCandidateKey(row.candidate_name)))
+    .sort(
+      (a, b) =>
+        tierRank(a.candidate_tier) - tierRank(b.candidate_tier) ||
+        Number(b.priority_score || 0) - Number(a.priority_score || 0),
+    );
+
+  const selected = [];
+  const seenSources = new Set();
+  for (const row of sorted) {
+    const source = String(row.source_slug || "").trim() || String(row.candidate_id || "").split(":")[0] || "unknown";
+    if (seenSources.has(source)) continue;
+    selected.push(row);
+    seenSources.add(source);
+    if (selected.length >= needed) break;
+  }
+  for (const row of sorted) {
+    if (selected.length >= needed) break;
     if (selected.some((entry) => entry.candidate_id === row.candidate_id)) continue;
     selected.push(row);
   }
@@ -223,6 +286,53 @@ assertEqual(
   "single source still fills up to 3 with tier priority",
   selected.map((row) => row.candidate_id),
   ["src:superior-1", "src:economico-1", "src:economico-2"],
+);
+
+assertEqual(
+  "one discard gets one replacement",
+  selectReplacementCandidates(
+    rows,
+    [
+      { candidate_id: "src:superior-1", status: "ready" },
+      { candidate_id: "src:economico-1", status: "discarded" },
+    ],
+    {
+      slugs: ["already-live"],
+      candidateIds: ["src:published-1"],
+    },
+  ).map((row) => row.candidate_id),
+  ["src:economico-2"],
+);
+
+assertEqual(
+  "two discards get two replacements",
+  selectReplacementCandidates(
+    rows,
+    [
+      { candidate_id: "src:superior-1", status: "discarded" },
+      { candidate_id: "src:economico-1", status: "discarded" },
+    ],
+    {
+      slugs: ["already-live"],
+      candidateIds: ["src:published-1"],
+    },
+  ).map((row) => row.candidate_id),
+  ["src:economico-2", "src:similar-1"],
+);
+
+assertEqual(
+  "replacement returns available count when candidates run out",
+  selectReplacementCandidates(
+    [
+      { candidate_id: "src:a", source_slug: "src", candidate_tier: "superior", status: "pending", priority_score: 10 },
+      { candidate_id: "src:b", source_slug: "src", candidate_tier: "similar", status: "pending", priority_score: 9 },
+    ],
+    [
+      { candidate_id: "src:a", status: "discarded" },
+      { candidate_id: "src:b", status: "discarded" },
+    ],
+  ).length,
+  0,
 );
 assertEqual(
   "ready duplicate hides pending duplicate",

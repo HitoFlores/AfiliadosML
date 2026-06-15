@@ -118,7 +118,14 @@ function readPublishedReviewMeta() {
 
 function findNode(workflow, name) {
   const node = workflow.nodes.find((entry) => entry.name === name);
-  if (!node) throw new Error(`Missing node: ${name}`);
+  if (!node) {
+    const available = workflow.nodes
+      .map((entry) => entry.name)
+      .filter(Boolean)
+      .sort()
+      .join(", ");
+    throw new Error(`Missing node "${name}" in workflow "${workflow.name || workflow.id || "unknown"}". Available nodes: ${available}`);
+  }
   return node;
 }
 
@@ -1795,7 +1802,7 @@ const candidateActions = [];
 
 const isMlLink = (t) => Boolean(t && (t.includes('meli.la/') || t.includes('mercadolibre')));
 const looksLikeLink = (t) => Boolean(t && (t.startsWith('http') || t.startsWith('www.') || t.startsWith('meli')));
-const discardWords = new Set(['descartar', 'eliminar', 'basura', 'drop', 'delete']);
+const discardWords = new Set(['descartar', 'descartado', 'eliminar', 'borrar', 'borra', 'basura', 'drop', 'delete']);
 const isSchedulerReply = (rt) =>
   rt.includes('articulo') || rt.includes('Mercado Libre') || rt.includes('Buenos dias') || rt.includes('Candidatos para el siguiente review');
 const isReferidoReply = (rt) =>
@@ -2160,6 +2167,162 @@ return out;`,
       },
     },
     {
+      id: "poll-candidates-replacements",
+      name: "Build Candidate Replacements",
+      type: "n8n-nodes-base.code",
+      typeVersion: 2,
+      position: [1450, 700],
+      parameters: {
+        jsCode: `const actions = $('Find Candidate Affiliate').all().map(i => i.json);
+const discarded = actions.filter(item => item.status === 'discarded');
+const needed = discarded.length;
+if (!needed) return [];
+
+const rows = $('Leer Candidates Poll').all().map(i => i.json).filter(r => !r.error);
+const actedIds = new Set(actions.map(item => String(item.candidate_id || '').trim()).filter(Boolean));
+const publishedSlugs = new Set(${JSON.stringify(publishedReviewMeta.slugs)});
+const publishedCandidateIds = new Set(${JSON.stringify(publishedReviewMeta.candidateIds)});
+const publishedProductIds = new Set(${JSON.stringify(publishedReviewMeta.productIds)});
+const publishedReviews = ${JSON.stringify(publishedReviewMeta.reviews)};
+const hiddenStatuses = new Set(['done', 'ready', 'processing', 'discarded']);
+const now = new Date().toISOString();
+const batchId = 'tg-replacement-' + now;
+const tierRank = (tier) => {
+  const t = String(tier || 'unknown').toLowerCase().trim();
+  if (t === 'superior') return 0;
+  if (t === 'economico') return 1;
+  if (t === 'similar') return 2;
+  return 3;
+};
+const norm = (value) => String(value || '')
+  .toLowerCase()
+  .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+  .replace(/[^a-z0-9\\s]/g, ' ')
+  .replace(/\\s+/g, ' ')
+  .trim();
+const cleanCandidateName = (value) => String(value || '')
+  .replace(/\\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\\b/gi, ' ')
+  .replace(/\\b(en oferta|con descuento|descuento|oferta)\\b/gi, ' ')
+  .replace(/\\bo similar\\b.*$/gi, ' ')
+  .replace(/\\bsimilar\\b/gi, ' ')
+  .replace(/\\s+/g, ' ')
+  .trim();
+const canonicalCandidateKey = (value) => norm(cleanCandidateName(value))
+  .split(' ')
+  .filter(token => token.length > 2 || /^[0-9]+$/.test(token) || /^[a-z]+\d+[a-z]*$/.test(token) || token === 'se')
+  .join(' ');
+const preferredKeys = new Set(rows
+  .filter(r => ['ready', 'done', 'processing'].includes(String(r.status || '').toLowerCase().trim()) || String(r.affiliate_url || '').trim())
+  .map(r => canonicalCandidateKey(r.candidate_name))
+  .filter(Boolean));
+const isPublishedName = (candidateName) => {
+  const candidate = canonicalCandidateKey(candidateName);
+  if (!candidate || candidate.length < 10) return false;
+  return publishedReviews.some(review => {
+    const title = canonicalCandidateKey(review.title);
+    return title && (title.includes(candidate.slice(0, 80)) || candidate.includes(title.slice(0, 80)));
+  });
+};
+
+const sorted = rows
+  .filter(r => String(r.status || '').toLowerCase().trim() === 'pending')
+  .filter(r => !hiddenStatuses.has(String(r.status || '').toLowerCase().trim()))
+  .filter(r => !actedIds.has(String(r.candidate_id || '').trim()))
+  .filter(r => !publishedSlugs.has(String(r.target_slug || '').trim()))
+  .filter(r => !publishedCandidateIds.has(String(r.candidate_id || '').trim()))
+  .filter(r => !publishedProductIds.has(String(r.candidate_ml_id || '').trim()))
+  .filter(r => !isPublishedName(r.candidate_name))
+  .filter(r => !preferredKeys.has(canonicalCandidateKey(r.candidate_name)))
+  .sort((a, b) => (tierRank(a.candidate_tier) - tierRank(b.candidate_tier)) || (Number(b.priority_score || 0) - Number(a.priority_score || 0)));
+
+const selected = [];
+const seenSources = new Set();
+for (const row of sorted) {
+  const source = String(row.source_slug || '').trim() || String(row.candidate_id || '').split(':')[0] || 'unknown';
+  if (seenSources.has(source)) continue;
+  selected.push(row);
+  seenSources.add(source);
+  if (selected.length >= needed) break;
+}
+for (const row of sorted) {
+  if (selected.length >= needed) break;
+  if (selected.some(entry => entry.candidate_id === row.candidate_id)) continue;
+  selected.push(row);
+}
+
+if (!selected.length) {
+  await this.helpers.httpRequest({
+    method: 'POST',
+    url: 'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage',
+    body: {
+      chat_id: $env.TELEGRAM_CHAT_ID,
+      text: 'Ya no hay candidatos pendientes para reemplazar los descartados.',
+    },
+    json: true,
+  });
+  return [];
+}
+
+return selected.map((row, index) => ({ json: {
+  row_number: row.row_number,
+  candidate_id: row.candidate_id,
+  candidate_name: row.candidate_name,
+  candidate_tier: row.candidate_tier,
+  priority_score: row.priority_score,
+  replacement_index: index + 1,
+  replacement_needed: needed,
+  replacement_count: selected.length,
+  shown_batch_id: batchId,
+  shown_index: index + 1,
+  shown_at: now,
+}}));`,
+      },
+    },
+    {
+      id: "poll-candidates-persist-replacements",
+      name: "Persist Candidate Replacements",
+      type: "n8n-nodes-base.googleSheets",
+      typeVersion: 4.5,
+      position: [1670, 700],
+      parameters: {
+        operation: "update",
+        documentId: getQueue.parameters.documentId,
+        sheetName: reviewCandidatesSheetName(),
+        columns: {
+          mappingMode: "defineBelow",
+          value: {
+            row_number: "={{ $json.row_number }}",
+            shown_batch_id: "={{ $json.shown_batch_id }}",
+            shown_index: "={{ $json.shown_index }}",
+            shown_at: "={{ $json.shown_at }}",
+            updated_at: "={{ new Date().toISOString() }}",
+          },
+          matchingColumns: ["row_number"],
+          schema: [],
+          attemptToConvertTypes: false,
+          convertFieldsToString: true,
+        },
+        options: {},
+      },
+      credentials: getQueue.credentials,
+    },
+    {
+      id: "poll-candidates-notify-replacements",
+      name: "Notify Candidate Replacements",
+      type: "n8n-nodes-base.httpRequest",
+      typeVersion: 4.2,
+      position: [1890, 700],
+      parameters: {
+        method: "POST",
+        url: "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+        sendBody: true,
+        contentType: "raw",
+        rawContentType: "application/json",
+        body: "={{ (() => { const rows = $('Persist Candidate Replacements').all().map(i => i.json); const needed = Number(rows[0]?.replacement_needed || rows.length); const note = rows.length < needed ? '\\nSolo quedan ' + rows.length + ' candidato(s) para reemplazar ' + needed + ' descartado(s).' : ''; const lines = rows.map((row, index) => (index + 1) + ' - ' + row.candidate_name); return JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: 'Candidatos para el siguiente review' + note + '\\n\\n' + lines.join('\\n') + '\\n\\nResponde con una linea por candidato:\\n1 - https://meli.la/...\\n2 - descartar', reply_markup: { force_reply: true, input_field_placeholder: '1 - https://meli.la/...' } }); })() }}",
+        options: {},
+      },
+    },
+    {
       id: "poll-candidates-add-queue",
       name: "Add Candidate to Queue",
       type: "n8n-nodes-base.googleSheets",
@@ -2223,10 +2386,19 @@ return out;`,
     main: [[{ node: "Mark Candidate Ready", type: "main", index: 0 }]],
   };
   workflow.connections["Mark Candidate Ready"] = {
-    main: [[{ node: "Filter Candidate Queue Adds", type: "main", index: 0 }]],
+    main: [[
+      { node: "Filter Candidate Queue Adds", type: "main", index: 0 },
+      { node: "Build Candidate Replacements", type: "main", index: 0 },
+    ]],
   };
   workflow.connections["Filter Candidate Queue Adds"] = {
     main: [[{ node: "Add Candidate to Queue", type: "main", index: 0 }]],
+  };
+  workflow.connections["Build Candidate Replacements"] = {
+    main: [[{ node: "Persist Candidate Replacements", type: "main", index: 0 }]],
+  };
+  workflow.connections["Persist Candidate Replacements"] = {
+    main: [[{ node: "Notify Candidate Replacements", type: "main", index: 0 }]],
   };
   workflow.connections["Add Candidate to Queue"] = {
     main: [[{ node: "Notify Candidate Ready", type: "main", index: 0 }]],

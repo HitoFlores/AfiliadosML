@@ -33,7 +33,8 @@ assertEqual("MacBook backfill skips generic Windows processor alternative", name
 assertEqual("Switch backfill skips published Lite", names.includes("Nintendo Switch Lite"), false);
 assertIncludes("Switch backfill includes Switch 2", names, "Nintendo Switch 2");
 assertIncludes("Switch backfill includes Steam Deck", names, "Steam Deck Valve");
-assertIncludes("Coffee backfill includes Arte", names, "De'Longhi La Specialista Arte EC9155M");
+assertEqual("Coffee backfill skips published Arte", names.includes("De'Longhi La Specialista Arte EC9155M"), false);
+assertIncludes("Coffee backfill includes Dedica", names, "De'Longhi Dedica EC685");
 assertEqual("Coffee backfill skips published Eletta", names.includes("De'Longhi Eletta Explore ECAM450.86.T"), false);
 assertIncludes("Coffee backfill includes Sage", names, "Sage Breville Barista Touch Impress");
 assertEqual(

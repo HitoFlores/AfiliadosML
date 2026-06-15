@@ -46,7 +46,15 @@ const required = [
   },
   {
     fileIncludes: "Telegram Poll",
-    nodes: ["Find Candidate Affiliate", "Mark Candidate Ready", "Filter Candidate Queue Adds", "Add Candidate to Queue"],
+    nodes: [
+      "Find Candidate Affiliate",
+      "Mark Candidate Ready",
+      "Filter Candidate Queue Adds",
+      "Build Candidate Replacements",
+      "Persist Candidate Replacements",
+      "Notify Candidate Replacements",
+      "Add Candidate to Queue",
+    ],
   },
 ];
 
@@ -58,20 +66,53 @@ if (!fs.existsSync(workflowDir)) {
 let errors = 0;
 const files = fs.readdirSync(workflowDir).filter((file) => file.endsWith(".json"));
 
+function report(message) {
+  errors += 1;
+  console.error(`ERROR ${message}`);
+}
+
 for (const check of required) {
   const file = files.find((entry) => entry.includes(check.fileIncludes));
   if (!file) {
-    errors += 1;
-    console.error(`ERROR missing workflow file containing: ${check.fileIncludes}`);
+    report(`missing workflow file containing: ${check.fileIncludes}`);
     continue;
   }
 
   const workflow = JSON.parse(fs.readFileSync(path.join(workflowDir, file), "utf8"));
-  const nodeNames = new Set(workflow.nodes.map((node) => node.name));
+  const nodeNames = new Set();
+
+  for (const node of workflow.nodes || []) {
+    if (!node.name) {
+      report(`${workflow.name}: node without name`);
+      continue;
+    }
+    if (nodeNames.has(node.name)) {
+      report(`${workflow.name}: duplicate node "${node.name}"`);
+    }
+    nodeNames.add(node.name);
+  }
+
   for (const node of check.nodes) {
     if (!nodeNames.has(node)) {
-      errors += 1;
-      console.error(`ERROR ${workflow.name}: missing node "${node}"`);
+      report(`${workflow.name}: missing node "${node}"`);
+    }
+  }
+
+  for (const [sourceName, connection] of Object.entries(workflow.connections || {})) {
+    if (!nodeNames.has(sourceName)) {
+      report(`${workflow.name}: connection source "${sourceName}" has no matching node`);
+    }
+
+    for (const outputGroup of connection.main || []) {
+      for (const edge of outputGroup || []) {
+        if (!edge?.node) {
+          report(`${workflow.name}: connection from "${sourceName}" has target without node name`);
+          continue;
+        }
+        if (!nodeNames.has(edge.node)) {
+          report(`${workflow.name}: connection from "${sourceName}" points to missing node "${edge.node}"`);
+        }
+      }
     }
   }
 }
