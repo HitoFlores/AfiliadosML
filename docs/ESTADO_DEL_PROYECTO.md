@@ -1,6 +1,6 @@
 # AfiliadosML - Estado del proyecto
 
-Ultima actualizacion: 2026-06-15.
+Ultima actualizacion: 2026-06-16.
 
 Proyecto: pipeline automatico de reviews editoriales para productos de Mercado Libre Mexico. Un humano sigue aportando links afiliados; el sistema automatiza descubrimiento, cola, generacion, publicacion, relaciones, rankings y freshness.
 
@@ -358,8 +358,15 @@ En GitHub Secrets y/o entorno local:
 
 Pendientes tecnicos P0-P6: cerrados.
 
-Pendientes operativos:
-- Escalar cobertura respondiendo candidatos diarios.
-- Observar un stale real en produccion.
-- Revisar `/estado` despues del proximo ciclo diario.
-- Monitorear que la cola diaria priorice `superior` y rellene con `economico` sin repetir candidatos ya publicados.
+No hay trabajo tecnico pendiente conocido. La fase actual es monitoreo productivo; si algo falla durante operacion real, se abre como nuevo pendiente tecnico con evidencia del ciclo afectado.
+
+## Plan De Observacion Productiva
+
+Duracion inicial: 1 semana.
+
+- Mantener `MAIN_MAX_RUNS=3`.
+- Revisar GitHub Actions `Free ephemeral n8n` cada manana.
+- Responder 2-3 candidatos diarios por Telegram.
+- Revisar `/estado` despues del ciclo diario.
+- Confirmar que Scheduler priorice `superior`, rellene con `economico` y no repita publicados.
+- Esperar un stale real de Mercado Libre; no forzarlo en produccion.
