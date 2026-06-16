@@ -140,23 +140,23 @@
     "semantic_hash": ""
   },
   "data/apple-macbook-air-13-m5-512gb.json": {
-    "mtime": 1781644630.567812,
-    "ast_hash": "8f1e972ed1eb111b5a3941b7809c656e",
+    "mtime": 1781646537.8357618,
+    "ast_hash": "da8141fc23dd2f22e53cedaf2f60773f",
     "semantic_hash": ""
   },
   "data/apple-macbook-pro-m5-16gb-14.json": {
-    "mtime": 1781644630.568818,
-    "ast_hash": "fb79c7f38c0f6e5facb83c41e971914b",
+    "mtime": 1781646537.8357618,
+    "ast_hash": "f9153a1e02e94252207ed4ef5fd0b91c",
     "semantic_hash": ""
   },
   "data/apple-watch-se-gps-smartwatch.json": {
-    "mtime": 1781644630.569819,
-    "ast_hash": "e190733c61dea32cad19bac7f4669ef3",
+    "mtime": 1781646537.8367617,
+    "ast_hash": "0ce1ce9a0e13d7beb951579651c5f128",
     "semantic_hash": ""
   },
   "data/apple-watch-series-11-46mm.json": {
-    "mtime": 1781644630.5708168,
-    "ast_hash": "c245cabe9178c839aeaa9cad9b1f676d",
+    "mtime": 1781646537.837762,
+    "ast_hash": "8291fc67e2661683c7f061ef41c360c6",
     "semantic_hash": ""
   },
   "data/archive/asus-vivobook-ultra-abacusv1.json": {
@@ -190,33 +190,33 @@
     "semantic_hash": ""
   },
   "data/delonghi-specialista-arte-ec9155mb-cafetera.json": {
-    "mtime": 1781644630.5718167,
-    "ast_hash": "85ada1c0e23b9dcb3705056ddfec8fb6",
+    "mtime": 1781646537.8387623,
+    "ast_hash": "2687824e6a3f19095658b1e8ae308145",
     "semantic_hash": ""
   },
   "data/delonghi-specialista-touch-ec9445m-cafetera.json": {
-    "mtime": 1781644630.5718167,
-    "ast_hash": "d45d33b5ef8cb044cb10f91b55fa3bc4",
+    "mtime": 1781646537.8397639,
+    "ast_hash": "97df03e53beac47ad6214d66ed7163b4",
     "semantic_hash": ""
   },
   "data/espresso-machine-longhi-eletta-explore.json": {
-    "mtime": 1781644630.5728183,
-    "ast_hash": "8df46e6a5a104f2283530474eb249aff",
+    "mtime": 1781646537.8397639,
+    "ast_hash": "f56cab4df7863d3962535b3ae27a3f2f",
     "semantic_hash": ""
   },
   "data/nintendo-switch-lite-32gb.json": {
-    "mtime": 1781644630.573508,
-    "ast_hash": "ed75041329d7cc0f65e861db44dec99c",
+    "mtime": 1781646537.840763,
+    "ast_hash": "cfc8a324d51649443dfed096f09e5501",
     "semantic_hash": ""
   },
   "data/nintendo-switch-oled-consola-64gb.json": {
-    "mtime": 1781644630.5745134,
-    "ast_hash": "f58ad5f4ca8e836549dac1256e8d329d",
+    "mtime": 1781646537.841821,
+    "ast_hash": "a6b3c5df30ecdb5c0ce982d9cd048c18",
     "semantic_hash": ""
   },
   "data/samsung-galaxy-watch7-44mm-reloj.json": {
-    "mtime": 1781644630.5745134,
-    "ast_hash": "ceea2b40ed2f5168c9ab28fc86c80e4a",
+    "mtime": 1781646537.8428218,
+    "ast_hash": "1006d7c46cdadb2c855be7b009492d12",
     "semantic_hash": ""
   },
   "lib/product.ts": {
@@ -310,8 +310,8 @@
     "semantic_hash": ""
   },
   "scripts/n8n-ephemeral/prepare-workflows.mjs": {
-    "mtime": 1781645600.0615883,
-    "ast_hash": "d338950f1f05720dbc2b4c7348f80045",
+    "mtime": 1781649724.7640884,
+    "ast_hash": "ccf9149680b16cbf2d12ff6c9f067409",
     "semantic_hash": ""
   },
   "scripts/n8n-ephemeral/run-cycle.sh": {
@@ -350,8 +350,8 @@
     "semantic_hash": ""
   },
   "scripts/test-review-candidates-logic.mjs": {
-    "mtime": 1781645577.1572125,
-    "ast_hash": "a571c69492cb6832a5857cfbe03a7566",
+    "mtime": 1781649743.5322597,
+    "ast_hash": "efa244a3de7d4ec9400c05b8fca221f5",
     "semantic_hash": ""
   },
   "scripts/upgrade-v3-features.py": {
@@ -430,13 +430,13 @@
     "semantic_hash": ""
   },
   "docs/DEPLOY_GRATIS.md": {
-    "mtime": 1781645622.0756364,
-    "ast_hash": "c70aefaac048ff3de747d2afaa75dd1f",
+    "mtime": 1781646537.8790581,
+    "ast_hash": "41a444ab90f401fe0afdd986beb11779",
     "semantic_hash": ""
   },
   "docs/ESTADO_DEL_PROYECTO.md": {
-    "mtime": 1781645622.0746388,
-    "ast_hash": "a9c5b61abbf347d7d43fdd08473ea6f8",
+    "mtime": 1781646537.8800585,
+    "ast_hash": "077caa6d6dda26c911098de22bc7ea55",
     "semantic_hash": ""
   },
   "public/archive/estudio-comparativo.html": {
@@ -470,13 +470,13 @@
     "semantic_hash": ""
   },
   "data/delonghi-ecam37095ti-cafetera-longhi-automatica.json": {
-    "mtime": 1781644630.5708168,
-    "ast_hash": "d1e0814c7bdbe80d1af2a1ed218aa29c",
+    "mtime": 1781646537.837762,
+    "ast_hash": "74c4689bfef76ded385623b7ce669938",
     "semantic_hash": ""
   },
   "data/valve-256-gb-lcd-consola-256gb.json": {
-    "mtime": 1781644630.5760174,
-    "ast_hash": "e2d9c6b877e6d69a2704b94924e1dff0",
+    "mtime": 1781646537.8428218,
+    "ast_hash": "d5c84c5870e3e2ec27c4b0df98122eb1",
     "semantic_hash": ""
   }
 }

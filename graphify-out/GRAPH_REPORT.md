@@ -1,16 +1,16 @@
 # Graph Report - AfiliadosML  (2026-06-16)
 
 ## Corpus Check
-- 89 files · ~217,819 words
+- 89 files · ~218,251 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 433 nodes · 590 edges · 41 communities (28 shown, 13 thin omitted)
+- 434 nodes · 591 edges · 49 communities (31 shown, 18 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1f8166eb`
+- Built from commit: `1c13fdb9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -32,9 +32,14 @@
 - [[_COMMUNITY_Community 14|Community 14]]
 - [[_COMMUNITY_Community 15|Community 15]]
 - [[_COMMUNITY_Community 16|Community 16]]
+- [[_COMMUNITY_Community 17|Community 17]]
+- [[_COMMUNITY_Community 18|Community 18]]
 - [[_COMMUNITY_Community 19|Community 19]]
+- [[_COMMUNITY_Community 20|Community 20]]
 - [[_COMMUNITY_Community 21|Community 21]]
 - [[_COMMUNITY_Community 22|Community 22]]
+- [[_COMMUNITY_Community 23|Community 23]]
+- [[_COMMUNITY_Community 24|Community 24]]
 - [[_COMMUNITY_Community 25|Community 25]]
 - [[_COMMUNITY_Community 26|Community 26]]
 - [[_COMMUNITY_Community 27|Community 27]]
@@ -43,6 +48,8 @@
 - [[_COMMUNITY_Community 30|Community 30]]
 - [[_COMMUNITY_Community 31|Community 31]]
 - [[_COMMUNITY_Community 32|Community 32]]
+- [[_COMMUNITY_Community 33|Community 33]]
+- [[_COMMUNITY_Community 34|Community 34]]
 - [[_COMMUNITY_Community 35|Community 35]]
 - [[_COMMUNITY_Community 36|Community 36]]
 - [[_COMMUNITY_Community 37|Community 37]]
@@ -51,6 +58,7 @@
 - [[_COMMUNITY_Community 41|Community 41]]
 - [[_COMMUNITY_Community 42|Community 42]]
 - [[_COMMUNITY_Community 44|Community 44]]
+- [[_COMMUNITY_Community 48|Community 48]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `findNode()` - 18 edges
@@ -79,15 +87,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (41 total, 13 thin omitted)
+## Communities (49 total, 18 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.10
 Nodes (37): buildCandidateBackfillWorkflow(), buildCandidateCleanupWorkflow(), buildCandidateHeaderCode(), buildCandidateRestoreWorkflow(), buildFreshnessWorkflow(), buildSheetSchemaWorkflow(), candidateBackfillWorkflow, candidateCleanupWorkflow (+29 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.25
-Nodes (8): AffiliateCTA(), AffiliateCTAProps, ScoreBadge(), ScoreBadgeProps, loadComparisonPair(), ComparePage(), generateMetadata(), generateStaticParams()
+Cohesion: 0.13
+Nodes (20): sitemap(), generateMetadata(), generateStaticParams(), RankingCategoryPage(), AffiliateCTA(), AffiliateCTAProps, ScoreBadge(), ScoreBadgeProps (+12 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.07
@@ -98,15 +106,15 @@ Cohesion: 0.20
 Nodes (20): canonicalCandidateKey(), cleanCandidateName(), isGenericCandidateName(), isSelfCandidate(), isSpecOnlyCandidate(), meaningfulName(), norm(), sameCandidateName() (+12 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.06
-Nodes (38): sitemap(), generateMetadata(), generateStaticParams(), RankingCategoryPage(), ICONS, RelatedReviewsProps, EstadoPage(), metadata (+30 more)
+Cohesion: 0.09
+Nodes (19): ComparativaEditorial, ComparisonPair, FaqItem, MejorAlternativa, normalize(), ProductoSimilarML, RankingCategory, RawAlternativa (+11 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.08
 Nodes (23): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+15 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.11
+Cohesion: 0.10
 Nodes (23): addBrandTypeSeen(), brandTypeKey(), buildBrandTypeSeen(), candidateBrandTypeText(), candidateHintForIndex(), canSelectBrandType(), changedRows, classifyTier() (+15 more)
 
 ### Community 7 - "Community 7"
@@ -118,8 +126,8 @@ Cohesion: 0.10
 Nodes (19): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+11 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.08
-Nodes (23): Byline(), BylineProps, SourcesBlock(), ImageGalleryProps, JsonLd(), JsonLdProps, PRIORITY_SPECS, SpecsTable() (+15 more)
+Cohesion: 0.24
+Nodes (11): PRIORITY_SPECS, SpecsTable(), SpecsTableProps, allSlugs(), dataDir(), loadProductBySlug(), relatedReviewsForSlug(), buildToc() (+3 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.21
@@ -149,9 +157,21 @@ Nodes (7): currentYear, dataDir, files, fixString(), fixValue(), root, scoreText
 Cohesion: 0.32
 Nodes (5): compactUrl(), findCompletedCandidate(), norm(), review, rows
 
+### Community 18 - "Community 18"
+Cohesion: 0.40
+Nodes (3): JsonLd(), JsonLdProps, NormalizedProduct
+
 ### Community 19 - "Community 19"
 Cohesion: 0.33
 Nodes (3): Destacada, ReviewsML, sentTone
+
+### Community 20 - "Community 20"
+Cohesion: 0.40
+Nodes (5): Byline(), BylineProps, SourcesBlock(), Autoria, Fuente
+
+### Community 23 - "Community 23"
+Cohesion: 0.47
+Nodes (3): TableOfContents(), TableOfContentsProps, TocItem
 
 ### Community 25 - "Community 25"
 Cohesion: 0.50
@@ -176,7 +196,7 @@ Nodes (3): files, required, workflowDir
 ## Knowledge Gaps
 - **188 isolated node(s):** `metadata`, `inter`, `metadata`, `metadata`, `AffiliateCTAProps` (+183 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **18 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -187,11 +207,11 @@ _Questions this graph is uniquely positioned to answer:_
   _192 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected._
+- **Should `Community 1` be split into smaller, more focused modules?**
+  _Cohesion score 0.1282051282051282 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._
 - **Should `Community 4` be split into smaller, more focused modules?**
-  _Cohesion score 0.058001397624039136 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09 - nodes in this community are weakly interconnected._
 - **Should `Community 5` be split into smaller, more focused modules?**
   _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._
-- **Should `Community 6` be split into smaller, more focused modules?**
-  _Cohesion score 0.10591133004926108 - nodes in this community are weakly interconnected._

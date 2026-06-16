@@ -295,20 +295,33 @@ function resolveActions(actions, rows, snapshot) {
     .filter((row) => String(row.shown_batch_id || "").trim() && Number(row.shown_index || 0) > 0)
     .sort((a, b) => Date.parse(b.shown_at || "") - Date.parse(a.shown_at || ""));
   const latestShownBatch = String(shownRows[0]?.shown_batch_id || "").trim();
+  const usedCandidateIds = new Set();
+  const usedRowNumbers = new Set();
 
   return actions.map((action) => {
     const hit = snapshot.find((entry) => Number(entry.index) === Number(action.candidate_index));
     const hint = norm(action.candidate_name_hint).slice(0, 48);
-    const row =
-      rows.find((entry) => entry.candidate_id === hit?.candidate_id) ||
+    const row = [
       rows.find(
         (entry) =>
           latestShownBatch &&
           String(entry.shown_batch_id || "").trim() === latestShownBatch &&
           Number(entry.shown_index || 0) === Number(action.candidate_index),
       ) ||
-      rows.find((entry) => hint && norm(entry.candidate_name).startsWith(hint));
+        null,
+      rows.find((entry) => entry.candidate_id === hit?.candidate_id),
+      rows.find((entry) => hint && norm(entry.candidate_name).startsWith(hint)),
+    ].find((entry) => {
+      if (!entry) return false;
+      const candidateId = String(entry.candidate_id || "").trim();
+      const rowNumber = String(entry.row_number || "").trim();
+      if (candidateId && usedCandidateIds.has(candidateId)) return false;
+      if (rowNumber && usedRowNumbers.has(rowNumber)) return false;
+      return true;
+    });
     if (!row) return null;
+    if (row.candidate_id) usedCandidateIds.add(String(row.candidate_id).trim());
+    if (row.row_number) usedRowNumbers.add(String(row.row_number).trim());
     return {
       candidate_id: row.candidate_id,
       status: action.action === "discard" ? "discarded" : "ready",
@@ -331,6 +344,25 @@ function buildReplacementMessage(buildRows, persistedRows = []) {
     "1 - https://meli.la/...",
     "2 - descartar",
   ].join("\n");
+}
+
+function extractFeaturedMlId(html) {
+  const text = String(html || "");
+  const patterns = [
+    /"metadata"\s*:\s*\{[^}]*"id"\s*:\s*"(MLM[0-9]{6,})"/i,
+    /"id"\s*:\s*"(MLM[0-9]{6,})"[^}]*"user_product_id"/i,
+    /pdp_filters=item_id%3A(MLM[0-9]{6,})/i,
+    /[?&#]wid=(MLM[0-9]{6,})/i,
+    /"item_id"\s*:\s*"(MLM[0-9]{6,})"/i,
+    /"itemId"\s*:\s*"(MLM[0-9]{6,})"/i,
+  ];
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match) return match[1].toUpperCase();
+  }
+  const productLink = text.match(/\/p\/(ML[A-Z]?[0-9]+)/i);
+  if (productLink) return productLink[1].toUpperCase();
+  return "";
 }
 
 function assertEqual(name, actual, expected) {
@@ -556,12 +588,83 @@ assertEqual(
 );
 
 assertEqual(
+  "persisted batch beats stale static snapshot for multiple links",
+  resolveActions(
+    [
+      { candidate_index: 1, candidate_name_hint: "", action: "ready", referido: "https://meli.la/a" },
+      { candidate_index: 2, candidate_name_hint: "", action: "ready", referido: "https://meli.la/b" },
+      { candidate_index: 3, candidate_name_hint: "", action: "ready", referido: "https://meli.la/c" },
+    ],
+    [
+      {
+        row_number: 21,
+        candidate_id: "src:camera",
+        candidate_name: "Sony Camera",
+        status: "pending",
+        shown_batch_id: "new",
+        shown_index: 1,
+        shown_at: "2026-06-16T19:00:00Z",
+      },
+      {
+        row_number: 22,
+        candidate_id: "src:laptop",
+        candidate_name: "Lenovo Laptop",
+        status: "pending",
+        shown_batch_id: "new",
+        shown_index: 2,
+        shown_at: "2026-06-16T19:00:00Z",
+      },
+      {
+        row_number: 23,
+        candidate_id: "src:watch",
+        candidate_name: "Samsung Watch",
+        status: "pending",
+        shown_batch_id: "new",
+        shown_index: 3,
+        shown_at: "2026-06-16T19:00:00Z",
+      },
+      {
+        row_number: 99,
+        candidate_id: "src:steam-deck",
+        candidate_name: "Steam Deck OLED 512 GB",
+        status: "pending",
+        shown_batch_id: "old",
+        shown_index: 1,
+        shown_at: "2026-06-16T18:00:00Z",
+      },
+    ],
+    [
+      { index: 1, candidate_id: "src:steam-deck" },
+      { index: 2, candidate_id: "src:steam-deck" },
+      { index: 3, candidate_id: "src:steam-deck" },
+    ],
+  ),
+  [
+    { candidate_id: "src:camera", status: "ready", createsQueueRow: true },
+    { candidate_id: "src:laptop", status: "ready", createsQueueRow: true },
+    { candidate_id: "src:watch", status: "ready", createsQueueRow: true },
+  ],
+);
+
+assertEqual(
   "replacement notification keeps candidate names from builder output",
   buildReplacementMessage(
     [{ candidate_id: "src:steam-deck", candidate_name: "Steam Deck (Valve)", replacement_needed: 1 }],
     [{ row_number: 25, shown_index: 1 }],
   ).includes("1 - Steam Deck (Valve)"),
   true,
+);
+
+assertEqual(
+  "shortlink parser ignores mlstatic image ids",
+  extractFeaturedMlId(
+    [
+      '<meta property="og:image" content="https://http2.mlstatic.com/D_NQ_NP_640873-MLM104515035348_012026-O.webp"/>',
+      '"metadata":{"id":"MLM2804868808","user_product_id":"MLMU570236268"}',
+      '"url_params":"?pdp_filters=item_id%3AMLM2804868808"',
+    ].join(""),
+  ),
+  "MLM2804868808",
 );
 
 console.log("Review candidate logic test passed.");

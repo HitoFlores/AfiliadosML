@@ -2130,6 +2130,16 @@ const matchesHint = (row, hint) => {
 };
 
 const out = [];
+const usedCandidateIds = new Set();
+const usedRowNumbers = new Set();
+const useRow = (row) => {
+  if (!row) return false;
+  const candidateId = String(row.candidate_id || '').trim();
+  const rowNumber = String(row.row_number || '').trim();
+  if (candidateId && usedCandidateIds.has(candidateId)) return false;
+  if (rowNumber && usedRowNumbers.has(rowNumber)) return false;
+  return true;
+};
 for (const request of requests) {
   const snapshotHit = snapshot.find(entry => Number(entry.index) === Number(request.candidate_index || 0));
   const candidateId = request.candidate_id || snapshotHit?.candidate_id || '';
@@ -2140,7 +2150,8 @@ for (const request of requests) {
   const persistedRow = latestShownBatch
     ? rows.find(r => String(r.shown_batch_id || '').trim() === latestShownBatch && Number(r.shown_index || 0) === candidateIndex)
     : null;
-  const row = snapshotRow || persistedRow || pending.find(r => matchesHint(r, request.candidate_name_hint)) || pending[candidateIndex - 1];
+  const row = [persistedRow, snapshotRow, pending.find(r => matchesHint(r, request.candidate_name_hint)), pending[candidateIndex - 1]]
+    .find(useRow);
 
   if (!row) {
     await this.helpers.httpRequest({
@@ -2156,6 +2167,8 @@ for (const request of requests) {
   }
 
   if (action === 'ready' && !referido) continue;
+  if (row.candidate_id) usedCandidateIds.add(String(row.candidate_id).trim());
+  if (row.row_number) usedRowNumbers.add(String(row.row_number).trim());
 
   out.push({ json: {
     row_number: row.row_number,
@@ -2592,11 +2605,30 @@ function patchRouteRowCandidateId(workflow) {
   return { url: current, body: '' };
 }
 
+function extractFeaturedMlId(html) {
+  const text = String(html || '');
+  const patterns = [
+    /"metadata"\\s*:\\s*\\{[^}]*"id"\\s*:\\s*"(MLM[0-9]{6,})"/i,
+    /"id"\\s*:\\s*"(MLM[0-9]{6,})"[^}]*"user_product_id"/i,
+    /pdp_filters=item_id%3A(MLM[0-9]{6,})/i,
+    /[?&#]wid=(MLM[0-9]{6,})/i,
+    /"item_id"\\s*:\\s*"(MLM[0-9]{6,})"/i,
+    /"itemId"\\s*:\\s*"(MLM[0-9]{6,})"/i,
+  ];
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match) return match[1].toUpperCase();
+  }
+  const productLink = text.match(/\\/p\\/(ML[A-Z]?[0-9]+)/i);
+  if (productLink) return productLink[1].toUpperCase();
+  return '';
+}
+
 if (link.includes('meli.la/')) {
   try {
     const resolved = await resolveShortMlLink.call(this, link);
     const html = resolved.body || '';
-    const firstMlm = resolved.product_id || (html.match(/MLM[0-9]{6,}/)?.[0] || '');
+    const firstMlm = resolved.product_id || extractFeaturedMlId(html);
     if (firstMlm) {
       product_id = firstMlm.toUpperCase();
       link = resolved.url && resolved.url.includes('mercadolibre')
