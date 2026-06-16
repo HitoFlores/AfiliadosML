@@ -252,6 +252,22 @@ function resolveActions(actions, rows, snapshot) {
   }).filter(Boolean);
 }
 
+function buildReplacementMessage(buildRows, persistedRows = []) {
+  const rows = buildRows.length ? buildRows : persistedRows;
+  const needed = Number(rows[0]?.replacement_needed || rows.length);
+  const note = rows.length < needed ? `\nSolo quedan ${rows.length} candidato(s) para reemplazar ${needed} descartado(s).` : "";
+  const lines = rows.map((row, index) => `${index + 1} - ${row.candidate_name || row.candidate_id || "candidato sin nombre"}`);
+  return [
+    `Candidatos para el siguiente review${note}`,
+    "",
+    lines.join("\n"),
+    "",
+    "Responde con una linea por candidato:",
+    "1 - https://meli.la/...",
+    "2 - descartar",
+  ].join("\n");
+}
+
 function assertEqual(name, actual, expected) {
   const a = JSON.stringify(actual);
   const e = JSON.stringify(expected);
@@ -449,6 +465,15 @@ assertEqual(
     [],
   ),
   [{ candidate_id: "src:macbook", status: "ready", createsQueueRow: true }],
+);
+
+assertEqual(
+  "replacement notification keeps candidate names from builder output",
+  buildReplacementMessage(
+    [{ candidate_id: "src:steam-deck", candidate_name: "Steam Deck (Valve)", replacement_needed: 1 }],
+    [{ row_number: 25, shown_index: 1 }],
+  ).includes("1 - Steam Deck (Valve)"),
+  true,
 );
 
 console.log("Review candidate logic test passed.");

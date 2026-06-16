@@ -2318,7 +2318,7 @@ return selected.map((row, index) => ({ json: {
         sendBody: true,
         contentType: "raw",
         rawContentType: "application/json",
-        body: "={{ (() => { const rows = $('Persist Candidate Replacements').all().map(i => i.json); const needed = Number(rows[0]?.replacement_needed || rows.length); const note = rows.length < needed ? '\\nSolo quedan ' + rows.length + ' candidato(s) para reemplazar ' + needed + ' descartado(s).' : ''; const lines = rows.map((row, index) => (index + 1) + ' - ' + row.candidate_name); return JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: 'Candidatos para el siguiente review' + note + '\\n\\n' + lines.join('\\n') + '\\n\\nResponde con una linea por candidato:\\n1 - https://meli.la/...\\n2 - descartar', reply_markup: { force_reply: true, input_field_placeholder: '1 - https://meli.la/...' } }); })() }}",
+        body: "={{ (() => { const rows = $('Build Candidate Replacements').all().map(i => i.json); const needed = Number(rows[0]?.replacement_needed || rows.length); const note = rows.length < needed ? '\\nSolo quedan ' + rows.length + ' candidato(s) para reemplazar ' + needed + ' descartado(s).' : ''; const lines = rows.map((row, index) => (index + 1) + ' - ' + (row.candidate_name || row.candidate_id || 'candidato sin nombre')); return JSON.stringify({ chat_id: $env.TELEGRAM_CHAT_ID, text: 'Candidatos para el siguiente review' + note + '\\n\\n' + lines.join('\\n') + '\\n\\nResponde con una linea por candidato:\\n1 - https://meli.la/...\\n2 - descartar', reply_markup: { force_reply: true, input_field_placeholder: '1 - https://meli.la/...' } }); })() }}",
         options: {},
       },
     },

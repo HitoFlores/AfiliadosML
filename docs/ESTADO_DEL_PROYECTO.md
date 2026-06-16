@@ -145,6 +145,7 @@ Fixes importantes:
 - Sheet Schema cierra candidatos huerfanos si el JSON ya existe pero el `candidate_id` no quedo en `meta`, por ejemplo por corrida manual o perdida del dato en `articulos`.
 - `descartar`, `descartado`, `eliminar`, `borrar`, `borra`, `basura`, `drop` y `delete` cuentan como descarte.
 - Si se descarta 1, 2 o 3 candidatos, Poll manda 1, 2 o 3 reemplazos nuevos y persiste un nuevo snapshot para esa respuesta.
+- La notificacion de reemplazos despues de un descarte toma nombres desde `Build Candidate Replacements`, no desde el update de Google Sheets, para evitar mensajes `1 - undefined`.
 - Si se acaban los candidatos, Poll avisa por Telegram que ya no quedan pendientes para reemplazar descartes.
 - Acepta multiples acciones en un solo mensaje:
   `1 - https://meli.la/...`

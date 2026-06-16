@@ -310,8 +310,8 @@
     "semantic_hash": ""
   },
   "scripts/n8n-ephemeral/prepare-workflows.mjs": {
-    "mtime": 1781563249.2695282,
-    "ast_hash": "6f41634c7556741832b6d621d705680c",
+    "mtime": 1781643743.371353,
+    "ast_hash": "9f89952ce9046de493fe3a125383a49f",
     "semantic_hash": ""
   },
   "scripts/n8n-ephemeral/run-cycle.sh": {
@@ -350,8 +350,8 @@
     "semantic_hash": ""
   },
   "scripts/test-review-candidates-logic.mjs": {
-    "mtime": 1781563249.2745347,
-    "ast_hash": "10e55b562f5742899d4a14d50bb3620c",
+    "mtime": 1781643752.8755026,
+    "ast_hash": "96d47cf9ba0ebb61ae50b6851effde50",
     "semantic_hash": ""
   },
   "scripts/upgrade-v3-features.py": {
@@ -430,13 +430,13 @@
     "semantic_hash": ""
   },
   "docs/DEPLOY_GRATIS.md": {
-    "mtime": 1781563249.159626,
-    "ast_hash": "8a89c0624c62dd35a6429d0a50634fec",
+    "mtime": 1781644576.2184174,
+    "ast_hash": "c3fa14f487152bcf33588700b8d0d458",
     "semantic_hash": ""
   },
   "docs/ESTADO_DEL_PROYECTO.md": {
-    "mtime": 1781580193.1618109,
-    "ast_hash": "eb07cbdb543d542a4a446b5b01e8009b",
+    "mtime": 1781644576.2174184,
+    "ast_hash": "65b16805193a0800f9ecc4e93303b829",
     "semantic_hash": ""
   },
   "public/archive/estudio-comparativo.html": {

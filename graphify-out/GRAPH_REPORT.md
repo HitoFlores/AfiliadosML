@@ -1,16 +1,16 @@
-# Graph Report - AfiliadosML  (2026-06-15)
+# Graph Report - AfiliadosML  (2026-06-16)
 
 ## Corpus Check
-- 87 files · ~209,293 words
+- 87 files · ~209,463 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 427 nodes · 574 edges · 40 communities (27 shown, 13 thin omitted)
+- 428 nodes · 575 edges · 40 communities (27 shown, 13 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d7208568`
+- Built from commit: `e3dca8a3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -101,7 +101,7 @@ Cohesion: 0.08
 Nodes (23): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+15 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.11
+Cohesion: 0.10
 Nodes (16): candidateHintForIndex(), changedRows, classifyTier(), discardWords, diverseSelected, hiddenStatuses, isMlLink(), looksLikeLink() (+8 more)
 
 ### Community 7 - "Community 7"
@@ -189,4 +189,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `Community 5` be split into smaller, more focused modules?**
   _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._
 - **Should `Community 6` be split into smaller, more focused modules?**
-  _Cohesion score 0.1067193675889328 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10144927536231885 - nodes in this community are weakly interconnected._
