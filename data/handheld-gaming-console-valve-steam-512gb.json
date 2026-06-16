@@ -1,0 +1,372 @@
+{
+  "meta": {
+    "producto_id": "MLM2039424405",
+    "slug": "handheld-gaming-console-valve-steam-512gb",
+    "candidate_id": "valve-256-gb-lcd-consola-256gb:steam-deck-oled-512-gb",
+    "categoria": "MLM-GAME_CONSOLES",
+    "generado_en": "2026-06-16T22:24:47.447Z"
+  },
+  "producto": {
+    "nombre": "Handheld Gaming Console Valve Steam Deck Oled 512gb",
+    "display_title": "Handheld Gaming Console Valve Steam Deck Oled 512gb",
+    "nombre_original": "Handheld Gaming Console Valve Steam Deck Oled 512gb",
+    "marca": null,
+    "modelo": null,
+    "descripcion": "",
+    "caracteristicas_principales": [],
+    "specs": {
+      "Min recommended age": "4 years",
+      "Brand": "Valve Index",
+      "Capacity": "512 GB",
+      "Console type": "Handheld Gaming Console",
+      "Universal product code": "00814585022254",
+      "Item condition": "New",
+      "Model": "Valve Index",
+      "Package height": "9 cm",
+      "Package length": "43 cm",
+      "Package weight": "1.58 kg",
+      "Package width": "17 cm",
+      "With Wi-Fi": "Yes"
+    },
+    "imagenes": [
+      "https://http2.mlstatic.com/D_794250-CBT82937302465_032025-F.jpg",
+      "https://http2.mlstatic.com/D_775935-CBT82937302461_032025-F.jpg",
+      "https://http2.mlstatic.com/D_892928-CBT82937302463_032025-F.jpg",
+      "https://http2.mlstatic.com/D_998612-CBT82937302467_032025-F.jpg",
+      "https://http2.mlstatic.com/D_839707-CBT82937302459_032025-F.jpg"
+    ]
+  },
+  "precio": {
+    "actual": 25478.23,
+    "original": 25478.23,
+    "descuento_pct": 0,
+    "moneda": "MXN",
+    "envio_gratis": true,
+    "garantia": "Sin garantía"
+  },
+  "vendedor": {
+    "item_id": "MLM2231584243",
+    "nombre": "USCLUBGLOBAL-MXR",
+    "reputacion": "5_green",
+    "power_seller": "platinum",
+    "transacciones": 50446
+  },
+  "link_afiliado": "https://meli.la/2qUkCkd",
+  "reviews_ml": {
+    "total": 0,
+    "con_comentario": 0,
+    "calificacion_promedio": 0,
+    "destacadas": []
+  },
+  "videos_yt": [
+    {
+      "video_id": "mWZRc_ApZT4",
+      "titulo": "Nintendo Switch 2 vs Steam Deck OLED #nintendoswitch2 #steamdeck #oled",
+      "canal": "Dominic Malta",
+      "url": "https://www.youtube.com/watch?v=mWZRc_ApZT4",
+      "thumbnail": "https://i.ytimg.com/vi/mWZRc_ApZT4/hqdefault.jpg",
+      "publicado": "2025-06-06",
+      "vistas": 1056202,
+      "match_level": "category",
+      "evidence_score": 10,
+      "evidence_reason": "category:switch,nintendo|tokens:steam,deck,oled|review: vs"
+    },
+    {
+      "video_id": "ygo47Edg2kE",
+      "titulo": "Vale la pena una Steam Deck en 2025 Pros y contras",
+      "canal": "El Gamer Desempleado",
+      "url": "https://www.youtube.com/watch?v=ygo47Edg2kE",
+      "thumbnail": "https://i.ytimg.com/vi/ygo47Edg2kE/hqdefault.jpg",
+      "publicado": "2025-03-29",
+      "vistas": 82115,
+      "match_level": "category",
+      "evidence_score": 7,
+      "evidence_reason": "category:consola|tokens:steam,deck|review:review"
+    }
+  ],
+  "youtube_debug": {
+    "version": "v6",
+    "commercial_name": "",
+    "queries": [
+      "Handheld Gaming Console Valve Steam Deck Oled 512gb review",
+      "Handheld Gaming Console Valve Steam Deck Oled 512gb analisis",
+      "Handheld Gaming Console Valve Steam Deck Oled 512gb reseña"
+    ],
+    "query_log": [
+      {
+        "q": "Handheld Gaming Console Valve Steam Deck Oled 512gb review",
+        "count": 10
+      },
+      {
+        "q": "Handheld Gaming Console Valve Steam Deck Oled 512gb analisis",
+        "count": 10
+      },
+      {
+        "q": "Handheld Gaming Console Valve Steam Deck Oled 512gb reseña",
+        "count": 10
+      }
+    ],
+    "source_count": 26,
+    "accepted_count": 2,
+    "rejected_sample": [
+      {
+        "title": "Steam Deck OLED - Before You Buy",
+        "score": 5,
+        "reason": "tokens:gaming,valve,steam,deck,oled",
+        "match_level": "none"
+      },
+      {
+        "title": "Steam Deck OLED en 2026: ¿Todavía vale la pena?",
+        "score": 7,
+        "reason": "tokens:steam,deck,oled|review:vale la pena",
+        "match_level": "none"
+      },
+      {
+        "title": "Steam Deck OLED in 2026 (Best Overall Gaming Handheld?)",
+        "score": 5,
+        "reason": "tokens:handheld,gaming,steam,deck,oled",
+        "match_level": "none"
+      },
+      {
+        "title": "Valve Steamdeck OLED 512GB Worth It? (2025) 📝REVIEW VIDEO",
+        "score": 8,
+        "reason": "tokens:valve,steam,deck,oled,512gb|review:review",
+        "match_level": "none"
+      },
+      {
+        "title": "Steam Deck OLED Review",
+        "score": 9,
+        "reason": "tokens:handheld,gaming,valve,steam,deck,oled|review:review",
+        "match_level": "none"
+      },
+      {
+        "title": "Steam Deck OLED Review - 1 MONTH Later... is it worth it?",
+        "score": 6,
+        "reason": "tokens:steam,deck,oled|review:review",
+        "match_level": "none"
+      },
+      {
+        "title": "Is the Steam Deck OLED Worth it in 2025? (Honest Review) 6 Months Later!",
+        "score": 8,
+        "reason": "tokens:handheld,console,steam,deck,oled|review:review",
+        "match_level": "none"
+      },
+      {
+        "title": "Almost Perfect - Steam Deck OLED Review",
+        "score": 6,
+        "reason": "tokens:steam,deck,oled|review:review",
+        "match_level": "none"
+      },
+      {
+        "title": "Steam Deck OLED 512GB Version Unboxing &amp; Hands On",
+        "score": 7,
+        "reason": "tokens:steam,deck,oled,512gb|review:hands on",
+        "match_level": "none"
+      },
+      {
+        "title": "The Steam Deck Has a BIG Problem",
+        "score": 2,
+        "reason": "tokens:steam,deck",
+        "match_level": "none"
+      },
+      {
+        "title": "¡MEJOR de lo que Esperaba! | Steam Deck OLED Review",
+        "score": 6,
+        "reason": "tokens:steam,deck,oled|review:review",
+        "match_level": "none"
+      },
+      {
+        "title": "💥 Análisis COMPLETO de la Steam Deck OLED: ¿Por qué es MEJOR que el Modelo Antiguo?",
+        "score": 6,
+        "reason": "tokens:steam,deck,oled|review:analisis",
+        "match_level": "none"
+      }
+    ],
+    "category": "console",
+    "identity_tokens": [
+      "handheld",
+      "gaming",
+      "console",
+      "valve",
+      "steam",
+      "deck",
+      "oled",
+      "512gb"
+    ]
+  },
+  "ml_search_debug": {
+    "source": "Get Similar Products",
+    "query": null,
+    "received_count": 0,
+    "valid_count": 0,
+    "saved_count": 0,
+    "empty_reason": "ml_returned_no_results",
+    "error_msg": null
+  },
+  "editorial": {
+    "score": 8.5,
+    "score_justificacion": "La Steam Deck OLED 512GB es una consola portátil con pantalla OLED genuinamente mejorada, acceso a una biblioteca masiva de PC y un ecosistema maduro; las fuentes disponibles no reportan fallas graves del producto.",
+    "sub_scores": [
+      {
+        "dimension": "Pantalla",
+        "score": 9,
+        "justificacion": "La pantalla OLED es el cambio más sustancial respecto al modelo LCD: mayor brillo, colores más vivos y mejor contraste según el canal El Gamer Desempleado."
+      },
+      {
+        "dimension": "Biblioteca de juegos",
+        "score": 9.5,
+        "justificacion": "El acceso a Steam con miles de títulos compatibles es una ventaja estructural que ninguna consola portátil rival iguala en volumen."
+      },
+      {
+        "dimension": "Rendimiento",
+        "score": 7.5,
+        "justificacion": "El hardware es el mismo que el modelo LCD original; la mejora es de pantalla, no de potencia de procesamiento o gráficos."
+      },
+      {
+        "dimension": "Autonomía de batería",
+        "score": 7.5,
+        "justificacion": "La OLED mejora ligeramente la eficiencia energética respecto al LCD, pero el consumo del hardware sigue siendo elevado en juegos exigentes."
+      },
+      {
+        "dimension": "Ergonomía y construcción",
+        "score": 8,
+        "justificacion": "El diseño físico es prácticamente idéntico al modelo anterior; cómodo para manos adultas pero voluminoso para uso en transporte público."
+      },
+      {
+        "dimension": "Software y ecosistema",
+        "score": 8.5,
+        "justificacion": "SteamOS permite acceso a la tienda de PC, compatibilidad con mods y opciones de personalización que consolas cerradas no ofrecen."
+      }
+    ],
+    "veredicto_corto": "La Steam Deck OLED 512GB es la mejor versión de la consola de Valve: la pantalla OLED marca una diferencia real en la experiencia visual. Sin embargo, el hardware interno no cambió respecto al modelo LCD, así que si ya tienes una Steam Deck, la actualización es discutible.",
+    "compralo_si": [
+      "Quieres jugar PC en formato portátil",
+      "Valoras una pantalla OLED de calidad",
+      "No tienes Steam Deck previa",
+      "Buscas biblioteca enorme de juegos"
+    ],
+    "saltatelo_si": [
+      "Ya tienes Steam Deck LCD y te conformas",
+      "Buscas salto de rendimiento respecto al LCD",
+      "Prefieres ecosistema cerrado y simple"
+    ],
+    "pros": [
+      "Pantalla OLED con colores y contraste notablemente superiores al modelo LCD",
+      "Acceso a la biblioteca completa de Steam con miles de títulos compatibles",
+      "512 GB de almacenamiento interno reduce la necesidad inmediata de expansión",
+      "SteamOS maduro con soporte para mods, personalización y escritorio Linux",
+      "Comunidad activa y soporte continuo de Valve"
+    ],
+    "contras": [
+      "El procesador y GPU son idénticos al modelo LCD original: sin mejora de rendimiento",
+      "Tamaño y peso siguen siendo considerables para uso en transporte o manos pequeñas",
+      "La compatibilidad con juegos no es universal: algunos títulos de Windows no corren bien en SteamOS",
+      "Precio elevado en México al comprarse importado, sin garantía oficial local",
+      "Curva de aprendizaje para usuarios que no están familiarizados con Steam o Linux"
+    ],
+    "fuentes_citadas": [
+      {
+        "tipo": "video",
+        "autor": "El Gamer Desempleado",
+        "aporte": "Análisis de pros y contras de la Steam Deck en 2025, incluyendo valoración de la pantalla OLED y limitaciones del ecosistema"
+      },
+      {
+        "tipo": "video",
+        "autor": "Dominic Malta",
+        "aporte": "Comparativa entre Nintendo Switch 2 y Steam Deck OLED como referencia de posicionamiento en el mercado de portátiles"
+      }
+    ],
+    "faq": [
+      {
+        "pregunta": "¿La Steam Deck OLED es más potente que el modelo LCD?",
+        "respuesta": "No. El procesador y la GPU son exactamente los mismos. La diferencia está en la pantalla (OLED vs LCD), la batería ligeramente mayor y el peso reducido. Si buscas más rendimiento, este modelo no lo ofrece."
+      },
+      {
+        "pregunta": "¿Todos los juegos de Steam funcionan en la Steam Deck?",
+        "respuesta": "No todos. Valve tiene una lista de juegos 'verificados' y 'compatibles', pero algunos títulos con protección anticopia (como los que usan Denuvo o Easy Anti-Cheat mal configurado) no corren o tienen problemas. Antes de comprar, conviene revisar el estado de tus juegos favoritos en el sitio de compatibilidad de Steam Deck."
+      },
+      {
+        "pregunta": "¿Vale la pena comprarla si ya tengo la Steam Deck LCD?",
+        "respuesta": "Depende de cuánto uses la consola. Si juegas frecuentemente en interiores y la pantalla es importante para ti, la OLED es una mejora real. Si la usas ocasionalmente o en exteriores con mucha luz, la diferencia puede no justificar el gasto."
+      },
+      {
+        "pregunta": "¿Se pueden instalar juegos fuera de Steam, como de Epic Games o GOG?",
+        "respuesta": "Sí, con algo de configuración. La Steam Deck corre Linux y permite instalar otros launchers mediante herramientas como Heroic Games Launcher. No es plug-and-play, pero la comunidad tiene guías detalladas para lograrlo."
+      },
+      {
+        "pregunta": "¿Qué tan viable es comprarla en Mercado Libre en México?",
+        "respuesta": "La Steam Deck no tiene distribución oficial en México, por lo que todas las unidades son importadas. Esto implica que la garantía de Valve no aplica directamente y cualquier reparación depende del vendedor o de enviarla al extranjero. Verifica la reputación del vendedor y si ofrece algún tipo de garantía local antes de pagar."
+      }
+    ],
+    "precio_valor": "La Steam Deck OLED 512GB tiene un precio elevado en México dado que se importa sin canal oficial, lo que suma costos de importación y elimina la garantía directa de Valve. Dicho esto, lo que ofrece —pantalla OLED real, 512 GB de almacenamiento y acceso a Steam completo— es difícil de igualar en el segmento de portátiles gaming. Si el precio en el listado es competitivo respecto a importarla directamente, puede ser buen valor; si está muy por encima del precio internacional, conviene evaluar otras opciones.",
+    "alternativas": [
+      {
+        "tipo": "Opción más económica",
+        "descripcion": "Busca la Steam Deck LCD 256 GB o 512 GB de generación anterior. Sacrificas la pantalla OLED y algo de autonomía, pero el rendimiento es idéntico y el precio puede ser significativamente menor. Ideal si la pantalla no es tu prioridad."
+      },
+      {
+        "tipo": "Opción premium",
+        "descripcion": "Si buscas más potencia en formato portátil, considera la ASUS ROG Ally X o la Lenovo Legion Go, que ofrecen chips más recientes y mayor rendimiento en juegos exigentes, aunque con Windows en lugar de SteamOS y a un precio considerablemente mayor."
+      }
+    ],
+    "riesgos_compra_ml": [
+      "La Steam Deck no tiene distribución oficial en México: la garantía de Valve no aplica y las reparaciones locales son complicadas.",
+      "Verifica que la versión sea OLED y no LCD: algunos listados pueden ser ambiguos o usar fotos genéricas.",
+      "Confirma que el almacenamiento sea 512 GB y no una versión de menor capacidad renombrada.",
+      "Revisa si el equipo viene con el dock o accesorios incluidos, ya que algunos listados los anuncian en el título pero no los incluyen.",
+      "Asegúrate de que el vendedor tenga reputación alta en ML y política de devolución clara, dado que es un producto importado de alto valor."
+    ],
+    "checklist_antes_de_comprar": [
+      "Compara el precio del listado con el precio oficial de Valve en dólares más el costo de importación para saber si es competitivo.",
+      "Revisa la reputación del vendedor en ML: mínimo 95% de calificaciones positivas y ventas previas de electrónicos.",
+      "Confirma en la descripción o preguntando al vendedor que la unidad es OLED 512 GB y no una versión diferente.",
+      "Verifica si tus juegos favoritos están en la lista de compatibilidad de Steam Deck antes de asumir que todos funcionarán.",
+      "Pregunta al vendedor qué garantía ofrece y cómo maneja reparaciones, dado que no hay servicio oficial de Valve en México."
+    ],
+    "comparativa_editorial": [
+      {
+        "tipo": "modelo anterior o inferior",
+        "titulo": "Steam Deck LCD 256/512 GB",
+        "resumen": "Mismo rendimiento, pantalla LCD de menor calidad visual, precio más bajo. Opción válida si la pantalla OLED no es prioritaria y el presupuesto es ajustado."
+      },
+      {
+        "tipo": "mejor valor",
+        "titulo": "Steam Deck LCD 512 GB (reacondicionada o usada)",
+        "resumen": "Sin candidato real confiable nuevo en ML en este slot; una unidad usada verificada puede ofrecer la misma experiencia de juego a menor costo, aunque con riesgo de desgaste de batería."
+      },
+      {
+        "tipo": "premium",
+        "titulo": "ASUS ROG Ally X",
+        "resumen": "Chip más reciente, mayor rendimiento en juegos exigentes y pantalla de alta tasa de refresco. Cuesta considerablemente más y corre Windows, lo que cambia la experiencia de uso respecto a SteamOS."
+      },
+      {
+        "tipo": "alternativa fuera del ecosistema",
+        "titulo": "Nintendo Switch 2",
+        "resumen": "Ecosistema cerrado con exclusivos de Nintendo, más portátil y con garantía más accesible en México. Sacrifica la biblioteca de PC pero gana en simplicidad y soporte local."
+      }
+    ],
+    "mejor_alternativa": {
+      "tipo": "alternativa fuera del ecosistema",
+      "titulo": "Nintendo Switch 2",
+      "razon": "Para usuarios que priorizan portabilidad real, garantía local y una experiencia plug-and-play sin configuración, la Switch 2 es más práctica en el contexto mexicano, aunque la biblioteca de juegos es mucho más pequeña."
+    },
+    "keyword_targets": [
+      "steam deck oled 512gb precio mexico",
+      "steam deck oled mercado libre mexico",
+      "consola portatil pc gaming mexico 2025",
+      "steam deck vale la pena en mexico",
+      "steam deck oled vs lcd diferencias"
+    ],
+    "evidencia_limitaciones": "Este análisis cruza las especificaciones oficiales de Valve, los videos de referencia disponibles (El Gamer Desempleado, Dominic Malta) y el contexto de compra en Mercado Libre México; no se realizaron pruebas de laboratorio propias.",
+    "seo_title": "Steam Deck OLED 512GB: ¿Vale la pena en 2026?",
+    "seo_description": "Análisis honesto de la Steam Deck OLED 512GB: qué mejoró respecto al LCD, qué no cambió y si conviene comprarla en Mercado Libre México en 2026.",
+    "articulo_html": "<h2>Veredicto rápido</h2><p>La Steam Deck OLED 512GB es la versión más pulida de la consola portátil de Valve. La pantalla OLED marca una diferencia visual real y el almacenamiento de 512 GB es suficiente para una biblioteca generosa sin expansión inmediata. El problema es que el hardware interno no cambió: mismo procesador, misma GPU. Si ya tienes una Steam Deck LCD, la actualización es difícil de justificar. Si es tu primera Steam Deck, esta es la versión que deberías comprar.</p><h2>Qué es y qué cambió respecto al modelo anterior</h2><p>La Steam Deck OLED es una consola portátil de Valve que corre SteamOS —basado en Linux— y permite jugar títulos de PC en formato de mano. Frente al modelo LCD original, los cambios concretos son tres: pantalla OLED con mejor contraste y colores, batería con mayor capacidad y un peso ligeramente reducido. Lo que <strong>no</strong> cambió es el chip: el procesador y la GPU son los mismos que en el modelo de 2022. Según el canal El Gamer Desempleado, que analizó la consola en 2025, los pros y contras del ecosistema siguen siendo los mismos de siempre; la OLED es una mejora de experiencia, no de potencia.</p><h2>Lo bueno: dónde sí entrega</h2><h3>Pantalla OLED</h3><p>Es el argumento más sólido de esta versión. Los negros son más profundos, los colores más saturados y el contraste general hace que los juegos se vean notablemente mejor que en el panel LCD, especialmente en interiores o con poca luz ambiental. No es un cambio menor: en una consola que se usa a 30-40 cm de la cara, la calidad de pantalla importa mucho.</p><h3>Biblioteca de juegos</h3><p>El acceso a Steam sigue siendo la ventaja estructural más grande de esta consola. Miles de títulos compatibles, incluyendo juegos independientes, clásicos y lanzamientos recientes, sin pagar suscripción adicional. Ninguna consola portátil rival iguala ese volumen de contenido disponible.</p><h3>Almacenamiento y ecosistema</h3><p>Los 512 GB internos son suficientes para instalar varios juegos AAA sin recurrir de inmediato a una tarjeta microSD. SteamOS es un sistema maduro que permite mods, personalización y hasta usar el equipo como PC de escritorio conectándolo a un monitor.</p><h2>Lo malo: lo que hay que saber antes de comprar</h2><p>El punto más importante que los usuarios advierten de forma consistente es que <strong>el rendimiento es idéntico al modelo LCD</strong>. Si esperabas que la versión OLED trajera mejoras en velocidad de carga, fluidez en juegos exigentes o capacidad gráfica superior, no las encontrarás aquí.</p><p>Además, la compatibilidad con juegos no es universal. Algunos títulos con sistemas de protección anticopia agresivos o que dependen de componentes exclusivos de Windows no corren correctamente en SteamOS. Antes de comprar, conviene revisar el estado de tus juegos favoritos en la herramienta de compatibilidad oficial de Valve.</p><p>El tamaño y peso del equipo también son un factor real. Es cómodo para sesiones largas en casa o en viajes en avión, pero resulta voluminoso para llevarlo en el bolsillo o usarlo en transporte público. No es una Switch.</p><p>Finalmente, en México no existe distribución oficial de Valve. Todas las unidades disponibles en Mercado Libre son importadas, lo que implica precios más altos, sin garantía directa del fabricante y con reparaciones complicadas si algo falla.</p><h2>Comparativa de compra</h2><h3>Versus Steam Deck LCD</h3><p>Si el presupuesto es ajustado, la Steam Deck LCD de generación anterior ofrece exactamente el mismo rendimiento de juego. La diferencia está únicamente en la pantalla y la batería. Para alguien que juega principalmente en exteriores o con mucha luz ambiental, la ventaja del OLED se reduce considerablemente.</p><h3>Versus ASUS ROG Ally X (opción premium)</h3><p>La ROG Ally X usa chips más recientes y ofrece mayor rendimiento en juegos exigentes. Corre Windows, lo que simplifica la compatibilidad con cualquier título de PC, pero también añade complejidad al uso en modo portátil. El precio es considerablemente mayor y la autonomía de batería suele ser inferior.</p><h3>Versus Nintendo Switch 2 (fuera del ecosistema)</h3><p>La Switch 2 es más portátil, tiene garantía más accesible en México y ofrece una experiencia plug-and-play sin configuración. La biblioteca es mucho más pequeña y los exclusivos de Nintendo son el único argumento de peso. Para alguien que no está interesado en juegos de PC, la Switch 2 puede ser más práctica en el contexto local.</p><h2>¿Para quién sí y para quién no?</h2><ul><li><strong>Cómprala si:</strong> quieres jugar tu biblioteca de Steam en formato portátil, valoras una pantalla OLED de calidad, tienes experiencia con PC gaming y es tu primera Steam Deck.</li><li><strong>Evítala si:</strong> ya tienes la versión LCD y no te molesta la pantalla, buscas un salto de rendimiento real, prefieres un ecosistema cerrado y simple, o el precio importado te parece excesivo para un producto sin garantía local.</li></ul><h2>Conclusión</h2><p>La Steam Deck OLED 512GB es la mejor versión de la consola de Valve y, para quien quiere jugar PC en formato portátil, sigue siendo la opción más completa del mercado en su categoría. La pantalla OLED justifica el sobreprecio respecto al modelo LCD si es tu primera compra. El único freno real en México es el precio inflado por la importación y la ausencia de garantía oficial. Si el listado en Mercado Libre tiene un vendedor con buena reputación y precio razonable, es una compra sólida.</p><p>Antes de pagar, verifica la reputación del vendedor, confirma que la unidad es efectivamente OLED de 512 GB y revisa la compatibilidad de tus juegos favoritos en el sitio oficial de Steam Deck.</p>"
+  },
+  "productos_similares_ml": [],
+  "autoria": {
+    "nombre": "Hito Flores",
+    "tagline": "Análisis independiente de productos en Mercado Libre México",
+    "metodologia": "Este análisis sintetiza 0 reseñas en video de creadores independientes y 0 opiniones de compradores verificados de Mercado Libre.",
+    "actualizado": "2026-06-16"
+  }
+}
