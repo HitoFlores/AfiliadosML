@@ -1,0 +1,480 @@
+{
+  "meta": {
+    "producto_id": "MLM48929091",
+    "slug": "valve-256-gb-lcd-consola-256gb",
+    "candidate_id": "nintendo-switch-oled-consola-64gb:steam-deck-valve",
+    "categoria": "MLM-GAME_CONSOLES",
+    "generado_en": "2026-06-16T19:54:34.544Z"
+  },
+  "producto": {
+    "nombre": "Consola Portátil Valve Steam Deck 256 GB con Pantalla LCD",
+    "display_title": "Valve 256 GB LCD",
+    "nombre_original": "Consola Portátil Valve Steam Deck 256 GB con Pantalla LCD",
+    "marca": "Valve",
+    "modelo": "256 GB",
+    "descripcion": "Experimenta el juego portátil como nunca antes con la consola Steam Deck de 256 GB. Equipado con un potente procesador AMD personalizado y una GPU RDNA 2, esta consola portátil ofrece un rendimiento excepcional para todos tus juegos favoritos de Steam. Con su pantalla LCD táctil de 7 pulgadas, disfrutarás de gráficos nítidos y fluidos en una resolución de 1280 x 800 píxeles, optimizada para gaming en movimiento.\n\n- Almacenamiento Rápido: SSD NVMe de 256 GB para tiempos de carga rápidos.  \n- Pantalla Nítida: LCD táctil de 7\" con resolución de 1280 x 800 píxeles.  \n- Potencia y Rendimiento: APU AMD personalizada con CPU Zen 2 y GPU RDNA 2.  \n- Conectividad Avanzada: Wi-Fi 5, Bluetooth 5.0, y USB-C con soporte DisplayPort 1.4.  \n- Compatibilidad Amplia: Compatible con todos los títulos de Steam y emuladores.  \n- Diseño Ergonómico: Controles integrados para una experiencia de juego inmersiva.  \n- Almacenamiento Expandible: Ranura microSD para ampliar tu biblioteca de juegos.  \n\nLa consola portátil Steam Deck es la elección ideal para gamers que buscan portabilidad y potencia. Lleva tus juegos contigo y experimenta la libertad de jugar en cualquier momento y lugar.",
+    "caracteristicas_principales": [
+      "Pantalla táctil de 7 pulgadas con resolución de 1280 px por 800 px para visualizar detalles en títulos digitales.",
+      "Procesador AMD Zen 2 a 2.4 GHz y memoria LPDDR5 de 16 GB que ejecutan juegos de la biblioteca Steam y emuladores.",
+      "Batería de ion de litio con autonomía de hasta 8 h para sesiones de juego fuera de casa sin necesidad de carga.",
+      "Ranura para tarjetas Micro-SD que permite ampliar el espacio físico para instalar juegos adicionales en el sistema.",
+      "Conectividad Bluetooth 5.0 y puerto USB para vincular accesorios externos o periféricos de control al hardware.",
+      "Estuche protector incluido que resguarda el dispositivo durante el transporte en desplazamientos frecuentes."
+    ],
+    "specs": {
+      "Marca": "Valve",
+      "Modelo": "256 GB",
+      "Submodelo": "LCD",
+      "Edición": "Standard",
+      "Modelo alfanumérico": "256GB LCD",
+      "Capacidad": "256 GB",
+      "Color": "Negro",
+      "Color principal": "Negro",
+      "Tipo de consola": "Portátil",
+      "Con Wi-Fi": "Sí",
+      "Año de lanzamiento": "2022",
+      "Capacidad de la batería": "40 mAh",
+      "Región de comercialización": "Americana",
+      "Fabricante": "Valve",
+      "Incluye accesorios": "Sí",
+      "Accesorios incluidos": "Estuche protector",
+      "Incluye controles": "Sí",
+      "Conectividades de los controles": "Integrado",
+      "Aplicaciones soportadas": "SteamOS 3.0",
+      "Tipo de alimentación": "Batería",
+      "Tipo de pila": "Ion de litio",
+      "Tipo de batería": "Ion de litio",
+      "Formatos de juegos": "Digital",
+      "Tipos de tarjetas de memoria": "Micro-SD",
+      "Tipos de memoria": "LPDDR5",
+      "Procesador": "AMD Zen 2",
+      "CPU": "AMD Zen 2",
+      "GPU": "RDNA 2",
+      "Con pantalla táctil": "Sí",
+      "Es emulador": "Sí",
+      "Con USB": "Sí",
+      "Con conector jack 3.5 mm": "Sí",
+      "Con Bluetooth": "Sí",
+      "Con display": "Sí",
+      "Capacidad total del módulo de memoria RAM": "16 GB",
+      "Duración máxima de la batería": "8 h",
+      "Resoluciones máximas de las pantallas": "1280 px x 800 px",
+      "Tamaños de las pantallas": "7 \"",
+      "Velocidad del procesador": "2.4 GHz",
+      "Peso": "700 g",
+      "Altura": "11 cm",
+      "Ancho": "5 cm",
+      "Profundidad": "29 cm",
+      "Versión de Bluetooth": "5.0",
+      "Cantidad máxima de FPS": "60",
+      "Cantidad de puertos USB": "1",
+      "Cantidad de pantallas": "1"
+    },
+    "imagenes": [
+      "https://http2.mlstatic.com/D_NQ_NP_765932-MLA99457811602_112025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_907387-MLA83720540696_042025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_983031-MLA83720540694_042025-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_843309-MLA83721038428_042025-F.jpg"
+    ]
+  },
+  "precio": {
+    "actual": 13999,
+    "original": 13999,
+    "descuento_pct": 0,
+    "moneda": "MXN",
+    "envio_gratis": true,
+    "garantia": "Garantía del vendedor: 30 días"
+  },
+  "vendedor": {
+    "item_id": "MLM2416585711",
+    "nombre": "NUVITU",
+    "reputacion": "5_green",
+    "power_seller": "platinum",
+    "transacciones": 310085
+  },
+  "link_afiliado": "https://meli.la/1Ks6vsD",
+  "reviews_ml": {
+    "total": 51,
+    "con_comentario": 35,
+    "calificacion_promedio": 4.8,
+    "destacadas": [
+      {
+        "titulo": "Batería en juegos pesados",
+        "contenido": "Varios compradores coinciden en que la autonomía cae por debajo de las 2 horas cuando se juegan títulos con alta demanda gráfica, lo que obliga a tener el cargador a mano en sesiones largas.",
+        "sentimiento": "negativo"
+      },
+      {
+        "titulo": "Compatibilidad y emulación",
+        "contenido": "Los compradores valoran especialmente que el dispositivo no se limita a Steam: permite instalar juegos de otras plataformas y emular consolas, lo que amplía considerablemente su utilidad.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Rendimiento en AAA",
+        "contenido": "En juegos de alto presupuesto el hardware muestra sus límites, aunque los compradores señalan que ajustar manualmente los parámetros de rendimiento resuelve en buena medida el problema.",
+        "sentimiento": "mixto"
+      },
+      {
+        "titulo": "Durabilidad y experiencia a largo plazo",
+        "contenido": "Un comprador con más de seis meses de uso reporta que tanto el hardware como el software se mantienen en buen estado, sin degradación notable.",
+        "sentimiento": "positivo"
+      },
+      {
+        "titulo": "Valor general del producto",
+        "contenido": "A pesar de las limitaciones de batería, la mayoría de compradores afirma que repetiría la compra, destacando la relación entre catálogo disponible, personalización y portabilidad.",
+        "sentimiento": "positivo"
+      }
+    ]
+  },
+  "videos_yt": [
+    {
+      "video_id": "m10_MJNZwvw",
+      "titulo": "Unboxing: The Valve Steam Deck 256GB LCD version #steamdeck",
+      "canal": "Amy",
+      "url": "https://www.youtube.com/watch?v=m10_MJNZwvw",
+      "thumbnail": "https://i.ytimg.com/vi/m10_MJNZwvw/hqdefault.jpg",
+      "publicado": "2025-06-17",
+      "vistas": 41578,
+      "match_level": "exact",
+      "evidence_score": 19,
+      "evidence_reason": "brand|exact:256 GB,LCD|tokens:valve,256,lcd,steam,deck|review:unboxing"
+    },
+    {
+      "video_id": "973B43zGauE",
+      "titulo": "Valve Steam Deck 512gb LCD model Review ( A 2025 overview )",
+      "canal": "The Ian West Network",
+      "url": "https://www.youtube.com/watch?v=973B43zGauE",
+      "thumbnail": "https://i.ytimg.com/vi/973B43zGauE/hqdefault.jpg",
+      "publicado": "2025-10-27",
+      "vistas": 1454,
+      "match_level": "line",
+      "evidence_score": 15,
+      "evidence_reason": "brand|exact:LCD|tokens:valve,lcd,steam,deck|review:review"
+    },
+    {
+      "video_id": "metqjYC0pMc",
+      "titulo": "¿Qué rayos es el STEAM DECK? || Todo lo que necesitas saber",
+      "canal": "levelup.com",
+      "url": "https://www.youtube.com/watch?v=metqjYC0pMc",
+      "thumbnail": "https://i.ytimg.com/vi/metqjYC0pMc/hqdefault.jpg",
+      "publicado": "2021-07-17",
+      "vistas": 138528,
+      "match_level": "line",
+      "evidence_score": 11,
+      "evidence_reason": "brand|category:consola|tokens:valve,consola,portatil,steam,deck"
+    }
+  ],
+  "youtube_debug": {
+    "version": "v6",
+    "commercial_name": "Valve 256 GB LCD",
+    "queries": [
+      "Valve 256 GB LCD review",
+      "Valve 256 GB LCD analisis",
+      "Valve 256 GB LCD reseña",
+      "Valve 256 GB LCD vale la pena",
+      "Valve 256 GB LCD comparativa",
+      "Valve 256 GB review",
+      "Valve 256 GB analisis",
+      "Valve 256 GB reseña"
+    ],
+    "query_log": [
+      {
+        "q": "Valve 256 GB LCD review",
+        "count": 10
+      },
+      {
+        "q": "Valve 256 GB LCD analisis",
+        "count": 10
+      },
+      {
+        "q": "Valve 256 GB LCD reseña",
+        "count": 10
+      },
+      {
+        "q": "Valve 256 GB LCD vale la pena",
+        "count": 10
+      },
+      {
+        "q": "Valve 256 GB LCD comparativa",
+        "count": 10
+      },
+      {
+        "q": "Valve 256 GB review",
+        "count": 10
+      },
+      {
+        "q": "Valve 256 GB analisis",
+        "count": 10
+      },
+      {
+        "q": "Valve 256 GB reseña",
+        "count": 10
+      }
+    ],
+    "source_count": 38,
+    "accepted_count": 3,
+    "rejected_sample": [
+      {
+        "title": "Steam Deck LCD despues de un año de uso 🤔 COMO FUNCIONA ?",
+        "score": 8,
+        "reason": "exact:LCD|tokens:lcd,steam,deck",
+        "match_level": "none"
+      },
+      {
+        "title": "The LCD Steam Deck is Still The Best Gaming Handheld in 2025?",
+        "score": 7,
+        "reason": "exact:LCD|tokens:lcd,steam,deck",
+        "match_level": "none"
+      },
+      {
+        "title": "256GB Steam Deck Unboxing &amp; First Impressions!",
+        "score": 11,
+        "reason": "exact:256 GB|tokens:256,steam,deck|review:unboxing",
+        "match_level": "none"
+      },
+      {
+        "title": "The LCD Steam Deck Is Still The BEST Gaming Handheld",
+        "score": 7,
+        "reason": "exact:LCD|tokens:lcd,steam,deck",
+        "match_level": "none"
+      },
+      {
+        "title": "Steam Deck LCD in 2026 – Still Worth Buying?",
+        "score": 7,
+        "reason": "exact:LCD|tokens:lcd,steam,deck",
+        "match_level": "none"
+      },
+      {
+        "title": "The Steam Deck LCD Is Still Absolutely Amazing | Steam Deck in 2025? [Long Term Review]",
+        "score": 10,
+        "reason": "exact:LCD|tokens:lcd,steam,deck|review:review",
+        "match_level": "none"
+      },
+      {
+        "title": "Steam Deck (LCD Model) Unboxing",
+        "score": -20,
+        "reason": "cross_category:watch"
+      },
+      {
+        "title": "LCD Steam Deck is still amazing 🎮",
+        "score": 8,
+        "reason": "exact:LCD|tokens:lcd,steam,deck",
+        "match_level": "none"
+      },
+      {
+        "title": "💥 Análisis COMPLETO de la Steam Deck OLED: ¿Por qué es MEJOR que el Modelo Antiguo?",
+        "score": 6,
+        "reason": "tokens:steam,deck|review:analisis",
+        "match_level": "none"
+      },
+      {
+        "title": "5 RAZONES PARA COMPRAR UNA STEAM DECK #steam #steamdeck",
+        "score": 6,
+        "reason": "category:consola|tokens:consola,steam,deck",
+        "match_level": "category"
+      },
+      {
+        "title": "5 COSAS que DEBES SABER de STEAM DECK antes de comprarla #Shorts",
+        "score": -3,
+        "reason": "non_review:shorts|tokens:steam,deck",
+        "match_level": "none"
+      },
+      {
+        "title": "💥 STEAM DECK análisis en profundidad en español ¿ merece la pena ?",
+        "score": 6,
+        "reason": "tokens:steam,deck|review:analisis",
+        "match_level": "none"
+      }
+    ],
+    "category": "console",
+    "identity_tokens": [
+      "valve",
+      "256",
+      "lcd",
+      "consola",
+      "portatil",
+      "steam",
+      "deck",
+      "pantalla"
+    ]
+  },
+  "ml_search_debug": {
+    "source": "Get Similar Products",
+    "query": null,
+    "received_count": 0,
+    "valid_count": 0,
+    "saved_count": 0,
+    "empty_reason": "ml_returned_no_results",
+    "error_msg": null
+  },
+  "editorial": {
+    "score": 8.5,
+    "score_justificacion": "La Steam Deck 256 GB LCD ofrece una experiencia de PC gaming portátil genuina con amplio catálogo y buena personalización, pero la autonomía real en juegos exigentes ronda las 2 horas, lo que es una limitación concreta y recurrente en las opiniones de compradores.",
+    "sub_scores": [
+      {
+        "dimension": "Rendimiento",
+        "score": 8,
+        "justificacion": "Los compradores confirman buen desempeño general; en juegos AAA exigentes hay caídas de rendimiento que se mitigan ajustando configuraciones manualmente."
+      },
+      {
+        "dimension": "Batería",
+        "score": 5.5,
+        "justificacion": "Múltiples compradores reportan menos de 2 horas de autonomía con juegos de gráficos pesados, muy por debajo de las 8 horas que indica el fabricante."
+      },
+      {
+        "dimension": "Pantalla",
+        "score": 7.5,
+        "justificacion": "Pantalla LCD táctil de 7 pulgadas a 1280x800 px; los compradores no reportan quejas sobre la imagen, aunque es la versión LCD y no OLED."
+      },
+      {
+        "dimension": "Software y ecosistema",
+        "score": 9,
+        "justificacion": "Los compradores destacan la compatibilidad con Steam, emuladores y otras plataformas como un punto diferenciador clave."
+      },
+      {
+        "dimension": "Construcción y ergonomía",
+        "score": 8,
+        "justificacion": "Varios compradores mencionan que el hardware se siente sólido y que el diseño permite sesiones cómodas; incluye estuche protector."
+      },
+      {
+        "dimension": "Conectividad",
+        "score": 7.5,
+        "justificacion": "Wi-Fi 5, Bluetooth 5.0 y USB-C con DisplayPort 1.4 cubren bien las necesidades típicas; sin Wi-Fi 6 ni Ethernet nativa."
+      }
+    ],
+    "veredicto_corto": "La Steam Deck 256 GB LCD es la opción más accesible para jugar tu biblioteca de PC en formato portátil. Funciona bien, tiene un ecosistema maduro y permite emulación, pero si planeas sesiones largas sin enchufe, la batería real de menos de 2 horas en juegos pesados es un problema serio que debes considerar antes de comprar.",
+    "compralo_si": [
+      "Quieres jugar Steam en cualquier lugar",
+      "Te interesa emular otras consolas",
+      "Aceptas jugar cerca de un enchufe",
+      "Buscas personalización y accesorios"
+    ],
+    "saltatelo_si": [
+      "Necesitas más de 2 horas sin carga",
+      "Buscas la mejor pantalla posible",
+      "Tu presupuesto es muy ajustado"
+    ],
+    "pros": [
+      "Acceso a toda la biblioteca de Steam y compatibilidad con emuladores de otras plataformas",
+      "Hardware AMD Zen 2 + RDNA 2 con 16 GB LPDDR5 que mantiene buen desempeño en la mayoría de títulos",
+      "Alta personalización: accesorios, mods de software y expansión de almacenamiento vía microSD",
+      "SSD NVMe de 256 GB con tiempos de carga rápidos",
+      "Incluye estuche protector de fábrica",
+      "Ecosistema maduro con años en el mercado y soporte activo de Valve"
+    ],
+    "contras": [
+      "Autonomía real inferior a 2 horas en juegos con gráficos exigentes, muy lejos de las 8 horas del fabricante",
+      "En títulos AAA el rendimiento puede flaquear y requiere ajuste manual de configuraciones",
+      "Pantalla LCD, no OLED: quienes buscan mejor calidad de imagen deben considerar la versión OLED",
+      "El peso y tamaño del dispositivo pueden resultar incómodos en sesiones muy largas fuera de casa"
+    ],
+    "fuentes_citadas": [
+      {
+        "tipo": "compradores",
+        "autor": "compradores ML",
+        "aporte": "Confirmaron autonomía real menor a 2 horas en juegos pesados, buen rendimiento general, compatibilidad con emuladores y satisfacción global con el producto."
+      },
+      {
+        "tipo": "video",
+        "autor": "Amy",
+        "aporte": "Unboxing de la versión LCD 256 GB; sin transcripción disponible, solo referencia visual del producto."
+      },
+      {
+        "tipo": "video",
+        "autor": "The Ian West Network",
+        "aporte": "Reseña general de la Steam Deck LCD 512 GB en 2025; modelo similar pero de mayor almacenamiento, conclusiones orientativas."
+      },
+      {
+        "tipo": "video",
+        "autor": "levelup.com",
+        "aporte": "Explicación general del concepto Steam Deck; video de lanzamiento 2021, contexto histórico del producto."
+      }
+    ],
+    "faq": [
+      {
+        "pregunta": "¿Cuánto dura realmente la batería jugando títulos modernos?",
+        "respuesta": "Los compradores son consistentes: en juegos con gráficos exigentes la autonomía real es inferior a 2 horas. En títulos menos demandantes o emuladores de consolas antiguas puede durar más, pero para sesiones largas fuera de casa necesitarás una batería externa o acceso a corriente."
+      },
+      {
+        "pregunta": "¿Funciona con juegos fuera de Steam o solo con la tienda de Valve?",
+        "respuesta": "Sí, varios compradores confirman que es posible instalar juegos de otras plataformas y usar emuladores. El sistema operativo SteamOS está basado en Linux y permite bastante flexibilidad, aunque algunos títulos con protección anti-cheat agresiva pueden no funcionar."
+      },
+      {
+        "pregunta": "¿Vale la pena la versión LCD frente a la OLED?",
+        "respuesta": "La versión LCD que se analiza aquí tiene una pantalla funcional y sin quejas reportadas por los compradores, pero la versión OLED ofrece mejor contraste, colores más vivos y mayor eficiencia energética. Si el precio entre ambas es significativo, la LCD es una opción razonable; si la diferencia es pequeña, la OLED es mejor inversión."
+      },
+      {
+        "pregunta": "¿256 GB de almacenamiento son suficientes?",
+        "respuesta": "Depende de tu biblioteca. Los juegos de PC modernos pueden ocupar entre 30 y 100 GB cada uno, así que 256 GB se llenan con relativa rapidez. La ranura microSD permite ampliar el almacenamiento de forma económica, lo que mitiga bastante esta limitación."
+      },
+      {
+        "pregunta": "¿Es difícil de usar para alguien que no es experto en PC?",
+        "respuesta": "La interfaz de SteamOS está diseñada para ser accesible desde el sofá, similar a una consola tradicional. Sin embargo, si quieres instalar juegos fuera de Steam o configurar emuladores, se requiere algo de disposición para explorar ajustes. No es complicado, pero tampoco es tan inmediato como una Nintendo Switch."
+      }
+    ],
+    "precio_valor": "La Steam Deck 256 GB LCD se ubica en un rango de precio elevado para el mercado mexicano, especialmente considerando que es hardware de 2022 y que existe una versión OLED más reciente. Dicho esto, ningún otro dispositivo en ese rango ofrece acceso a una biblioteca de PC completa en formato portátil con este nivel de personalización. Si el precio en ML es competitivo respecto al precio oficial de Valve, la relación valor-costo es razonable; si hay un sobreprecio importante por importación, conviene evaluar si la diferencia justifica no esperar una compra directa.",
+    "alternativas": [
+      {
+        "tipo": "Opción más económica",
+        "descripcion": "Una Nintendo Switch OLED o Switch estándar de segunda mano en buen estado puede encontrarse a menor precio y ofrece una experiencia de consola portátil más pulida en términos de autonomía y catálogo exclusivo, aunque sacrifica completamente el acceso a juegos de PC y la flexibilidad de la Steam Deck."
+      },
+      {
+        "tipo": "Opción premium",
+        "descripcion": "La Steam Deck OLED (512 GB o 1 TB) es la evolución directa: mejor pantalla, mayor autonomía reportada y más almacenamiento. Si el presupuesto lo permite, la diferencia en calidad de pantalla y eficiencia energética justifica el gasto extra, especialmente si planeas usarla fuera de casa con frecuencia."
+      }
+    ],
+    "riesgos_compra_ml": [
+      " Versión exacta: verifica que la publicación corresponda a la versión LCD de 256 GB y no a una reacondicionada, de exhibición o con almacenamiento diferente al anunciado.",
+      "Importación y región: la Steam Deck no tiene distribución oficial en México; confirma si el vendedor importó el dispositivo y si la garantía (si existe) es válida localmente o solo en EE.UU./Europa.",
+      "Garantía real: Valve no ofrece garantía oficial en México; pregunta al vendedor qué cobertura ofrece y por cuánto tiempo, ya que una reparación fuera de garantía puede ser costosa.",
+      "Accesorios incluidos: algunos vendedores omiten el estuche o el cargador original; confirma qué viene en la caja antes de pagar.",
+      "Reputación del vendedor: dado que es un producto importado de alto valor, revisa el historial de ventas y calificaciones del vendedor en ML antes de concretar la compra."
+    ],
+    "checklist_antes_de_comprar": [
+      "Confirma en la publicación que el modelo es LCD 256 GB y que el número de serie o fotos corresponden a una unidad nueva, no reacondicionada.",
+      "Pregunta al vendedor si incluye cargador original USB-C de 45W y estuche; algunos los venden por separado.",
+      "Verifica si el vendedor especifica la región del dispositivo (NA/EU) y si la cuenta de Steam que usarás es compatible con esa región.",
+      "Revisa si el precio incluye IVA y si hay cargos adicionales por importación que puedan aparecer al momento de la entrega.",
+      "Compara el precio con el valor oficial en steamdeck.com para estimar cuánto sobreprecio estás pagando por la importación."
+    ],
+    "comparativa_editorial": [
+      {
+        "tipo": "modelo anterior o inferior",
+        "titulo": "Steam Deck 64 GB eMMC (descontinuado)",
+        "resumen": "El modelo de entrada original usaba almacenamiento eMMC más lento y solo 64 GB. Ya no se vende nuevo, pero puede aparecer de segunda mano. El salto a SSD NVMe en la versión de 256 GB es una mejora real en tiempos de carga; no vale la pena ahorrar comprando el modelo base si aparece usado."
+      },
+      {
+        "tipo": "premium",
+        "titulo": "Steam Deck OLED 512 GB",
+        "resumen": "La versión OLED ofrece pantalla con mejor contraste y colores, mayor autonomía reportada y el doble de almacenamiento. Si el presupuesto lo permite, es una compra más a prueba de futuro. No se encontró candidato confiable listado en ML al momento del análisis."
+      },
+      {
+        "tipo": "alternativa fuera del ecosistema",
+        "titulo": "Nintendo Switch OLED",
+        "resumen": "Menor flexibilidad y sin acceso a juegos de PC, pero con mejor autonomía, catálogo de exclusivos sólido y soporte oficial en México. Es una alternativa válida si la portabilidad sin enchufes es prioritaria y no necesitas la biblioteca de Steam."
+      }
+    ],
+    "mejor_alternativa": {
+      "tipo": "premium",
+      "titulo": "Steam Deck OLED 512 GB",
+      "razon": "Si el presupuesto lo permite, la versión OLED resuelve las dos principales debilidades de este modelo: mejora la pantalla y extiende la autonomía, que es la queja más recurrente de los compradores de la versión LCD."
+    },
+    "keyword_targets": [
+      "steam deck 256gb lcd precio mexico",
+      "steam deck portatil mercado libre mexico",
+      "consola portatil pc gaming mexico 2026",
+      "steam deck vs nintendo switch mexico",
+      "steam deck lcd vale la pena 2026"
+    ],
+    "evidencia_limitaciones": "Este análisis cruza las especificaciones oficiales del fabricante, opiniones de compradores verificados en Mercado Libre y referencias de videos externos (algunos de modelos similares o sin transcripción completa disponible), por lo que no sustituye una prueba de laboratorio propia.",
+    "seo_title": "Steam Deck 256 GB LCD 2026: ¿Vale la pena en México?",
+    "seo_description": "Análisis honesto de la Steam Deck 256 GB LCD: rendimiento real, batería menor a 2 horas en juegos pesados, emulación y si conviene comprarla en Mercado Libre México.",
+    "articulo_html": "<h2>Veredicto rápido: buena consola portátil, batería que decepciona en juegos exigentes</h2><p>La Steam Deck 256 GB LCD es el punto de entrada más accesible a la línea de consolas portátiles de Valve y, en términos generales, cumple lo que promete: llevar tu biblioteca de PC al bolsillo. El hardware AMD con 16 GB de RAM maneja bien la mayoría de los títulos, el ecosistema es maduro y la compatibilidad con emuladores es un diferenciador real. El problema concreto, confirmado por múltiples compradores, es la autonomía: en juegos con alta demanda gráfica la batería no llega a las 2 horas, muy lejos de las 8 horas que figura en las especificaciones del fabricante. Si eso no es un obstáculo para tu forma de jugar, es una compra sólida.</p><h2>Qué es y dónde se ubica en la línea Steam Deck</h2><p>Valve lanzó la Steam Deck en 2022 como una PC de bolsillo con controles integrados. Esta versión de 256 GB usa almacenamiento SSD NVMe, lo que la diferencia del modelo base original de 64 GB con memoria eMMC más lenta, ya descontinuado. La pantalla es LCD táctil de 7 pulgadas a 1280x800 píxeles. Existe también una versión OLED más reciente con mejor pantalla y mayor eficiencia energética, que es el escalón superior dentro de la misma familia.</p><p>Los videos de referencia disponibles corresponden a modelos de la línea Steam Deck en general, incluyendo una reseña del modelo LCD de 512 GB. Las conclusiones son orientativas pero pueden variar en detalles respecto a esta versión específica de 256 GB.</p><h2>Lo bueno: ecosistema, personalización y rendimiento ajustable</h2><p>El punto más fuerte de la Steam Deck no es un solo componente, sino la suma de su ecosistema. Los compradores destacan de forma consistente la posibilidad de instalar juegos de plataformas distintas a Steam y de usar emuladores de otras consolas, lo que amplía considerablemente el valor del dispositivo más allá de la tienda de Valve.</p><p>El hardware —APU AMD Zen 2 con GPU RDNA 2 y 16 GB de memoria LPDDR5— mantiene un desempeño aceptable en la gran mayoría de títulos. En juegos AAA exigentes hay limitaciones, pero los compradores señalan que ajustar manualmente los parámetros de rendimiento (resolución, límite de fotogramas, TDP) resuelve en buena medida el problema. No es una experiencia de plug-and-play perfecta, pero tampoco requiere conocimientos avanzados.</p><p>La ranura microSD para expandir almacenamiento es otro punto práctico: con 256 GB de base y la posibilidad de agregar una tarjeta de hasta 1 TB o más, la limitación de espacio es manejable. El estuche protector incluido de fábrica también suma valor real para quienes piensan transportar el dispositivo con frecuencia.</p><h2>Lo malo: la batería es el talón de Aquiles</h2><p>Aquí no hay forma de suavizarlo. Las especificaciones del fabricante hablan de hasta 8 horas de autonomía. Los compradores que han usado el dispositivo con juegos de gráficos relativamente exigentes reportan menos de 2 horas de duración real. La diferencia entre ambas cifras es demasiado grande para ignorarla.</p><p>Esto no convierte a la Steam Deck en un mal producto, pero sí cambia radicalmente el caso de uso. Si planeas jugar en el transporte público, en un avión o en cualquier lugar sin acceso a corriente durante más de una hora y media, necesitarás una batería externa de buena capacidad. Para uso en casa o cerca de un enchufe, el problema es menor.</p><p>En títulos AAA el rendimiento también tiene sus límites. No es una consola que corra todo al máximo sin configuración previa; requiere cierta disposición a experimentar con ajustes para encontrar el equilibrio entre calidad visual y fluidez.</p><h2>Comparativa: dónde se ubica frente a otras opciones</h2><h3>Frente a la Steam Deck OLED</h3><p>La versión OLED es el escalón superior directo: mejor pantalla, mayor eficiencia energética y, según reportes generales de la línea, mejor autonomía. Si el presupuesto lo permite y la diferencia de precio no es excesiva, la OLED es una inversión más a prueba de futuro. No se encontró un listado confiable de la versión OLED en Mercado Libre al momento de este análisis.</p><h3>Frente a la Nintendo Switch OLED</h3><p>La Switch OLED tiene soporte oficial en México, mejor autonomía portátil y un catálogo de exclusivos sólido. Lo que no tiene es acceso a juegos de PC ni la flexibilidad de la Steam Deck para emulación y personalización. Son productos con filosofías distintas: si la portabilidad sin enchufes es tu prioridad y no necesitas Steam, la Switch es una alternativa válida.</p><h2>¿Para quién sí y para quién no?</h2><ul><li><strong>Cómprala si:</strong> tienes una biblioteca de Steam que quieres llevar contigo, te interesa la emulación de otras consolas, aceptas jugar cerca de una fuente de carga o con batería externa, y valoras la personalización por encima de la simplicidad.</li><li><strong>Evítala si:</strong> necesitas más de 2 horas de juego intensivo sin enchufar, buscas la mejor calidad de pantalla posible en portátil, o tu presupuesto es muy ajustado y el sobreprecio por importación en México es significativo.</li></ul><h2>Conclusión</h2><p>La Steam Deck 256 GB LCD es un producto maduro, con un ecosistema real y compradores satisfechos que la recomendarían de nuevo. Sus limitaciones son concretas y conocidas: batería insuficiente para sesiones largas sin corriente y rendimiento que requiere ajuste en los títulos más exigentes. Si entras con esas expectativas claras, es una de las pocas formas de jugar PC en formato portátil sin compromisos de catálogo.</p><p>Antes de comprar en Mercado Libre, verifica que la publicación especifique claramente que es la versión LCD de 256 GB nueva, que incluye cargador original y estuche, y revisa la reputación del vendedor dado que es un producto importado sin garantía oficial en México. Si el precio es competitivo respecto al valor internacional, la compra tiene sentido.</p>"
+  },
+  "productos_similares_ml": [],
+  "autoria": {
+    "nombre": "Hito Flores",
+    "tagline": "Análisis independiente de productos en Mercado Libre México",
+    "metodologia": "Este análisis sintetiza 0 reseñas en video de creadores independientes y 51 opiniones de compradores verificados de Mercado Libre.",
+    "actualizado": "2026-06-16"
+  }
+}
