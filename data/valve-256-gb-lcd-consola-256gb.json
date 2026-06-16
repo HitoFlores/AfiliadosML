@@ -476,5 +476,20 @@
     "tagline": "Análisis independiente de productos en Mercado Libre México",
     "metodologia": "Este análisis sintetiza 0 reseñas en video de creadores independientes y 51 opiniones de compradores verificados de Mercado Libre.",
     "actualizado": "2026-06-16"
+  },
+  "freshness": {
+    "checked_at": "2026-06-16T21:20:41.313Z",
+    "item_id": "MLM2416585711",
+    "catalog_product_id": "MLM48929091",
+    "status": "active_inferred",
+    "is_available": true,
+    "stale": false,
+    "stale_reason": "",
+    "price_previous": 13999,
+    "price_current": 13999,
+    "price_delta_pct": 0,
+    "available_quantity": null,
+    "permalink": null,
+    "error_msg": null
   }
 }
