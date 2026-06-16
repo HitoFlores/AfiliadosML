@@ -381,7 +381,7 @@
     "actualizado": "2026-06-10"
   },
   "freshness": {
-    "checked_at": "2026-06-15T19:54:54.756Z",
+    "checked_at": "2026-06-16T19:49:48.571Z",
     "item_id": "MLM5266423772",
     "catalog_product_id": "MLM38058538",
     "status": "active_inferred",
@@ -389,8 +389,8 @@
     "stale": false,
     "stale_reason": "",
     "price_previous": 3806.52,
-    "price_current": 3543.35,
-    "price_delta_pct": -6.91,
+    "price_current": 3557.74,
+    "price_delta_pct": -6.54,
     "available_quantity": null,
     "permalink": null,
     "error_msg": null
