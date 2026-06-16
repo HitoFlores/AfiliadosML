@@ -1,5 +1,6 @@
 const hiddenStatuses = new Set(["done", "ready", "processing", "discarded"]);
 const discardWords = new Set(["descartar", "descartado", "eliminar", "borrar", "borra", "basura", "drop", "delete"]);
+const maxBrandTypeReviews = 4;
 
 function tierRank(tier) {
   const value = String(tier || "unknown").toLowerCase().trim();
@@ -12,6 +13,7 @@ function tierRank(tier) {
 function selectCandidates(rows, published = { slugs: [], candidateIds: [] }) {
   const publishedSlugs = new Set(published.slugs || []);
   const publishedCandidateIds = new Set(published.candidateIds || []);
+  const brandTypeSeen = buildBrandTypeSeen(rows, published.reviews || []);
   const cleanCandidateName = (value) =>
     String(value || "")
       .replace(/\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\b/gi, " ")
@@ -51,6 +53,7 @@ function selectCandidates(rows, published = { slugs: [], candidateIds: [] }) {
   for (const row of sorted) {
     const source = String(row.source_slug || "").trim() || String(row.candidate_id || "").split(":")[0] || "unknown";
     if (seenSources.has(source)) continue;
+    if (!canSelectBrandType(row, brandTypeSeen, selected)) continue;
     selected.push(row);
     seenSources.add(source);
     if (selected.length >= 3) break;
@@ -58,6 +61,7 @@ function selectCandidates(rows, published = { slugs: [], candidateIds: [] }) {
   for (const row of sorted) {
     if (selected.length >= 3) break;
     if (selected.some((entry) => entry.candidate_id === row.candidate_id)) continue;
+    if (!canSelectBrandType(row, brandTypeSeen, selected)) continue;
     selected.push(row);
   }
   return selected;
@@ -66,6 +70,7 @@ function selectCandidates(rows, published = { slugs: [], candidateIds: [] }) {
 function selectReplacementCandidates(rows, actions, published = { slugs: [], candidateIds: [], productIds: [] }) {
   const needed = actions.filter((action) => action.status === "discarded").length;
   if (!needed) return [];
+  const brandTypeSeen = buildBrandTypeSeen(rows, published.reviews || []);
 
   const cleanCandidateName = (value) =>
     String(value || "")
@@ -114,6 +119,7 @@ function selectReplacementCandidates(rows, actions, published = { slugs: [], can
   for (const row of sorted) {
     const source = String(row.source_slug || "").trim() || String(row.candidate_id || "").split(":")[0] || "unknown";
     if (seenSources.has(source)) continue;
+    if (!canSelectBrandType(row, brandTypeSeen, selected)) continue;
     selected.push(row);
     seenSources.add(source);
     if (selected.length >= needed) break;
@@ -121,6 +127,7 @@ function selectReplacementCandidates(rows, actions, published = { slugs: [], can
   for (const row of sorted) {
     if (selected.length >= needed) break;
     if (selected.some((entry) => entry.candidate_id === row.candidate_id)) continue;
+    if (!canSelectBrandType(row, brandTypeSeen, selected)) continue;
     selected.push(row);
   }
   return selected;
@@ -134,6 +141,64 @@ function norm(value) {
     .replace(/[^a-z0-9\s]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function brandTypeKey(value) {
+  const text = norm(value);
+  const brandPatterns = [
+    ["delonghi", /\b(de\s*longhi|delonghi|longhi)\b/],
+    ["sony", /\bsony\b/],
+    ["apple", /\bapple|macbook|iphone|ipad\b/],
+    ["samsung", /\bsamsung\b/],
+    ["nintendo", /\bnintendo|switch\b/],
+    ["valve", /\bvalve|steam deck\b/],
+    ["breville", /\bbreville|sage\b/],
+    ["garmin", /\bgarmin\b/],
+    ["philips", /\bphilips\b/],
+  ];
+  const typePatterns = [
+    ["coffee", /\bcafetera|espresso|coffee|cafe|cold brew|latte|capuccino|cappuccino\b/],
+    ["tv", /\btele|televisor|tv|bravia|oled|qled|uhd|4k\b/],
+    ["laptop", /\blaptop|notebook|macbook|computadora\b/],
+    ["smartwatch", /\bwatch|smartwatch|reloj\b/],
+    ["console", /\bconsola|switch|steam deck|playstation|xbox\b/],
+  ];
+  const brand = brandPatterns.find(([, pattern]) => pattern.test(text))?.[0] || "";
+  const type = typePatterns.find(([, pattern]) => pattern.test(text))?.[0] || "";
+  return brand && type ? `${brand}:${type}` : "";
+}
+
+function addBrandTypeSeen(seen, key, id) {
+  if (!key) return;
+  if (!seen.has(key)) seen.set(key, new Set());
+  seen.get(key).add(id);
+}
+
+function candidateBrandTypeText(row) {
+  return [row.candidate_name, row.candidate_id, row.source_slug, row.reason, row.mentioned_in].filter(Boolean).join(" ");
+}
+
+function buildBrandTypeSeen(rows, publishedReviews = []) {
+  const seen = new Map();
+  for (const review of publishedReviews) {
+    const key = brandTypeKey([review.title, review.slug].filter(Boolean).join(" "));
+    addBrandTypeSeen(seen, key, String(review.candidate_id || review.slug || review.title || ""));
+  }
+  for (const row of rows) {
+    const status = String(row.status || "").toLowerCase().trim();
+    if (!["ready", "done", "processing"].includes(status) && !String(row.affiliate_url || "").trim()) continue;
+    const key = brandTypeKey(candidateBrandTypeText(row));
+    addBrandTypeSeen(seen, key, String(row.candidate_id || row.candidate_name || ""));
+  }
+  return seen;
+}
+
+function canSelectBrandType(row, seen, selected) {
+  const key = brandTypeKey(candidateBrandTypeText(row));
+  if (!key) return true;
+  const existing = seen.get(key)?.size || 0;
+  const picked = selected.filter((entry) => brandTypeKey(candidateBrandTypeText(entry)) === key).length;
+  return existing + picked < maxBrandTypeReviews;
 }
 
 function tierFromText(value) {
@@ -367,6 +432,29 @@ assertEqual(
   "mixes sources while preserving tier priority",
   diverseSelected.map((row) => row.candidate_id),
   ["watch:premium", "mac:premium", "switch:similar"],
+);
+
+assertEqual(
+  "brand type cap blocks fifth coffee machine",
+  selectCandidates(
+    [
+      { candidate_id: "coffee:dedica", source_slug: "coffee", candidate_name: "De'Longhi Dedica EC685", candidate_tier: "superior", status: "pending", priority_score: 100 },
+      { candidate_id: "sony:tv5", source_slug: "tv", candidate_name: "Sony Bravia OLED 55 TV", candidate_tier: "superior", status: "pending", priority_score: 90 },
+    ],
+    {
+      reviews: [
+        { slug: "dl-1", candidate_id: "dl:1", title: "De'Longhi La Specialista Touch cafetera" },
+        { slug: "dl-2", candidate_id: "dl:2", title: "De'Longhi Eletta Explore espresso" },
+        { slug: "dl-3", candidate_id: "dl:3", title: "De'Longhi Dinamica Plus cafetera" },
+        { slug: "dl-4", candidate_id: "dl:4", title: "De'Longhi La Specialista Arte espresso" },
+        { slug: "sony-1", candidate_id: "sony:1", title: "Sony Bravia 4K TV" },
+        { slug: "sony-2", candidate_id: "sony:2", title: "Sony OLED TV" },
+        { slug: "sony-3", candidate_id: "sony:3", title: "Sony Smart TV" },
+        { slug: "sony-4", candidate_id: "sony:4", title: "Sony Google TV" },
+      ],
+    },
+  ).map((row) => row.candidate_id),
+  [],
 );
 
 assertEqual(

@@ -1547,6 +1547,7 @@ const publishedCandidateIds = new Set(${JSON.stringify(publishedReviewMeta.candi
 const publishedProductIds = new Set(${JSON.stringify(publishedReviewMeta.productIds)});
 const publishedReviews = ${JSON.stringify(publishedReviewMeta.reviews)};
 const hiddenStatuses = new Set(['done', 'ready', 'processing', 'discarded']);
+const maxBrandTypeReviews = 4;
 const tierRank = (tier) => {
   const t = String(tier || 'unknown').toLowerCase().trim();
   if (t === 'superior') return 0;
@@ -1555,6 +1556,52 @@ const tierRank = (tier) => {
   return 3;
 };
 const norm = (value) => String(value || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9\\s]/g, ' ').replace(/\\s+/g, ' ').trim();
+const brandTypeKey = (value) => {
+  const text = norm(value);
+  const brandPatterns = [
+    ['delonghi', /\\b(de\\s*longhi|delonghi|longhi)\\b/],
+    ['sony', /\\bsony\\b/],
+    ['apple', /\\bapple|macbook|iphone|ipad\\b/],
+    ['samsung', /\\bsamsung\\b/],
+    ['nintendo', /\\bnintendo|switch\\b/],
+    ['valve', /\\bvalve|steam deck\\b/],
+    ['breville', /\\bbreville|sage\\b/],
+    ['garmin', /\\bgarmin\\b/],
+    ['philips', /\\bphilips\\b/],
+  ];
+  const typePatterns = [
+    ['coffee', /\\bcafetera|espresso|coffee|cafe|cold brew|latte|capuccino|cappuccino\\b/],
+    ['tv', /\\btele|televisor|tv|bravia|oled|qled|uhd|4k\\b/],
+    ['laptop', /\\blaptop|notebook|macbook|computadora\\b/],
+    ['smartwatch', /\\bwatch|smartwatch|reloj\\b/],
+    ['console', /\\bconsola|switch|steam deck|playstation|xbox\\b/],
+  ];
+  const brand = (brandPatterns.find(([, pattern]) => pattern.test(text)) || [])[0] || '';
+  const type = (typePatterns.find(([, pattern]) => pattern.test(text)) || [])[0] || '';
+  return brand && type ? brand + ':' + type : '';
+};
+const addBrandTypeSeen = (seen, key, id) => {
+  if (!key) return;
+  if (!seen.has(key)) seen.set(key, new Set());
+  seen.get(key).add(id);
+};
+const candidateBrandTypeText = (row) => [row.candidate_name, row.candidate_id, row.source_slug, row.reason, row.mentioned_in].filter(Boolean).join(' ');
+const brandTypeSeen = new Map();
+for (const review of publishedReviews) {
+  addBrandTypeSeen(brandTypeSeen, brandTypeKey([review.title, review.slug].filter(Boolean).join(' ')), String(review.candidate_id || review.slug || review.title || ''));
+}
+for (const row of rows) {
+  const status = String(row.status || '').toLowerCase().trim();
+  if (!['ready', 'done', 'processing'].includes(status) && !String(row.affiliate_url || '').trim()) continue;
+  addBrandTypeSeen(brandTypeSeen, brandTypeKey(candidateBrandTypeText(row)), String(row.candidate_id || row.candidate_name || ''));
+}
+const canSelectBrandType = (row, selected) => {
+  const key = brandTypeKey(candidateBrandTypeText(row));
+  if (!key) return true;
+  const existing = (brandTypeSeen.get(key) || new Set()).size;
+  const picked = selected.filter(entry => brandTypeKey(candidateBrandTypeText(entry)) === key).length;
+  return existing + picked < maxBrandTypeReviews;
+};
 const isSpecOnlyCandidate = (value) => {
   const text = norm(value);
   if (!text) return true;
@@ -1604,6 +1651,7 @@ const seenSources = new Set();
 for (const row of sorted) {
   const source = String(row.source_slug || '').trim() || String(row.candidate_id || '').split(':')[0] || 'unknown';
   if (seenSources.has(source)) continue;
+  if (!canSelectBrandType(row, pending)) continue;
   pending.push(row);
   seenSources.add(source);
   if (pending.length >= 3) break;
@@ -1611,6 +1659,7 @@ for (const row of sorted) {
 for (const row of sorted) {
   if (pending.length >= 3) break;
   if (pending.some(entry => entry.candidate_id === row.candidate_id)) continue;
+  if (!canSelectBrandType(row, pending)) continue;
   pending.push(row);
 }
 
@@ -2185,6 +2234,7 @@ const publishedCandidateIds = new Set(${JSON.stringify(publishedReviewMeta.candi
 const publishedProductIds = new Set(${JSON.stringify(publishedReviewMeta.productIds)});
 const publishedReviews = ${JSON.stringify(publishedReviewMeta.reviews)};
 const hiddenStatuses = new Set(['done', 'ready', 'processing', 'discarded']);
+const maxBrandTypeReviews = 4;
 const now = new Date().toISOString();
 const batchId = 'tg-replacement-' + now;
 const tierRank = (tier) => {
@@ -2200,6 +2250,52 @@ const norm = (value) => String(value || '')
   .replace(/[^a-z0-9\\s]/g, ' ')
   .replace(/\\s+/g, ' ')
   .trim();
+const brandTypeKey = (value) => {
+  const text = norm(value);
+  const brandPatterns = [
+    ['delonghi', /\\b(de\\s*longhi|delonghi|longhi)\\b/],
+    ['sony', /\\bsony\\b/],
+    ['apple', /\\bapple|macbook|iphone|ipad\\b/],
+    ['samsung', /\\bsamsung\\b/],
+    ['nintendo', /\\bnintendo|switch\\b/],
+    ['valve', /\\bvalve|steam deck\\b/],
+    ['breville', /\\bbreville|sage\\b/],
+    ['garmin', /\\bgarmin\\b/],
+    ['philips', /\\bphilips\\b/],
+  ];
+  const typePatterns = [
+    ['coffee', /\\bcafetera|espresso|coffee|cafe|cold brew|latte|capuccino|cappuccino\\b/],
+    ['tv', /\\btele|televisor|tv|bravia|oled|qled|uhd|4k\\b/],
+    ['laptop', /\\blaptop|notebook|macbook|computadora\\b/],
+    ['smartwatch', /\\bwatch|smartwatch|reloj\\b/],
+    ['console', /\\bconsola|switch|steam deck|playstation|xbox\\b/],
+  ];
+  const brand = (brandPatterns.find(([, pattern]) => pattern.test(text)) || [])[0] || '';
+  const type = (typePatterns.find(([, pattern]) => pattern.test(text)) || [])[0] || '';
+  return brand && type ? brand + ':' + type : '';
+};
+const addBrandTypeSeen = (seen, key, id) => {
+  if (!key) return;
+  if (!seen.has(key)) seen.set(key, new Set());
+  seen.get(key).add(id);
+};
+const candidateBrandTypeText = (row) => [row.candidate_name, row.candidate_id, row.source_slug, row.reason, row.mentioned_in].filter(Boolean).join(' ');
+const brandTypeSeen = new Map();
+for (const review of publishedReviews) {
+  addBrandTypeSeen(brandTypeSeen, brandTypeKey([review.title, review.slug].filter(Boolean).join(' ')), String(review.candidate_id || review.slug || review.title || ''));
+}
+for (const row of rows) {
+  const status = String(row.status || '').toLowerCase().trim();
+  if (!['ready', 'done', 'processing'].includes(status) && !String(row.affiliate_url || '').trim()) continue;
+  addBrandTypeSeen(brandTypeSeen, brandTypeKey(candidateBrandTypeText(row)), String(row.candidate_id || row.candidate_name || ''));
+}
+const canSelectBrandType = (row, selected) => {
+  const key = brandTypeKey(candidateBrandTypeText(row));
+  if (!key) return true;
+  const existing = (brandTypeSeen.get(key) || new Set()).size;
+  const picked = selected.filter(entry => brandTypeKey(candidateBrandTypeText(entry)) === key).length;
+  return existing + picked < maxBrandTypeReviews;
+};
 const cleanCandidateName = (value) => String(value || '')
   .replace(/\\b(reacondicionado|reacondicionada|segunda mano|usado|usada)\\b/gi, ' ')
   .replace(/\\b(en oferta|con descuento|descuento|oferta)\\b/gi, ' ')
@@ -2240,6 +2336,7 @@ const seenSources = new Set();
 for (const row of sorted) {
   const source = String(row.source_slug || '').trim() || String(row.candidate_id || '').split(':')[0] || 'unknown';
   if (seenSources.has(source)) continue;
+  if (!canSelectBrandType(row, selected)) continue;
   selected.push(row);
   seenSources.add(source);
   if (selected.length >= needed) break;
@@ -2247,6 +2344,7 @@ for (const row of sorted) {
 for (const row of sorted) {
   if (selected.length >= needed) break;
   if (selected.some(entry => entry.candidate_id === row.candidate_id)) continue;
+  if (!canSelectBrandType(row, selected)) continue;
   selected.push(row);
 }
 

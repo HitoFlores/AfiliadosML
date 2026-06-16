@@ -119,6 +119,7 @@ Scheduler:
 - Si el usuario responde `1 - descartar`, `1 - descartado`, `1 - eliminar`, `1 - borrar`, `1 - borra`, `1 - basura`, `1 - drop` o `1 - delete`, el Poll marca el candidato como `discarded`.
 - Si descarta N candidatos, Poll ofrece hasta N reemplazos nuevos en Telegram y guarda un nuevo snapshot `shown_batch_id`, `shown_index`, `shown_at` para resolver la siguiente respuesta.
 - La notificacion de reemplazos debe leer desde `Build Candidate Replacements`; el update de Google Sheets puede no devolver `candidate_name` y producir `1 - undefined`.
+- Scheduler y reemplazos limitan cada bucket `marca + tipo` a 4 reviews, contando publicadas y filas ya comprometidas (`ready`, `done`, `processing` o con afiliado). Ejemplos: `delonghi:coffee`, `sony:tv`.
 - Si ya no quedan candidatos pendientes para reemplazar descartes, Poll avisa por Telegram.
 - Puede procesar varias lineas en un mensaje: `1 - link`, `2 - descartar`, `3 - link`.
 - Puede dejar listos 1, 2 o 3 candidatos en una sola corrida si los links son validos; los descartes no crean filas en `articulos`.

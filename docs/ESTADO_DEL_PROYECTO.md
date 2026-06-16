@@ -146,6 +146,7 @@ Fixes importantes:
 - `descartar`, `descartado`, `eliminar`, `borrar`, `borra`, `basura`, `drop` y `delete` cuentan como descarte.
 - Si se descarta 1, 2 o 3 candidatos, Poll manda 1, 2 o 3 reemplazos nuevos y persiste un nuevo snapshot para esa respuesta.
 - La notificacion de reemplazos despues de un descarte toma nombres desde `Build Candidate Replacements`, no desde el update de Google Sheets, para evitar mensajes `1 - undefined`.
+- Scheduler y reemplazos aplican cap de 4 reviews por `marca + tipo` (ej. `delonghi:coffee`, `sony:tv`) contando publicadas, `ready`, `done`, `processing` y filas con afiliado. De'Longhi/cafeteras ya tiene 4 publicadas; candidatos adicionales de ese bucket no deben volver a salir.
 - Si se acaban los candidatos, Poll avisa por Telegram que ya no quedan pendientes para reemplazar descartes.
 - Acepta multiples acciones en un solo mensaje:
   `1 - https://meli.la/...`
