@@ -280,7 +280,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "slug_page_generatestaticparams",
-      "community": 9,
+      "community": 1,
       "norm_label": "generatestaticparams()"
     },
     {
@@ -810,7 +810,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_tableofcontents",
-      "community": 23,
+      "community": 9,
       "norm_label": "tableofcontents.tsx"
     },
     {
@@ -820,7 +820,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_tableofcontents_tableofcontentsprops",
-      "community": 23,
+      "community": 9,
       "norm_label": "tableofcontentsprops"
     },
     {
@@ -830,7 +830,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_tableofcontents_tableofcontents",
-      "community": 23,
+      "community": 9,
       "norm_label": "tableofcontents()"
     },
     {
@@ -1180,7 +1180,7 @@
       "source_location": "L384",
       "_origin": "ast",
       "id": "lib_product_allslugs",
-      "community": 9,
+      "community": 1,
       "norm_label": "allslugs()"
     },
     {
@@ -1270,7 +1270,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_toc",
-      "community": 23,
+      "community": 9,
       "norm_label": "toc.ts"
     },
     {
@@ -1280,7 +1280,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_toc_tocitem",
-      "community": 23,
+      "community": 9,
       "norm_label": "tocitem"
     },
     {
@@ -1290,7 +1290,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "lib_toc_slugify",
-      "community": 23,
+      "community": 9,
       "norm_label": "slugify()"
     },
     {
@@ -2314,10 +2314,20 @@
       "norm_label": "patchmainreviewworkflow()"
     },
     {
+      "label": "patchAbacusRetries()",
+      "file_type": "code",
+      "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
+      "source_location": "L2535",
+      "_origin": "ast",
+      "id": "n8n_ephemeral_prepare_workflows_patchabacusretries",
+      "community": 0,
+      "norm_label": "patchabacusretries()"
+    },
+    {
       "label": "patchForceRegeneration()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2534",
+      "source_location": "L2546",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchforceregeneration",
       "community": 0,
@@ -2327,7 +2337,7 @@
       "label": "patchRouteRowCandidateId()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2567",
+      "source_location": "L2579",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchrouterowcandidateid",
       "community": 0,
@@ -2337,7 +2347,7 @@
       "label": "patchSimilarProducts()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2649",
+      "source_location": "L2661",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchsimilarproducts",
       "community": 0,
@@ -2347,7 +2357,7 @@
       "label": "patchStrictYoutubeMatching()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2658",
+      "source_location": "L2670",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchstrictyoutubematching",
       "community": 0,
@@ -2357,7 +2367,7 @@
       "label": "patchFreeYoutubeTranscripts()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2859",
+      "source_location": "L2871",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchfreeyoutubetranscripts",
       "community": 0,
@@ -2367,7 +2377,7 @@
       "label": "patchBuildPromptV4()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2952",
+      "source_location": "L2964",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchbuildpromptv4",
       "community": 0,
@@ -2377,7 +2387,7 @@
       "label": "patchBuildFinalJsonV4()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L3094",
+      "source_location": "L3106",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchbuildfinaljsonv4",
       "community": 0,
@@ -2387,7 +2397,7 @@
       "label": "patchReviewCandidates()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L3382",
+      "source_location": "L3394",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchreviewcandidates",
       "community": 0,
@@ -2397,7 +2407,7 @@
       "label": "patchCandidateCompletion()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L3692",
+      "source_location": "L3704",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchcandidatecompletion",
       "community": 0,
@@ -2628,7 +2638,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "scripts_review_candidate_backfill_readpublishedreviews",
-      "community": 0,
+      "community": 3,
       "norm_label": "readpublishedreviews()"
     },
     {
@@ -2638,7 +2648,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "scripts_review_candidate_backfill_publishedreviewmeta",
-      "community": 0,
+      "community": 3,
       "norm_label": "publishedreviewmeta()"
     },
     {
@@ -2668,7 +2678,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "scripts_review_candidate_backfill_buildbackfillcandidates",
-      "community": 0,
+      "community": 3,
       "norm_label": "buildbackfillcandidates()"
     },
     {
@@ -7826,6 +7836,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
+      "source_location": "L2535",
+      "weight": 1.0,
+      "source": "n8n_ephemeral_prepare_workflows",
+      "target": "n8n_ephemeral_prepare_workflows_patchabacusretries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
       "source_location": "L2792",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -8135,6 +8155,17 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
+      "source_location": "L2536",
+      "weight": 1.0,
+      "source": "n8n_ephemeral_prepare_workflows_patchabacusretries",
+      "target": "n8n_ephemeral_prepare_workflows_findnode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
       "source_location": "L2793",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -8415,6 +8446,17 @@
       "confidence_score": 1.0,
       "source": "n8n_ephemeral_prepare_workflows_buildcandidatebackfillworkflow",
       "target": "scripts_review_candidate_backfill_readpublishedreviews"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
+      "source_location": "L2525",
+      "weight": 1.0,
+      "source": "n8n_ephemeral_prepare_workflows_patchmainreviewworkflow",
+      "target": "n8n_ephemeral_prepare_workflows_patchabacusretries",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -9154,9 +9196,9 @@
       "source_file": "scripts/test-review-candidates-logic.mjs",
       "source_location": "L349",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_test_review_candidates_logic",
-      "target": "scripts_test_review_candidates_logic_extractfeaturedmlid",
-      "confidence_score": 1.0
+      "target": "scripts_test_review_candidates_logic_extractfeaturedmlid"
     },
     {
       "relation": "contains",
@@ -10525,5 +10567,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "1c13fdb9bc2d8acd203a8843f1160ae1615464b5"
+  "built_at_commit": "fbc89e434fd934c7c2ed01375035ac62aa3df493"
 }

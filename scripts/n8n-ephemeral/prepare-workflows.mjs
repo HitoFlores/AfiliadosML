@@ -2522,6 +2522,7 @@ return selected.map((row, index) => ({ json: {
 function patchMainReviewWorkflow(workflow) {
   patchForceRegeneration(workflow);
   patchRouteRowCandidateId(workflow);
+  patchAbacusRetries(workflow);
   patchSimilarProducts(workflow);
   patchStrictYoutubeMatching(workflow);
   patchFreeYoutubeTranscripts(workflow);
@@ -2529,6 +2530,17 @@ function patchMainReviewWorkflow(workflow) {
   patchBuildFinalJsonV4(workflow);
   patchReviewCandidates(workflow);
   patchCandidateCompletion(workflow);
+}
+
+function patchAbacusRetries(workflow) {
+  const node = findNode(workflow, "Abacus Generate Article");
+  node.retryOnFail = true;
+  node.maxTries = 4;
+  node.waitBetweenTries = 15000;
+  node.parameters.options = {
+    ...(node.parameters.options || {}),
+    timeout: 300000,
+  };
 }
 
 function patchForceRegeneration(workflow) {

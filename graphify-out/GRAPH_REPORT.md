@@ -1,16 +1,16 @@
 # Graph Report - AfiliadosML  (2026-06-16)
 
 ## Corpus Check
-- 89 files · ~218,251 words
+- 90 files · ~221,269 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 434 nodes · 591 edges · 49 communities (31 shown, 18 thin omitted)
+- 435 nodes · 594 edges · 48 communities (30 shown, 18 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1c13fdb9`
+- Built from commit: `fbc89e43`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -38,7 +38,6 @@
 - [[_COMMUNITY_Community 20|Community 20]]
 - [[_COMMUNITY_Community 21|Community 21]]
 - [[_COMMUNITY_Community 22|Community 22]]
-- [[_COMMUNITY_Community 23|Community 23]]
 - [[_COMMUNITY_Community 24|Community 24]]
 - [[_COMMUNITY_Community 25|Community 25]]
 - [[_COMMUNITY_Community 26|Community 26]]
@@ -61,14 +60,14 @@
 - [[_COMMUNITY_Community 48|Community 48]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `findNode()` - 18 edges
+1. `findNode()` - 19 edges
 2. `compilerOptions` - 16 edges
 3. `AfiliadosML - Estado del proyecto` - 14 edges
 4. `rankingCategories()` - 11 edges
 5. `scripts` - 11 edges
-6. `What You Must Do When Invoked` - 11 edges
-7. `canonicalCandidateKey()` - 10 edges
-8. `patchMainReviewWorkflow()` - 10 edges
+6. `patchMainReviewWorkflow()` - 11 edges
+7. `What You Must Do When Invoked` - 11 edges
+8. `canonicalCandidateKey()` - 10 edges
 9. `/graphify` - 10 edges
 10. `comparisonPairs()` - 9 edges
 
@@ -87,23 +86,23 @@
 ## Import Cycles
 - None detected.
 
-## Communities (49 total, 18 thin omitted)
+## Communities (48 total, 18 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.10
-Nodes (37): buildCandidateBackfillWorkflow(), buildCandidateCleanupWorkflow(), buildCandidateHeaderCode(), buildCandidateRestoreWorkflow(), buildFreshnessWorkflow(), buildSheetSchemaWorkflow(), candidateBackfillWorkflow, candidateCleanupWorkflow (+29 more)
+Nodes (35): buildCandidateBackfillWorkflow(), buildCandidateCleanupWorkflow(), buildCandidateHeaderCode(), buildCandidateRestoreWorkflow(), buildFreshnessWorkflow(), buildSheetSchemaWorkflow(), candidateBackfillWorkflow, candidateCleanupWorkflow (+27 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.13
-Nodes (20): sitemap(), generateMetadata(), generateStaticParams(), RankingCategoryPage(), AffiliateCTA(), AffiliateCTAProps, ScoreBadge(), ScoreBadgeProps (+12 more)
+Cohesion: 0.12
+Nodes (22): sitemap(), generateMetadata(), generateStaticParams(), RankingCategoryPage(), AffiliateCTA(), AffiliateCTAProps, ScoreBadge(), ScoreBadgeProps (+14 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.07
 Nodes (28): dependencies, next, react, react-dom, devDependencies, autoprefixer, eslint, eslint-config-next (+20 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.20
-Nodes (20): canonicalCandidateKey(), cleanCandidateName(), isGenericCandidateName(), isSelfCandidate(), isSpecOnlyCandidate(), meaningfulName(), norm(), sameCandidateName() (+12 more)
+Cohesion: 0.17
+Nodes (23): canonicalCandidateKey(), cleanCandidateName(), isGenericCandidateName(), isSelfCandidate(), isSpecOnlyCandidate(), meaningfulName(), norm(), sameCandidateName() (+15 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.09
@@ -126,8 +125,8 @@ Cohesion: 0.10
 Nodes (19): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+11 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.24
-Nodes (11): PRIORITY_SPECS, SpecsTable(), SpecsTableProps, allSlugs(), dataDir(), loadProductBySlug(), relatedReviewsForSlug(), buildToc() (+3 more)
+Cohesion: 0.19
+Nodes (12): PRIORITY_SPECS, SpecsTable(), SpecsTableProps, TableOfContents(), TableOfContentsProps, dataDir(), loadProductBySlug(), relatedReviewsForSlug() (+4 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.21
@@ -169,10 +168,6 @@ Nodes (3): Destacada, ReviewsML, sentTone
 Cohesion: 0.40
 Nodes (5): Byline(), BylineProps, SourcesBlock(), Autoria, Fuente
 
-### Community 23 - "Community 23"
-Cohesion: 0.47
-Nodes (3): TableOfContents(), TableOfContentsProps, TocItem
-
 ### Community 25 - "Community 25"
 Cohesion: 0.50
 Nodes (3): For /graphify add, For --watch, graphify reference: add a URL and watch a folder
@@ -201,14 +196,14 @@ Nodes (3): files, required, workflowDir
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `buildBackfillCandidates()` connect `Community 0` to `Community 3`?**
+- **Why does `buildBackfillCandidates()` connect `Community 3` to `Community 0`?**
   _High betweenness centrality (0.002) - this node is a cross-community bridge._
 - **What connects `metadata`, `inter`, `metadata` to the rest of the system?**
   _192 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10128205128205128 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.1282051282051282 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11822660098522167 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._
 - **Should `Community 4` be split into smaller, more focused modules?**
