@@ -2347,7 +2347,7 @@
       "label": "patchSimilarProducts()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2661",
+      "source_location": "L2681",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchsimilarproducts",
       "community": 0,
@@ -2357,7 +2357,7 @@
       "label": "patchStrictYoutubeMatching()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2670",
+      "source_location": "L2690",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchstrictyoutubematching",
       "community": 0,
@@ -2367,7 +2367,7 @@
       "label": "patchFreeYoutubeTranscripts()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2871",
+      "source_location": "L2891",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchfreeyoutubetranscripts",
       "community": 0,
@@ -2377,7 +2377,7 @@
       "label": "patchBuildPromptV4()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2964",
+      "source_location": "L2984",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchbuildpromptv4",
       "community": 0,
@@ -2387,7 +2387,7 @@
       "label": "patchBuildFinalJsonV4()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L3106",
+      "source_location": "L3126",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchbuildfinaljsonv4",
       "community": 0,
@@ -2397,7 +2397,7 @@
       "label": "patchReviewCandidates()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L3394",
+      "source_location": "L3414",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchreviewcandidates",
       "community": 0,
@@ -2407,7 +2407,7 @@
       "label": "patchCandidateCompletion()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L3704",
+      "source_location": "L3724",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchcandidatecompletion",
       "community": 0,
@@ -7838,9 +7838,9 @@
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
       "source_location": "L2535",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "n8n_ephemeral_prepare_workflows",
-      "target": "n8n_ephemeral_prepare_workflows_patchabacusretries",
-      "confidence_score": 1.0
+      "target": "n8n_ephemeral_prepare_workflows_patchabacusretries"
     },
     {
       "relation": "contains",
@@ -8157,9 +8157,9 @@
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
       "source_location": "L2536",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "n8n_ephemeral_prepare_workflows_patchabacusretries",
-      "target": "n8n_ephemeral_prepare_workflows_findnode",
-      "confidence_score": 1.0
+      "target": "n8n_ephemeral_prepare_workflows_findnode"
     },
     {
       "relation": "calls",
@@ -8454,9 +8454,9 @@
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
       "source_location": "L2525",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "n8n_ephemeral_prepare_workflows_patchmainreviewworkflow",
-      "target": "n8n_ephemeral_prepare_workflows_patchabacusretries",
-      "confidence_score": 1.0
+      "target": "n8n_ephemeral_prepare_workflows_patchabacusretries"
     },
     {
       "relation": "calls",
@@ -10567,5 +10567,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "fbc89e434fd934c7c2ed01375035ac62aa3df493"
+  "built_at_commit": "aeaa759a7981e183e0d24079703babe0bbeef267"
 }
