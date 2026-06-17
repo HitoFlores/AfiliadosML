@@ -29,7 +29,8 @@ mkdir -p "$WORK_DIR" "$N8N_USER_FOLDER" "$LOG_DIR"
   echo "RUN_CANDIDATE_CLEANUP=${RUN_CANDIDATE_CLEANUP:-false}"
   echo "RESTORE_CANDIDATE_ROWS=${RESTORE_CANDIDATE_ROWS:-}"
   echo "RUN_CANDIDATE_BACKFILL=${RUN_CANDIDATE_BACKFILL:-false}"
-  echo "MAIN_MAX_RUNS=${MAIN_MAX_RUNS:-3}"
+  echo "GENERATION_PAUSED=${GENERATION_PAUSED:-false}"
+  echo "MAIN_MAX_RUNS=${MAIN_MAX_RUNS:-0}"
   echo ""
 } > "$SUMMARY_FILE"
 printf '%s' "$N8N_CREDENTIALS_JSON_B64" | base64 -d > "$CREDENTIALS_FILE"
@@ -92,10 +93,6 @@ if [[ "${SCHEMA_ONLY:-false}" == "true" ]]; then
   exit 0
 fi
 
-if [[ "${RUN_FRESHNESS:-false}" == "true" ]]; then
-  run_workflow "freshnessAfML2026" "Freshness"
-fi
-
 if [[ "${RUN_CANDIDATE_CLEANUP:-false}" == "true" ]]; then
   run_workflow "candidateCleanupAfML2026" "Candidate Cleanup"
 fi
@@ -108,6 +105,19 @@ if [[ "${RUN_CANDIDATE_BACKFILL:-false}" == "true" ]]; then
   run_workflow "candidateBackfillAfML2026" "Candidate Backfill"
 fi
 
+if [[ "${GENERATION_PAUSED:-false}" == "true" ]]; then
+  echo "- SKIP: generation paused; Freshness, Scheduler, Telegram Poll and Main did not run" >> "$SUMMARY_FILE"
+  if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+    cat "$SUMMARY_FILE" >> "$GITHUB_STEP_SUMMARY"
+  fi
+  send_cycle_summary || true
+  exit 0
+fi
+
+if [[ "${RUN_FRESHNESS:-false}" == "true" ]]; then
+  run_workflow "freshnessAfML2026" "Freshness"
+fi
+
 if [[ "${RUN_DAILY_SCHEDULER:-false}" == "true" ]]; then
   run_workflow "wG6XApFxO6SyCgIY" "Scheduler 9am"
 fi
@@ -117,9 +127,9 @@ run_workflow "wsMIARaCQQISWJtv" "Telegram Poll"
 
 # The ephemeral runner cannot rely on n8n Execute Workflow activation state.
 # Run main after polling; Route Row exits cleanly when no pending/ready row exists.
-MAIN_MAX_RUNS="${MAIN_MAX_RUNS:-3}"
-if ! [[ "$MAIN_MAX_RUNS" =~ ^[0-9]+$ ]] || [[ "$MAIN_MAX_RUNS" -lt 1 ]]; then
-  MAIN_MAX_RUNS=3
+MAIN_MAX_RUNS="${MAIN_MAX_RUNS:-0}"
+if ! [[ "$MAIN_MAX_RUNS" =~ ^[0-9]+$ ]]; then
+  MAIN_MAX_RUNS=0
 fi
 for ((i=1; i<=MAIN_MAX_RUNS; i++)); do
   run_workflow "iSQ59pcFepjqmBvC" "AfiliadosML main ${i}/${MAIN_MAX_RUNS}"

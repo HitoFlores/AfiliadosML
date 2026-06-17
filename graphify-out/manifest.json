@@ -315,8 +315,8 @@
     "semantic_hash": ""
   },
   "scripts/n8n-ephemeral/run-cycle.sh": {
-    "mtime": 1781326141.9587946,
-    "ast_hash": "659dec887f90cb997119773d010f09b4",
+    "mtime": 1781656067.744166,
+    "ast_hash": "f10118b8bd91ed2f311561993794571b",
     "semantic_hash": ""
   },
   "scripts/push-to-n8n.py": {
@@ -420,8 +420,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/free-ephemeral-n8n.yml": {
-    "mtime": 1781326150.5805676,
-    "ast_hash": "56befe527ac14eb1daa68773a2163373",
+    "mtime": 1781656044.7337961,
+    "ast_hash": "b1d4fe9b59a184dc3966f2d91f678baf",
     "semantic_hash": ""
   },
   "AGENTS.md": {
@@ -430,13 +430,13 @@
     "semantic_hash": ""
   },
   "docs/DEPLOY_GRATIS.md": {
-    "mtime": 1781646537.8790581,
-    "ast_hash": "41a444ab90f401fe0afdd986beb11779",
+    "mtime": 1781656103.6758933,
+    "ast_hash": "d68ffe313c5a30ba00f5cbf8ad03481a",
     "semantic_hash": ""
   },
   "docs/ESTADO_DEL_PROYECTO.md": {
-    "mtime": 1781646537.8800585,
-    "ast_hash": "077caa6d6dda26c911098de22bc7ea55",
+    "mtime": 1781656140.8069572,
+    "ast_hash": "26fd1b97e9ff912fcafef2f9a1ba43c0",
     "semantic_hash": ""
   },
   "public/archive/estudio-comparativo.html": {

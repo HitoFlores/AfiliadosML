@@ -25,20 +25,19 @@ No hay workflow propio de Cloudflare en `.github/workflows`; el unico workflow v
 Workflow: `.github/workflows/free-ephemeral-n8n.yml`
 
 Horario actual, America/Chihuahua:
-- 9:07 AM nominal: Freshness + Scheduler + Poll + Main.
-- 9:12 AM a 2:00 PM nominal: Poll/Main cada 5 minutos.
-- GitHub Actions puede retrasar jobs programados; no usarlo como alarma exacta.
+- Pausado temporalmente: no hay crons activos mientras Abacus no tenga creditos para generar reviews.
+- Dispatch manual queda disponible para schema/mantenimiento, pero `generation_paused=true` evita Freshness, Scheduler, Poll y Main.
 
 Crons UTC:
-- `7 16 * * *`: ciclo diario de 9:07 AM.
-- `12-57/5 16 * * *`: polling despues del disparo diario.
-- `*/5 17-20 * * *`: polling hasta las 2:00 PM.
+- Pausados temporalmente en `.github/workflows/free-ephemeral-n8n.yml`.
+- Reactivar cuando haya creditos Abacus restaurando el bloque `schedule` y usando `generation_paused=false`.
 
 Dispatch manual:
 - `run_daily_scheduler`: corre Scheduler y Freshness aunque no sea la hora diaria.
 - `run_main_safety`: reservado para compatibilidad; el runner ya corre Main al final.
 - `force_regen_slug`: regenera un slug especifico si existe en Sheet.
-- `main_max_runs`: limite de ejecuciones Main en ese ciclo. Default: `3`.
+- `main_max_runs`: limite de ejecuciones Main en ese ciclo. Default temporal: `0`.
+- `generation_paused`: pausa temporal. Default: `true`; con `true` solo corre Sheet Schema y mantenimiento manual (`cleanup`, `restore`, `backfill`) antes de salir.
 - `schema_only`: asegura schema de Google Sheets y termina sin correr Freshness, Scheduler, Poll ni Main.
 - `run_candidate_backfill`: backfill temporal/manual para poblar `review_candidates` desde los reviews ya publicados en `data/*.json`.
 - `run_candidate_cleanup`: crea respaldo de `review_candidates` y descarta candidatos `pending` problematicos.
@@ -50,15 +49,17 @@ Cada corrida:
 3. `npm run n8n:prepare`.
 4. Importa credenciales n8n desde `N8N_CREDENTIALS_JSON_B64`.
 5. Importa workflows generados en `.tmp/n8n-ephemeral/workflows`.
-6. Si toca ciclo diario, ejecuta Freshness.
+6. Ejecuta Sheet Schema.
 7. Si `run_candidate_cleanup=true`, ejecuta Candidate Cleanup.
 8. Si `restore_candidate_rows` tiene filas, ejecuta Candidate Restore.
 9. Si `run_candidate_backfill=true`, ejecuta Candidate Backfill.
-10. Si toca ciclo diario, ejecuta Scheduler.
-11. Ejecuta Telegram Poll.
-12. Ejecuta Main hasta `MAIN_MAX_RUNS`.
-13. Escribe resumen en GitHub Step Summary.
-14. Si es ciclo diario, manda resumen Telegram.
+10. Si `generation_paused=true`, termina sin correr Freshness, Scheduler, Poll ni Main.
+11. Si toca ciclo diario, ejecuta Freshness.
+12. Si toca ciclo diario, ejecuta Scheduler.
+13. Ejecuta Telegram Poll.
+14. Ejecuta Main hasta `MAIN_MAX_RUNS`.
+15. Escribe resumen en GitHub Step Summary.
+16. Si es ciclo diario, manda resumen Telegram.
 
 ## Workflows Generados
 
@@ -173,6 +174,7 @@ Si el flujo se corta:
 1. Leer `docs/ESTADO_DEL_PROYECTO.md`.
 2. Revisar GitHub Actions `Free ephemeral n8n`.
 3. Revisar `articulos.estatus` y `review_candidates.status` en Google Sheets.
-4. Reejecutar dispatch manual con `main_max_runs=1` o `3` segun el caso.
+4. Si la pausa temporal sigue activa, no reejecutar generacion; usar `schema_only=true` para reconciliar sin consumir Abacus.
+5. Cuando haya creditos Abacus, reactivar crons, correr dispatch manual con `generation_paused=false` y `main_max_runs=1` o `3` segun el caso.
 
 El runner es efimero y retoma por estado en Google Sheets; no depende de `staticData` persistente de n8n.

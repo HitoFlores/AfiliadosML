@@ -1,13 +1,13 @@
 # AfiliadosML - Estado del proyecto
 
-Ultima actualizacion: 2026-06-16.
+Ultima actualizacion: 2026-06-17.
 
 Proyecto: pipeline automatico de reviews editoriales para productos de Mercado Libre Mexico. Un humano sigue aportando links afiliados; el sistema automatiza descubrimiento, cola, generacion, publicacion, relaciones, rankings y freshness.
 
 ## Estado Actual
 
 - Web: Next.js export estatico en Cloudflare Pages. El deploy ocurre por push a GitHub; no se usa un workflow Cloudflare propio.
-- Automatizacion: GitHub Actions `Free ephemeral n8n` levanta n8n efimero, importa credenciales/workflows, corre Scheduler/Poll/Freshness/Main y termina.
+- Automatizacion: GitHub Actions `Free ephemeral n8n` levanta n8n efimero, importa credenciales/workflows y puede correr Scheduler/Poll/Freshness/Main. Temporalmente esta pausado por falta de creditos Abacus: no hay crons activos y `generation_paused=true` evita generar reviews nuevas.
 - Reviews activos en `data/`: 9.
   - `apple-macbook-air-13-m5-512gb`
   - `apple-macbook-pro-m5-16gb-14`
@@ -42,6 +42,11 @@ Proyecto: pipeline automatico de reviews editoriales para productos de Mercado L
   - Poll acepta `borrar`, `borra` y `descartado` como sinonimos de descarte.
   - Si el usuario descarta N candidatos, Poll ofrece hasta N reemplazos `pending`; si no quedan candidatos, avisa por Telegram.
   - Se instalo `graphify` local del proyecto y el grafo vive en `graphify-out/`.
+- Pausa operativa 2026-06-17:
+  - Motivo: Abacus sin creditos; no hay forma de generar reviews hasta recargar.
+  - `.github/workflows/free-ephemeral-n8n.yml` no tiene `schedule` activo.
+  - Dispatch manual queda pausado por default con `generation_paused=true` y `main_max_runs=0`.
+  - El runner aun permite Sheet Schema y mantenimiento manual (`run_candidate_cleanup`, `restore_candidate_rows`, `run_candidate_backfill`) antes de salir.
 
 ## Arquitectura
 
@@ -69,6 +74,7 @@ GitHub:
 
 ## Flujo Operativo
 
+0. Pausa temporal: mientras `generation_paused=true`, el ciclo solo corre Sheet Schema y mantenimiento manual; no corre Freshness, Scheduler, Poll ni Main.
 1. Sheet Schema asegura headers y reconcilia candidatos activos contra `data/*.json`; si encuentra un review ya publicado, marca el candidato `done`, llena `target_slug` y avisa por Telegram.
 2. Scheduler diario lee `review_candidates`.
 3. Si hay candidatos `pending`, manda maximo 3 por Telegram priorizando `candidate_tier`: `superior`, `economico`, `similar`, `unknown`; dentro de cada tier ordena por `priority_score` e intenta mezclar hasta 3 `source_slug` distintos antes de rellenar con la misma fuente.
@@ -140,7 +146,7 @@ Fixes importantes:
 - Filas `processing` vacias en `articulos` no bloquean Scheduler.
 - No confunde links afiliados de candidatos con el flujo manual normal.
 - Las notificaciones de candidato listo usan el nombre del candidato, no el item de Google Sheets posterior.
-- El runner procesa hasta `MAIN_MAX_RUNS=3` filas por ciclo.
+- El runner procesa hasta `MAIN_MAX_RUNS` filas por ciclo. Pausa temporal: default `0`.
 - Persiste snapshot `shown_batch_id + shown_index -> candidate_id` en `review_candidates` para que `1`, `2`, `3` resuelvan contra el ultimo lote mostrado aunque Telegram conserve un draft/reply viejo.
 - Sheet Schema cierra candidatos huerfanos si el JSON ya existe pero el `candidate_id` no quedo en `meta`, por ejemplo por corrida manual o perdida del dato en `articulos`.
 - `descartar`, `descartado`, `eliminar`, `borrar`, `borra`, `basura`, `drop` y `delete` cuentan como descarte.
@@ -219,11 +225,13 @@ Nota: no habia un producto caido real al probar. Las ramas stale quedan listas p
 Objetivo practico: pasar de 5 a 50-100 reviews.
 
 Ruta recomendada:
-1. Dejar correr el Scheduler diario.
-2. Responder 2-3 candidatos por dia con links afiliados.
-3. Mantener `MAIN_MAX_RUNS=3` mientras se valida calidad.
-4. Cuando la calidad sea estable por 1 semana, subir `MAIN_MAX_RUNS` a 5 desde dispatch manual o workflow.
-5. Revisar cada manana:
+1. Recargar creditos Abacus.
+2. Reactivar `schedule` en GitHub Actions y correr dispatch manual con `generation_paused=false`.
+3. Dejar correr el Scheduler diario.
+4. Responder 2-3 candidatos por dia con links afiliados.
+5. Mantener `MAIN_MAX_RUNS=3` mientras se valida calidad.
+6. Cuando la calidad sea estable por 1 semana, subir `MAIN_MAX_RUNS` a 5 desde dispatch manual o workflow.
+7. Revisar cada manana:
    - GitHub Actions `Free ephemeral n8n`
    - commits nuevos `feat: review ...`
    - `rtk npm run review:audit`
@@ -235,6 +243,7 @@ Si faltan candidatos:
 
 ## Flujo Completo Actual
 
+0. Estado temporal: crons desactivados y `generation_paused=true`; no se generan reviews nuevas hasta reactivar Abacus.
 1. Cerca de las 9:07 AM America/Chihuahua, GitHub Actions corre `Free ephemeral n8n`. GitHub Actions no garantiza puntualidad; puede retrasar jobs programados.
 2. El runner prepara/importa workflows n8n desde `.tmp/n8n-ephemeral/workflows`.
 3. Si es ciclo diario, corre Freshness:
@@ -276,9 +285,10 @@ Si faltan candidatos:
 12. El runner manda resumen Telegram del ciclo diario.
 
 Horario actual:
-- Freshness/Scheduler diario: 9:07 AM Chihuahua nominal (`7 16 * * *` UTC).
-- Poll/Main: cada 5 minutos de 9:12 AM a 2:00 PM Chihuahua nominal.
-- Respuesta Telegram de candidato no es instantanea: normalmente entra en 5-15 min; en carga alta de GitHub puede tardar 20+ min.
+- Pausado temporalmente por creditos Abacus: no hay crons activos.
+- Al reactivar: Freshness/Scheduler diario era 9:07 AM Chihuahua nominal (`7 16 * * *` UTC).
+- Al reactivar: Poll/Main era cada 5 minutos de 9:12 AM a 2:00 PM Chihuahua nominal.
+- Respuesta Telegram de candidato no sera procesada mientras `generation_paused=true`; al reactivar normalmente entra en 5-15 min, y en carga alta de GitHub puede tardar 20+ min.
 
 ## Como Probar Stale Seguro
 
