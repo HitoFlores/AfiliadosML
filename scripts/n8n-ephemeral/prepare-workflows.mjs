@@ -2636,13 +2636,38 @@ function extractFeaturedMlId(html) {
   return '';
 }
 
+function extractFeaturedTitle(html) {
+  const text = String(html || '');
+  const patterns = [
+    /<meta\\s+name=["']title["']\\s+content=["']([^"']+)["']/i,
+    /<meta\\s+property=["']og:title["']\\s+content=["']([^"']+)["']/i,
+    /"title"\\s*:\\s*"([^"]{8,160})"/i,
+  ];
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match) {
+      return match[1]
+        .replace(/&quot;/g, '"')
+        .replace(/&amp;/g, '&')
+        .replace(/&#39;/g, "'")
+        .trim();
+    }
+  }
+  return '';
+}
+
+function getMlAccessToken() {
+  try {
+    return $('Refresh Token').first().json.access_token || '';
+  } catch (e) {
+    return '';
+  }
+}
+
 async function resolveCatalogProductIdFromItem(itemId) {
   const id = String(itemId || '').toUpperCase();
   if (!/^ML[A-Z][0-9]{6,}$/.test(id)) return '';
-  let token = '';
-  try {
-    token = $('Refresh Token').first().json.access_token || '';
-  } catch (e) {}
+  const token = getMlAccessToken();
   if (!token) return '';
   const response = await this.helpers.httpRequest({
     method: 'GET',
@@ -2655,12 +2680,33 @@ async function resolveCatalogProductIdFromItem(itemId) {
   return /^ML[A-Z][0-9]{6,}$/.test(catalogId) ? catalogId : '';
 }
 
+async function resolveCatalogProductIdFromSearch(title) {
+  const query = String(title || '').trim();
+  if (!query) return '';
+  const token = getMlAccessToken();
+  if (!token) return '';
+  const response = await this.helpers.httpRequest({
+    method: 'GET',
+    url: 'https://api.mercadolibre.com/sites/MLM/search?q=' + encodeURIComponent(query) + '&limit=10',
+    headers: { Authorization: 'Bearer ' + token },
+    json: true,
+    ignoreResponseCode: true,
+  });
+  const results = Array.isArray(response.results) ? response.results : [];
+  const withCatalog = results.find((item) => item && item.catalog_product_id);
+  const catalogId = String(withCatalog?.catalog_product_id || '').toUpperCase();
+  return /^ML[A-Z][0-9]{6,}$/.test(catalogId) ? catalogId : '';
+}
+
 if (link.includes('meli.la/')) {
   try {
     const resolved = await resolveShortMlLink.call(this, link);
     const html = resolved.body || '';
     const featuredItemId = extractFeaturedMlId(html);
-    const catalogProductId = resolved.product_id || await resolveCatalogProductIdFromItem.call(this, featuredItemId);
+    const title = extractFeaturedTitle(html);
+    const catalogProductId = resolved.product_id
+      || await resolveCatalogProductIdFromItem.call(this, featuredItemId)
+      || await resolveCatalogProductIdFromSearch.call(this, title);
     if (catalogProductId) {
       product_id = catalogProductId.toUpperCase();
       link = resolved.url && resolved.url.includes('mercadolibre')

@@ -365,6 +365,26 @@ function extractFeaturedMlId(html) {
   return "";
 }
 
+function extractFeaturedTitle(html) {
+  const text = String(html || "");
+  const patterns = [
+    /<meta\s+name=["']title["']\s+content=["']([^"']+)["']/i,
+    /<meta\s+property=["']og:title["']\s+content=["']([^"']+)["']/i,
+    /"title"\s*:\s*"([^"]{8,160})"/i,
+  ];
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match) {
+      return match[1]
+        .replace(/&quot;/g, '"')
+        .replace(/&amp;/g, "&")
+        .replace(/&#39;/g, "'")
+        .trim();
+    }
+  }
+  return "";
+}
+
 function assertEqual(name, actual, expected) {
   const a = JSON.stringify(actual);
   const e = JSON.stringify(expected);
@@ -665,6 +685,14 @@ assertEqual(
     ].join(""),
   ),
   "MLM2804868808",
+);
+
+assertEqual(
+  "shortlink parser extracts title for search fallback",
+  extractFeaturedTitle(
+    '<meta name="title" content="Delonghi Ec685m Dedica Deluxe Máquina Espresso Automática, 1 Metallic"/>',
+  ),
+  "Delonghi Ec685m Dedica Deluxe Máquina Espresso Automática, 1 Metallic",
 );
 
 console.log("Review candidate logic test passed.");

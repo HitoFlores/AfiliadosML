@@ -50,7 +50,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "estado_page",
-      "community": 1,
+      "community": 4,
       "norm_label": "page.tsx"
     },
     {
@@ -60,7 +60,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "estado_page_metadata",
-      "community": 1,
+      "community": 4,
       "norm_label": "metadata"
     },
     {
@@ -70,7 +70,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "estado_page_estadopage",
-      "community": 1,
+      "community": 4,
       "norm_label": "estadopage()"
     },
     {
@@ -200,7 +200,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "category_page",
-      "community": 1,
+      "community": 4,
       "norm_label": "page.tsx"
     },
     {
@@ -210,7 +210,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "category_page_generatestaticparams",
-      "community": 1,
+      "community": 4,
       "norm_label": "generatestaticparams()"
     },
     {
@@ -220,7 +220,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "category_page_generatemetadata",
-      "community": 1,
+      "community": 4,
       "norm_label": "generatemetadata()"
     },
     {
@@ -230,7 +230,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "category_page_rankingcategorypage",
-      "community": 1,
+      "community": 4,
       "norm_label": "rankingcategorypage()"
     },
     {
@@ -240,7 +240,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "rankings_page",
-      "community": 1,
+      "community": 4,
       "norm_label": "page.tsx"
     },
     {
@@ -250,7 +250,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "rankings_page_metadata",
-      "community": 1,
+      "community": 4,
       "norm_label": "metadata"
     },
     {
@@ -260,7 +260,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "rankings_page_rankingspage",
-      "community": 1,
+      "community": 4,
       "norm_label": "rankingspage()"
     },
     {
@@ -280,7 +280,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "slug_page_generatestaticparams",
-      "community": 1,
+      "community": 4,
       "norm_label": "generatestaticparams()"
     },
     {
@@ -290,7 +290,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "slug_page_generatemetadata",
-      "community": 9,
+      "community": 4,
       "norm_label": "generatemetadata()"
     },
     {
@@ -350,7 +350,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_sitemap",
-      "community": 1,
+      "community": 4,
       "norm_label": "sitemap.ts"
     },
     {
@@ -360,7 +360,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_sitemap_sitemap",
-      "community": 1,
+      "community": 4,
       "norm_label": "sitemap()"
     },
     {
@@ -400,7 +400,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_alternativassection",
-      "community": 17,
+      "community": 4,
       "norm_label": "alternativassection.tsx"
     },
     {
@@ -410,7 +410,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_alternativassection_icons",
-      "community": 17,
+      "community": 4,
       "norm_label": "icons"
     },
     {
@@ -420,7 +420,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_alternativassection_geticon",
-      "community": 17,
+      "community": 4,
       "norm_label": "geticon()"
     },
     {
@@ -430,7 +430,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_alternativassection_buildmlsearchurl",
-      "community": 17,
+      "community": 4,
       "norm_label": "buildmlsearchurl()"
     },
     {
@@ -440,7 +440,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_alternativassection_alternativassection",
-      "community": 17,
+      "community": 4,
       "norm_label": "alternativassection()"
     },
     {
@@ -450,7 +450,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_buyerdecisionblock",
-      "community": 18,
+      "community": 9,
       "norm_label": "buyerdecisionblock.tsx"
     },
     {
@@ -460,7 +460,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_buyerdecisionblock_buyerdecisionblock",
-      "community": 18,
+      "community": 9,
       "norm_label": "buyerdecisionblock()"
     },
     {
@@ -470,7 +470,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_buyerreviews",
-      "community": 19,
+      "community": 9,
       "norm_label": "buyerreviews.tsx"
     },
     {
@@ -480,7 +480,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_buyerreviews_destacada",
-      "community": 19,
+      "community": 9,
       "norm_label": "destacada"
     },
     {
@@ -490,7 +490,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_buyerreviews_reviewsml",
-      "community": 19,
+      "community": 9,
       "norm_label": "reviewsml"
     },
     {
@@ -500,7 +500,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "components_buyerreviews_stars",
-      "community": 19,
+      "community": 9,
       "norm_label": "stars()"
     },
     {
@@ -510,7 +510,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "components_buyerreviews_senttone",
-      "community": 19,
+      "community": 9,
       "norm_label": "senttone"
     },
     {
@@ -520,7 +520,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "components_buyerreviews_buyerreviews",
-      "community": 19,
+      "community": 9,
       "norm_label": "buyerreviews()"
     },
     {
@@ -530,7 +530,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_byline",
-      "community": 20,
+      "community": 9,
       "norm_label": "byline.tsx"
     },
     {
@@ -540,7 +540,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_byline_bylineprops",
-      "community": 20,
+      "community": 9,
       "norm_label": "bylineprops"
     },
     {
@@ -550,7 +550,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_byline_byline",
-      "community": 20,
+      "community": 9,
       "norm_label": "byline()"
     },
     {
@@ -560,7 +560,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "components_byline_sourcesblock",
-      "community": 20,
+      "community": 9,
       "norm_label": "sourcesblock()"
     },
     {
@@ -610,7 +610,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_imagegallery",
-      "community": 34,
+      "community": 9,
       "norm_label": "imagegallery.tsx"
     },
     {
@@ -620,7 +620,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_imagegallery_imagegalleryprops",
-      "community": 34,
+      "community": 9,
       "norm_label": "imagegalleryprops"
     },
     {
@@ -630,7 +630,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_imagegallery_imagegallery",
-      "community": 34,
+      "community": 9,
       "norm_label": "imagegallery()"
     },
     {
@@ -640,7 +640,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_jsonld",
-      "community": 18,
+      "community": 9,
       "norm_label": "jsonld.tsx"
     },
     {
@@ -650,7 +650,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_jsonld_jsonldprops",
-      "community": 18,
+      "community": 9,
       "norm_label": "jsonldprops"
     },
     {
@@ -660,7 +660,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "components_jsonld_jsonld",
-      "community": 18,
+      "community": 9,
       "norm_label": "jsonld()"
     },
     {
@@ -670,7 +670,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_relatedreviews",
-      "community": 24,
+      "community": 4,
       "norm_label": "relatedreviews.tsx"
     },
     {
@@ -680,7 +680,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_relatedreviews_relatedreviewsprops",
-      "community": 24,
+      "community": 4,
       "norm_label": "relatedreviewsprops"
     },
     {
@@ -690,7 +690,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_relatedreviews_relatedreviews",
-      "community": 24,
+      "community": 4,
       "norm_label": "relatedreviews()"
     },
     {
@@ -840,7 +840,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_verdict",
-      "community": 48,
+      "community": 9,
       "norm_label": "verdict.tsx"
     },
     {
@@ -850,7 +850,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_verdict_verdictprops",
-      "community": 48,
+      "community": 9,
       "norm_label": "verdictprops"
     },
     {
@@ -860,7 +860,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_verdict_verdict",
-      "community": 48,
+      "community": 9,
       "norm_label": "verdict()"
     },
     {
@@ -870,7 +870,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_videosection",
-      "community": 33,
+      "community": 9,
       "norm_label": "videosection.tsx"
     },
     {
@@ -880,7 +880,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_videosection_video",
-      "community": 33,
+      "community": 9,
       "norm_label": "video"
     },
     {
@@ -890,7 +890,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "components_videosection_videosectionprops",
-      "community": 33,
+      "community": 9,
       "norm_label": "videosectionprops"
     },
     {
@@ -900,7 +900,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "components_videosection_videosection",
-      "community": 33,
+      "community": 9,
       "norm_label": "videosection()"
     },
     {
@@ -1040,7 +1040,7 @@
       "source_location": "L180",
       "_origin": "ast",
       "id": "lib_product_fuente",
-      "community": 20,
+      "community": 9,
       "norm_label": "fuente"
     },
     {
@@ -1050,7 +1050,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "lib_product_autoria",
-      "community": 20,
+      "community": 9,
       "norm_label": "autoria"
     },
     {
@@ -1070,7 +1070,7 @@
       "source_location": "L198",
       "_origin": "ast",
       "id": "lib_product_alternativa",
-      "community": 17,
+      "community": 4,
       "norm_label": "alternativa"
     },
     {
@@ -1110,7 +1110,7 @@
       "source_location": "L225",
       "_origin": "ast",
       "id": "lib_product_normalizedproduct",
-      "community": 18,
+      "community": 9,
       "norm_label": "normalizedproduct"
     },
     {
@@ -1120,7 +1120,7 @@
       "source_location": "L253",
       "_origin": "ast",
       "id": "lib_product_relatedreview",
-      "community": 24,
+      "community": 4,
       "norm_label": "relatedreview"
     },
     {
@@ -1160,7 +1160,7 @@
       "source_location": "L363",
       "_origin": "ast",
       "id": "lib_product_datadir",
-      "community": 9,
+      "community": 4,
       "norm_label": "datadir()"
     },
     {
@@ -1170,7 +1170,7 @@
       "source_location": "L367",
       "_origin": "ast",
       "id": "lib_product_loadproductbyslug",
-      "community": 9,
+      "community": 4,
       "norm_label": "loadproductbyslug()"
     },
     {
@@ -1180,7 +1180,7 @@
       "source_location": "L384",
       "_origin": "ast",
       "id": "lib_product_allslugs",
-      "community": 1,
+      "community": 4,
       "norm_label": "allslugs()"
     },
     {
@@ -1190,7 +1190,7 @@
       "source_location": "L402",
       "_origin": "ast",
       "id": "lib_product_loadallproducts",
-      "community": 1,
+      "community": 4,
       "norm_label": "loadallproducts()"
     },
     {
@@ -1210,7 +1210,7 @@
       "source_location": "L438",
       "_origin": "ast",
       "id": "lib_product_comparisonpairs",
-      "community": 1,
+      "community": 4,
       "norm_label": "comparisonpairs()"
     },
     {
@@ -1250,7 +1250,7 @@
       "source_location": "L482",
       "_origin": "ast",
       "id": "lib_product_rankingcategories",
-      "community": 1,
+      "community": 4,
       "norm_label": "rankingcategories()"
     },
     {
@@ -1260,7 +1260,7 @@
       "source_location": "L498",
       "_origin": "ast",
       "id": "lib_product_loadrankingcategory",
-      "community": 1,
+      "community": 4,
       "norm_label": "loadrankingcategory()"
     },
     {
@@ -2347,7 +2347,7 @@
       "label": "patchSimilarProducts()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2681",
+      "source_location": "L2727",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchsimilarproducts",
       "community": 0,
@@ -2357,7 +2357,7 @@
       "label": "patchStrictYoutubeMatching()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2690",
+      "source_location": "L2736",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchstrictyoutubematching",
       "community": 0,
@@ -2367,7 +2367,7 @@
       "label": "patchFreeYoutubeTranscripts()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2891",
+      "source_location": "L2937",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchfreeyoutubetranscripts",
       "community": 0,
@@ -2377,7 +2377,7 @@
       "label": "patchBuildPromptV4()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L2984",
+      "source_location": "L3030",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchbuildpromptv4",
       "community": 0,
@@ -2387,7 +2387,7 @@
       "label": "patchBuildFinalJsonV4()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L3126",
+      "source_location": "L3172",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchbuildfinaljsonv4",
       "community": 0,
@@ -2397,7 +2397,7 @@
       "label": "patchReviewCandidates()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L3414",
+      "source_location": "L3460",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchreviewcandidates",
       "community": 0,
@@ -2407,7 +2407,7 @@
       "label": "patchCandidateCompletion()",
       "file_type": "code",
       "source_file": "scripts/n8n-ephemeral/prepare-workflows.mjs",
-      "source_location": "L3724",
+      "source_location": "L3770",
       "_origin": "ast",
       "id": "n8n_ephemeral_prepare_workflows_patchcandidatecompletion",
       "community": 0,
@@ -2638,7 +2638,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "scripts_review_candidate_backfill_readpublishedreviews",
-      "community": 3,
+      "community": 0,
       "norm_label": "readpublishedreviews()"
     },
     {
@@ -2648,7 +2648,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "scripts_review_candidate_backfill_publishedreviewmeta",
-      "community": 3,
+      "community": 0,
       "norm_label": "publishedreviewmeta()"
     },
     {
@@ -2678,7 +2678,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "scripts_review_candidate_backfill_buildbackfillcandidates",
-      "community": 3,
+      "community": 0,
       "norm_label": "buildbackfillcandidates()"
     },
     {
@@ -3122,10 +3122,20 @@
       "norm_label": "extractfeaturedmlid()"
     },
     {
-      "label": "assertEqual()",
+      "label": "extractFeaturedTitle()",
       "file_type": "code",
       "source_file": "scripts/test-review-candidates-logic.mjs",
       "source_location": "L368",
+      "_origin": "ast",
+      "id": "scripts_test_review_candidates_logic_extractfeaturedtitle",
+      "community": 6,
+      "norm_label": "extractfeaturedtitle()"
+    },
+    {
+      "label": "assertEqual()",
+      "file_type": "code",
+      "source_file": "scripts/test-review-candidates-logic.mjs",
+      "source_location": "L388",
       "_origin": "ast",
       "id": "scripts_test_review_candidates_logic_assertequal",
       "community": 6,
@@ -3135,7 +3145,7 @@
       "label": "rows",
       "file_type": "code",
       "source_file": "scripts/test-review-candidates-logic.mjs",
-      "source_location": "L376",
+      "source_location": "L396",
       "_origin": "ast",
       "id": "scripts_test_review_candidates_logic_rows",
       "community": 6,
@@ -3145,7 +3155,7 @@
       "label": "selected",
       "file_type": "code",
       "source_file": "scripts/test-review-candidates-logic.mjs",
-      "source_location": "L394",
+      "source_location": "L414",
       "_origin": "ast",
       "id": "scripts_test_review_candidates_logic_selected",
       "community": 6,
@@ -3155,7 +3165,7 @@
       "label": "diverseSelected",
       "file_type": "code",
       "source_file": "scripts/test-review-candidates-logic.mjs",
-      "source_location": "L456",
+      "source_location": "L476",
       "_origin": "ast",
       "id": "scripts_test_review_candidates_logic_diverseselected",
       "community": 6,
@@ -3165,7 +3175,7 @@
       "label": "mixed",
       "file_type": "code",
       "source_file": "scripts/test-review-candidates-logic.mjs",
-      "source_location": "L498",
+      "source_location": "L518",
       "_origin": "ast",
       "id": "scripts_test_review_candidates_logic_mixed",
       "community": 6,
@@ -3175,7 +3185,7 @@
       "label": "replyHint",
       "file_type": "code",
       "source_file": "scripts/test-review-candidates-logic.mjs",
-      "source_location": "L512",
+      "source_location": "L532",
       "_origin": "ast",
       "id": "scripts_test_review_candidates_logic_replyhint",
       "community": 6,
@@ -3185,7 +3195,7 @@
       "label": "snapshot",
       "file_type": "code",
       "source_file": "scripts/test-review-candidates-logic.mjs",
-      "source_location": "L536",
+      "source_location": "L556",
       "_origin": "ast",
       "id": "scripts_test_review_candidates_logic_snapshot",
       "community": 6,
@@ -3195,7 +3205,7 @@
       "label": "changedRows",
       "file_type": "code",
       "source_file": "scripts/test-review-candidates-logic.mjs",
-      "source_location": "L537",
+      "source_location": "L557",
       "_origin": "ast",
       "id": "scripts_test_review_candidates_logic_changedrows",
       "community": 6,
@@ -9204,6 +9214,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/test-review-candidates-logic.mjs",
+      "source_location": "L368",
+      "weight": 1.0,
+      "source": "scripts_test_review_candidates_logic",
+      "target": "scripts_test_review_candidates_logic_extractfeaturedtitle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/test-review-candidates-logic.mjs",
       "source_location": "L1",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -10567,5 +10587,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4051069b5997803fb1ba92a187d625b8fd5938a7"
+  "built_at_commit": "3ba4e53036d4d98b8b420660a38f0c174f076bc2"
 }
