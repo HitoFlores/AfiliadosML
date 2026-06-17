@@ -2587,6 +2587,44 @@ function patchRouteRowCandidateId(workflow) {
     );
   }
 
+  if (!code.includes("const orderedPicks =")) {
+    code = code.replace(
+      `const pick = forceSlug
+  ? rows.find((r) => norm(r.slug) === forceSlug)
+  : (
+    rows.find((r) => norm(r.estatus) === 'ready') ||
+    rows.find((r) => norm(r.estatus) === 'pending') ||
+    rows.find((r) => norm(r.estatus) === 'processing' && r.candidate_id && r.referido)
+  );
+
+if (!pick) return [];
+
+let link    = (pick.articulo || '').toString();
+let product_id = '';`,
+      `const candidatePicks = forceSlug
+  ? [rows.find((r) => norm(r.slug) === forceSlug)].filter(Boolean)
+  : [
+    ...rows.filter((r) => norm(r.estatus) === 'ready'),
+    ...rows.filter((r) => norm(r.estatus) === 'pending'),
+    ...rows.filter((r) => norm(r.estatus) === 'processing' && r.candidate_id && r.referido),
+  ];
+
+const seenRows = new Set();
+const orderedPicks = candidatePicks.filter((row) => {
+  const key = row.row_number || row.candidate_id || row.articulo || row.slug;
+  if (seenRows.has(key)) return false;
+  seenRows.add(key);
+  return true;
+});
+
+if (!orderedPicks.length) return [];
+
+let pick = null;
+let link = '';
+let product_id = '';`,
+    );
+  }
+
   if (!code.includes("resolveShortMlLink")) {
     const start = code.indexOf("if (link.includes('meli.la/')) {");
     const end = code.indexOf("\n\n//", start + 1);
@@ -2719,6 +2757,33 @@ if (link.includes('meli.la/')) {
 }` +
         code.slice(end);
     }
+  }
+
+  if (!code.includes("for (const candidatePick of orderedPicks)")) {
+    code = code.replace(
+      "if (link.includes('meli.la/')) {",
+      `for (const candidatePick of orderedPicks) {
+  pick = candidatePick;
+  link = (pick.articulo || '').toString();
+  product_id = '';
+
+if (link.includes('meli.la/')) {`,
+    );
+    code = code.replace(
+      `if (!product_id) {
+  const m = link.match(/\\/p\\/(ML[A-Z]?[0-9]+)/i) || link.match(/(ML[A-Z][0-9]{6,})/i);
+  product_id = m ? m[1].toUpperCase() : '';
+}`,
+      `if (!product_id) {
+  const m = link.match(/\\/p\\/(ML[A-Z]?[0-9]+)/i) || link.match(/(ML[A-Z][0-9]{6,})/i);
+  product_id = m ? m[1].toUpperCase() : '';
+}
+
+  if (product_id || forceSlug || !link.includes('meli.la/')) break;
+}
+
+if (!pick || !product_id) return [];`,
+    );
   }
 
   node.parameters.jsCode = code;
